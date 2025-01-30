@@ -1,7 +1,7 @@
 "use client";
 
+import { debounceInterface } from "@/types/interface";
 import { useState, useEffect } from "react";
-import { debounceTypes } from "@/types/debounceTypes";
 
 /**
  * Custom hook to debounce a value.
@@ -11,7 +11,7 @@ import { debounceTypes } from "@/types/debounceTypes";
  * @returns The debounced value.
  */
 
-export const useDebounce = ({ value, delay }: debounceTypes) => {
+export const useDebounce = ({ value, delay }: debounceInterface) => {
   const [debouncedValue, setDebouncedValue] = useState(value);
 
   useEffect(() => {
