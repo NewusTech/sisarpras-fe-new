@@ -1,3 +1,3 @@
 pnpm lint
 echo "Running Danger locally..."
-npx danger pr --process=local || exit 1
+npx danger local --dangerfile dangerfile.ts
