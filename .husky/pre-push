@@ -1,4 +1,2 @@
 pnpm lint
-echo "Running Danger locally..."
-DANGER_BASE_BRANCH=main npx danger pr --process=local
 
