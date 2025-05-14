@@ -12,14 +12,15 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 22 # ✅ Cocok dengan engines.node di package.json
-          cache: 'pnpm'
+          node-version: 22
 
+      # ✅ Install pnpm dulu
       - uses: pnpm/action-setup@v2
         with:
           version: 9
-          run_install: false  # Kita kontrol install sendiri
+          run_install: false
 
+      # ✅ Restore pnpm cache (opsional tapi direkomendasikan)
       - name: Restore pnpm cache
         uses: actions/cache@v4
         with:
@@ -28,8 +29,10 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
 
+      # ✅ Baru install dependencies
       - run: pnpm install --frozen-lockfile
 
+      # ✅ Jalankan Danger
       - name: Run Danger
         run: pnpm danger ci --dangerfile dangerfile.ts
         env:
