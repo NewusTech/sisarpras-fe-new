@@ -1,0 +1,22 @@
+name: Danger CI
+
+on:
+  pull_request:
+
+jobs:
+  danger:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Run Danger
+        run: pnpm danger ci --dangerfile dangerfile.ts
+        env:
+          DANGER_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -21,3 +21,13 @@ export type DataArray<T> = T[];
 
 // Format 3: Single object data
 export type DataObject<T> = T;
+
+export type decodedProps = {
+  id: number;
+  email: string;
+  name: string;
+  role: string;
+  user_data: any;
+  iat: number;
+  exp: number;
+};
