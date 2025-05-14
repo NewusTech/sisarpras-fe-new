@@ -12,13 +12,13 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22 # ✅ Cocok dengan engines.node di package.json
           cache: 'pnpm'
 
       - uses: pnpm/action-setup@v2
         with:
           version: 9
-          run_install: false  # kita jalankan sendiri install-nya setelah restore cache
+          run_install: false  # Kita kontrol install sendiri
 
       - name: Restore pnpm cache
         uses: actions/cache@v4
