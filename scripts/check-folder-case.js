@@ -1,8 +1,7 @@
-#!/usr/bin/env node
-const { readdirSync } = require("fs");
+const { readdirSync, existsSync } = require("fs");
 const { join, extname } = require("path");
 
-const BASE_DIRS = ["./src/components", "./types"];
+const BASE_DIRS = ["./src/components", "./src/types"].filter(existsSync);
 const kebabCaseRegex = /^[a-z0-9\-]+$/;
 const camelCaseRegex = /^[a-z][a-zA-Z0-9]*$/;
 const IGNORE_FOLDERS = ["ui"];
@@ -37,7 +36,6 @@ function checkStructure(path) {
       const isDefinition = entry.name.endsWith(".d.ts");
       const isTest = entry.name.includes(".test.");
 
-      // Cek camelCase
       if (
         ALLOWED_FILE_EXTENSIONS.includes(ext) &&
         !isTest &&
@@ -47,7 +45,6 @@ function checkStructure(path) {
         warnings.push(`❌ File "${fullPath}" harus pakai camelCase`);
       }
 
-      // Cek jika nama mengandung type/interface tapi bukan .d.ts
       const nameWithoutExt = entry.name.replace(/\.(ts|tsx)$/, "");
       const hasReservedWord =
         /(^|[-_.])(type|types|interface|interfaces)([-_.]|$)/.test(
