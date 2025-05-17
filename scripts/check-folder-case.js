@@ -2,7 +2,7 @@
 const { readdirSync } = require("fs");
 const { join, extname } = require("path");
 
-const baseDir = "./src/components";
+const BASE_DIRS = ["./src/components", "./types"];
 const kebabCaseRegex = /^[a-z0-9\-]+$/;
 const camelCaseRegex = /^[a-z][a-zA-Z0-9]*$/;
 const IGNORE_FOLDERS = ["ui"];
@@ -63,7 +63,9 @@ function checkStructure(path) {
   }
 }
 
-checkStructure(baseDir);
+for (const dir of BASE_DIRS) {
+  checkStructure(dir);
+}
 
 if (warnings.length > 0) {
   console.log("\n🚨 Struktur tidak valid ditemukan:\n");
