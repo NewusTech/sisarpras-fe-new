@@ -1,2 +1,7 @@
-pnpm lint
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
 
+pnpm format
+pnpm lint
+pnpm lint:structure
+pnpm lint:zodmix

@@ -2,15 +2,3 @@
 . "$(dirname "$0")/_/husky.sh"
 
 pnpm commitlint --edit "$1"
-
-STATUS=$?
-
-if [ $STATUS -ne 0 ]; then
-  echo "\n[❌ COMMIT GAGAL] Format commit tidak valid." >> "$1"
-  echo "\nContoh yang benar:\n" >> "$1"
-  echo "  feat: tambah fitur login" >> "$1"
-  echo "  fix: perbaiki validasi email" >> "$1"
-  echo "\nLihat aturan lengkap di CONTRIBUTING.md\n" >> "$1"
-fi
-
-exit $STATUS

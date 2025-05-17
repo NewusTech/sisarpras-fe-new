@@ -1,6 +1,5 @@
-// dangerfile.ts
-
 import { danger, fail, warn, message } from "danger";
+import { execSync } from "child_process";
 
 // 🚨 Fail if no description is provided in the PR
 if (!danger.github.pr.body || danger.github.pr.body.length < 10) {
@@ -28,6 +27,8 @@ const criticalFiles = [
   ".prettierignore",
   ".prettierrc",
   ".lintstagedrc",
+  "scripts",
+  "commitlint.config.js",
 ];
 
 const modifiedFiles = danger.git.modified_files.join(" ");
@@ -38,3 +39,23 @@ criticalFiles.forEach((file) => {
     );
   }
 });
+
+// 📁 Struktur folder/file checker via lint:structure
+try {
+  execSync("pnpm lint:structure", { stdio: "pipe" });
+} catch (error: any) {
+  const output = error.stdout?.toString() || error.message;
+  fail(
+    `📁 Struktur folder/file tidak sesuai:\n\n\`\`\`\n${output.trim()}\n\`\`\``
+  );
+}
+
+//
+try {
+  execSync("pnpm lint:zodmix", { stdio: "pipe" });
+} catch (error: any) {
+  const output = error.stdout?.toString() || error.message;
+  fail(
+    `🧪 File TSX mengandung z.object + z.infer dalam satu file:\n\n\`\`\`\n${output.trim()}\n\`\`\``
+  );
+}

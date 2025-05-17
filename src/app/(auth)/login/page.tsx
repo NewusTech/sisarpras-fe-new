@@ -16,8 +16,8 @@ import { Button } from "@/components/ui/button";
 import {
   LoginPayload,
   loginValidation,
-} from "@/components/part/login/validation";
-import { useLoginMutation } from "@/components/part/login/api";
+} from "@/components/parts/login/validation";
+import { useLoginMutation } from "@/components/parts/login/api";
 import Cookie from "js-cookie";
 import Swal from "sweetalert2";
 

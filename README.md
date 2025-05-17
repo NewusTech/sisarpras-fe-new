@@ -8,22 +8,24 @@ Welcome to the **Next.js** based project with internal customization from the Ne
 
 ```
 src/
-├── __tests__/         # Unit Testing
-├── app/               # Page and Layout
-├── assets/            # Static files (images, fonts)
-├── components/        # Reusable UI components
-│   ├── parts/         # Parts of Component
-│   ├── sections/      # Sections of Component
-│   ├── shared/        # Global component
-│   └── ui/            # Component form ShadCN/UI
-├── constants/         # Constants value or objects
-├── hooks/             # Custom React hooks
-├── libs/              # Helper functions and constants
-├── services/          # API calls and external services
+├── __tests__/                    # Unit Testing
+├── app/                          # Page and Layout
+├── assets/                       # Static files (images, fonts)
+├── components/                   # Reusable UI components
+│   ├── parts/                    # Parts of Component
+│   │   └──[folder-name]
+│   │        │──api.ts
+│   │        │──interface.d.ts
+│   │        └──validation.ts
+│   ├── sections/                 # Sections of Component
+│   ├── shared/                   # Global component
+│   └── ui/                       # Component form ShadCN/UI
+├── constants/                    # Constants value or objects
+├── hooks/                        # Custom React hooks
+├── libs/                         # Helper functions and constants
+├── services/                     # API calls and external services
 │   └── api/
-│			  └── fetcher.ts
-│   └── auth/
-│		    └── useAuth.ts # Hooks React Query
+│       └── fetcher.ts
 ├── store/             # State management
 ├── types/             # TypeScript type definitions
 └── validations/       # Validations form input
