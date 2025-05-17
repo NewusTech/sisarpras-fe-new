@@ -27,8 +27,7 @@ src/
 │   └── api/
 │       └── fetcher.ts
 ├── store/             # State management
-├── types/             # TypeScript type definitions
-└── validations/       # Validations form input
+└── types/             # Global TypeScript type definitions
 ```
 
 ---
