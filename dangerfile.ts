@@ -29,6 +29,9 @@ const criticalFiles = [
   ".lintstagedrc",
   "scripts",
   "commitlint.config.js",
+  ".eslintrc.cjs",
+  "./src/i18n/",
+  "./src/middleware.ts",
 ];
 
 const modifiedFiles = danger.git.modified_files.join(" ");
