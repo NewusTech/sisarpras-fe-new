@@ -1,15 +1,18 @@
-# 🚀 Next.js Custom Template – Newus Boilerplate
+# 🚀 Next.js 15.x Custom Template – Newus Boilerplate
 
-Welcome to the **Next.js** based project with internal customization from the Newus Technology team. This template uses the `pr-template-nextjs` boilerplate as the main foundation, developed to accelerate the development of modern, fast and scalable web applications.
+Welcome to the **Next.js 15** based project with internal customization from the Newus Technology team. This template uses the `pr-template-nextjs` boilerplate as the main foundation, developed to accelerate the development of modern, fast and scalable web applications.
 
 ---
 
 ## Project Structure
 
 ```
+messages/                         # For Multi language
+  ├───id.json
+  └───en.json
 src/
 ├── __tests__/                    # Unit Testing
-├── app/                          # Page and Layout
+├── app/[locale]/                 # Page and Layout
 ├── assets/                       # Static files (images, fonts)
 ├── components/                   # Reusable UI components
 │   ├── parts/                    # Parts of Component
@@ -41,6 +44,7 @@ src/
 - **HTTP Client**: fetch bawaan dengan custom fetching
 - **UI Component**: shadcn/ui (Headless UI + Radix UI)
 - **Icon Library**: lucide-react
+- **Multi Language Support**: (i18n) - Optional & Flexible
 - **Linting**: ESLint, Prettier, Husky
 - **CI/CD Ready**: GitHub Actions
 - **Deployment**: VPS
@@ -249,6 +253,137 @@ return (
 - Always include ticket number if available: `feature/ABC-123-user-profile`
 - Use hyphens to separate words: `feature/add-google-analytics` not `feature/addGoogleAnalytics`
 - Regularly pull from the dev branch
+
+---
+
+## 🌐 Multi Language Support (i18n) - Optional & Flexible
+
+This project is ready to support multiple languages using [`next-intl`](https://next-intl-docs.vercel.app/), but it is **optional**. You **do not need to change any folder or file structure** if you do not want to use this feature.
+
+---
+
+### ✅ Default Behavior (No Multi Language)
+
+By default, this project uses **English** and will run normally without the `/id` prefix in the URL.
+
+#### Example:
+
+- `/login` → Bahasa Indonesia
+- No need for manual routing
+- No need for any setup
+
+---
+
+### 🚀 Enable Multi Language (Indonesian + English)
+
+1. Open `.env` file  
+   Change or ensure the following environment variables:
+
+   ```env
+   NEXT_PUBLIC_I18N_ENABLED=true
+   ```
+
+2. Restart the project:
+
+   ```bash
+   pnpm dev
+   ```
+
+3. The URL will change to use the language prefix:
+
+   | Language   | URL         |
+   | ---------- | ----------- |
+   | Indonesian | `/id/login` |
+   | English    | `/en/login` |
+
+4. The system will automatically render the content based on the `locale` of the URL, without the need for you to manually change the routing.
+
+---
+
+### 🌍 Language File Structure
+
+All language content is stored in:
+
+```
+messages/
+├── id.json ← Bahasa Indonesia
+├── en.json ← English (if active)
+```
+
+- Format using **nested JSON** (i18n Ally recommendation)
+- Files can be edited directly or with the help of the [i18n Ally] plugin (https://marketplace.visualstudio.com/items?itemName=Lokalise.i18n-ally)
+
+---
+
+### 🔄 Language Switching
+
+There is a dropdown based `LangSwitcher` component (with 🌐 icon) that can be used to switch languages in realtime.
+
+``tsx
+import { LangSwitcher } from “@/components/shared/langSwitcher”;
+
+<LangSwitcher />
+```
+
+---
+
+### ⚠️ Not Using Multi Language?
+
+If you **don't want to use i18n**:
+
+- Leave `NEXT_PUBLIC_I18N_ENABLED=false` (default).
+- No need to delete the `[locale]` folder
+- Project will run as usual without `/id` or `/en` prefix.
+
+---
+
+### 🧪 Adding a New Language
+
+1. Duplicate `id.json` to `fr.json` (for example)
+2. Add `“fr”` in `routing.ts`:
+
+```ts
+locales: [“id”, “en”, “fr”]
+```
+
+3. Add text in `fr.json` as needed
+
+---
+
+### 🔁 Auto Translate with Script (Optional)
+
+If you want to speed up the creation of `en.json` file from `id.json`, you can use the provided CLI script:
+
+```bash
+pnpm translate:en
+```
+
+> This script will read the `src/messages/id.json` file, translate to English, and save it in `src/messages/en.json`.
+
+You can also run simulation mode (no file writing):
+
+```bash
+pnpm translate:en --dry-run
+```
+
+---
+
+### 📦 Tips
+
+- Use `LangSwitcher` for the best multilingual experience
+- Use **i18n Ally** plugin for the best multilingual text editor in VSCode
+- Use `translate:en` only for initial help - check manual translation results
+- Use `nested` structure for neatness and readability
+
+---
+
+If you have any questions or want to disable this feature in deployment, just set:
+
+```env
+NEXT_PUBLIC_I18N_ENABLED=false
+```
+
+And everything will return to the default one language mode (Bahasa Indonesia).
 
 ---
 

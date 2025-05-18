@@ -25,11 +25,6 @@ export interface Links {
   next: string | null;
 }
 
-export interface LoginPayload extends Record<string, AllowedValue> {
-  email: string;
-  password: string;
-}
-
 export interface LoginData {
   email: string | null;
   name: string;
