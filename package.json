@@ -19,9 +19,9 @@
     "preinstall": "npx only-allow pnpm",
     "danger": "danger ci --dangerfile dangerfile.ts",
     "lint:file": "eslint . --ext .ts,.tsx",
-    "lint:folder": "node scripts/check-folder-case.js",
-    "lint:structure": "node scripts/check-folder-case.js",
-    "lint:zodmix": "node scripts/check-validation-mix.js",
+    "lint:folder": "node scripts/check-folder-case.cjs",
+    "lint:structure": "node scripts/check-folder-case.cjs",
+    "lint:zodmix": "node scripts/check-validation-mix.cjs",
     "prepare": "husky install",
     "commit": "cz",
     "translate:en": "tsx scripts/translate.ts messages/id.json messages/en.json id en"
