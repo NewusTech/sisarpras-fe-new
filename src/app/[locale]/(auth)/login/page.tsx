@@ -14,23 +14,25 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useLoginMutation } from "@/components/parts/login/api";
 import Cookie from "js-cookie";
 import Swal from "sweetalert2";
-import InputSecure from "@/components/shared/input-secure";
 import useShowErrors from "@/hooks/useShowErrors";
+import { Form } from "@/components/ui/form";
+import { CustomFormInput } from "@/components/shared/forms/customFormInput";
 
 export default function LoginPage() {
   const t = useTranslations("auth");
 
-  const {
-    handleSubmit,
-    control,
-    formState: { errors, isSubmitting },
-  } = useForm<LoginPayload>({
+  const form = useForm<LoginPayload>({
     resolver: zodResolver(loginValidation),
     defaultValues: {
       email: "",
       password: "",
     },
   });
+  const {
+    handleSubmit,
+    control,
+    formState: { errors, isSubmitting },
+  } = form;
   useShowErrors(errors);
 
   const loginMutation = useLoginMutation();
@@ -67,47 +69,27 @@ export default function LoginPage() {
             </p>
           </div>
           <div className="grid gap-6">
-            <form onSubmit={handleSubmit(onSubmit)}>
-              <div className="grid gap-4">
-                <Controller
-                  name="email"
-                  control={control}
-                  render={({ field }) => (
-                    <Label className="grid gap-2">
-                      <span>Email</span>
-                      <Input
-                        id="email"
-                        placeholder="nama@contoh.com"
-                        type="email"
-                        autoCapitalize="none"
-                        autoComplete="email"
-                        autoCorrect="off"
-                        {...field}
-                      />
-                    </Label>
-                  )}
-                />
-                <Controller
-                  name="password"
-                  control={control}
-                  render={({ field }) => (
-                    <Label className="grid gap-2">
-                      <div className="flex items-center justify-between">
-                        <span>Password</span>
-                        <Link
-                          href="/forgot-password"
-                          className="text-sm font-medium text-primary underline-offset-4 hover:underline"
-                        >
-                          Lupa password?
-                        </Link>
-                      </div>
-                      <InputSecure {...field} />
-                    </Label>
-                  )}
-                />
-                <Button type="submit">{t("login")}</Button>
-              </div>
-            </form>
+            <Form {...form}>
+              <form onSubmit={handleSubmit(onSubmit)}>
+                <div className="grid gap-4">
+                  <CustomFormInput<LoginPayload>
+                    name="email"
+                    label="Email/ NIK"
+                    placeholder="Login menggunakan NIK/Email"
+                    required
+                  />
+                  <CustomFormInput<LoginPayload>
+                    name="password"
+                    label="Kata Sandi"
+                    placeholder="••••••••"
+                    type="password"
+                    required
+                  />
+                  <Button type="submit">{t("login")}</Button>
+                </div>
+              </form>
+            </Form>
+
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
                 <span className="w-full border-t" />

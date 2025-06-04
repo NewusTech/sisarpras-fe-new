@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 import ThemeProvider from "@/components/shared/themeProvider";
 import { Toaster } from "sonner";
 import Script from "next/script";
-import { MyAlertDialog } from "@/components/shared/CustomAlertDialog";
+import { MyAlertDialog } from "@/components/shared/customAlertDialog";
 
 const inter = Inter({ subsets: ["latin"] });
 

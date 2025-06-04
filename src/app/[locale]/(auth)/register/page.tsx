@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useTranslations } from "next-intl";
-import InputSecure from "@/components/shared/input-secure";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import useShowErrors from "@/hooks/useShowErrors";
@@ -16,16 +15,14 @@ import {
 import { useRegisterMutation } from "@/components/parts/register/api";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
+import { CustomFormInput } from "@/components/shared/forms/customFormInput";
+import { Form } from "@/components/ui/form";
 
 export default function RegisterPage() {
   const t = useTranslations("auth");
   const router = useRouter();
 
-  const {
-    handleSubmit,
-    control,
-    formState: { errors, isSubmitting },
-  } = useForm<RegisterPayload>({
+  const form = useForm<RegisterPayload>({
     resolver: zodResolver(registerValidation),
     defaultValues: {
       email: "",
@@ -34,6 +31,11 @@ export default function RegisterPage() {
       rePassword: "",
     },
   });
+  const {
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = form;
   useShowErrors(errors);
 
   const registerMutation = useRegisterMutation();
@@ -70,63 +72,54 @@ export default function RegisterPage() {
             </p>
           </div>
           <div className="grid gap-6">
-            <form onSubmit={handleSubmit(onSubmit)}>
-              <div className="grid gap-4">
-                <Controller
-                  name="name"
-                  control={control}
-                  render={({ field }) => (
-                    <Label className="grid gap-2">
-                      <span>{t("label-name.name")}</span>
-                      <Input
-                        placeholder={t("label-name.place-holder")}
-                        autoCapitalize="none"
-                        autoCorrect="off"
-                        {...field}
-                      />
-                    </Label>
-                  )}
-                />
-                <Controller
-                  name="email"
-                  control={control}
-                  render={({ field }) => (
-                    <Label className="grid gap-2">
-                      <span>{t("label-email.name")}</span>
-                      <Input
-                        placeholder={t("label-email.place-holder")}
-                        type="email"
-                        autoCapitalize="none"
-                        autoComplete="email"
-                        autoCorrect="off"
-                        {...field}
-                      />
-                    </Label>
-                  )}
-                />
-                <Controller
-                  name="password"
-                  control={control}
-                  render={({ field }) => (
-                    <Label className="grid gap-2">
-                      <span>{t("label-password.name")}</span>
-                      <InputSecure {...field} />
-                    </Label>
-                  )}
-                />
-                <Controller
-                  name="rePassword"
-                  control={control}
-                  render={({ field }) => (
-                    <Label className="grid gap-2">
-                      <span>{t("label-comfirm-password.name")}</span>
-                      <InputSecure {...field} />
-                    </Label>
-                  )}
-                />
-                <Button type="submit"> {t("register")}</Button>
-              </div>
-            </form>
+            <Form {...form}>
+              <form onSubmit={handleSubmit(onSubmit)}>
+                <div className="grid gap-4">
+                  <Controller
+                    name="name"
+                    control={control}
+                    render={({ field }) => (
+                      <Label className="grid gap-2">
+                        <span>{t("label-name.name")}</span>
+                        <Input
+                          placeholder={t("label-name.place-holder")}
+                          autoCapitalize="none"
+                          autoCorrect="off"
+                          {...field}
+                        />
+                      </Label>
+                    )}
+                  />
+                  <CustomFormInput<RegisterPayload>
+                    name="name"
+                    label={t("label-name.name")}
+                    placeholder={t("label-name.place-holder")}
+                    required
+                  />
+                  <CustomFormInput<RegisterPayload>
+                    name="email"
+                    label={t("label-email.name")}
+                    placeholder={t("label-email.place-holder")}
+                    required
+                  />
+                  <CustomFormInput<RegisterPayload>
+                    name="password"
+                    label={t("label-password.name")}
+                    placeholder="••••••••"
+                    type="password"
+                    required
+                  />
+                  <CustomFormInput<RegisterPayload>
+                    name="rePassword"
+                    label={t("label-comfirm-password.name")}
+                    placeholder="••••••••"
+                    type="password"
+                    required
+                  />
+                  <Button type="submit"> {t("register")}</Button>
+                </div>
+              </form>
+            </Form>
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
                 <span className="w-full border-t" />

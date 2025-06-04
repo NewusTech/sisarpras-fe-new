@@ -1,6 +1,6 @@
 "use client";
 
-import { useMyAlertDialog } from "@/components/shared/CustomAlertDialog";
+import { useMyAlertDialog } from "@/components/shared/customAlertDialog";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 

@@ -1,4 +1,4 @@
-import { useMyAlertDialog } from "@/components/shared/CustomAlertDialog";
+import { useMyAlertDialog } from "@/components/shared/customAlertDialog";
 
 /**
  * Global alert utility mirip SweetAlert2, berbasis ShadCN Dialog dan Zustand.

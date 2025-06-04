@@ -5,6 +5,21 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+export function formatToMask(dateFormat: string): string {
+  return dateFormat
+    .replace(/y/g, "9") // tahun
+    .replace(/M/g, "9") // bulan
+    .replace(/d/g, "9") // hari
+    .replace(/[^\d9]/g, (char) => char); // biar separator seperti '-' atau '/' tetap
+}
+
+export const formatFileName = (name: string) => {
+  if (!name) return "Tidak ada nama file";
+  const tempName = name?.split("/");
+  const newName = tempName[tempName.length - 1];
+  return newName;
+};
+
 export function formatErrorMessages(
   errorData: Record<string, string[] | string>
 ): string {
