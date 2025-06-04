@@ -1,3 +1,5 @@
+"use client";
+
 import { CTASection } from "@/components/sections/landing/ctaSection";
 import { FeaturesSection } from "@/components/sections/landing/featuresSection";
 import { HeroSection } from "@/components/sections/landing/heroSection";
@@ -5,6 +7,7 @@ import { SiteFooter } from "@/components/shared/siteFooter";
 import { SiteHeader } from "@/components/shared/siteHeader";
 import { TestimonialsSection } from "@/components/sections/landing/testimonialsSection";
 import GuideSection from "@/components/sections/landing/gudeSection";
+import BeautifulAlert from "@/components/sections/landing/beautifulAlert";
 
 export default function Home() {
   return (
@@ -15,6 +18,7 @@ export default function Home() {
         <FeaturesSection />
         <TestimonialsSection />
         <CTASection />
+        <BeautifulAlert />
         <GuideSection />
       </main>
       <SiteFooter />

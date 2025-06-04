@@ -1,28 +1,26 @@
 "use client";
 
 import { BASE_URL } from "@/constants";
-import { AllowedValue } from "@/types";
 import Cookies from "js-cookie";
 
-export const fetcher = (url: string) => {
+export const fetcher = async (url: string) => {
   const token = Cookies.get("accessToken");
   // Atau ambil dari state/context
-  return fetch(`${BASE_URL}/${url}`, {
-    headers: {
-      method: "GET",
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    },
-  })
-    .then((res) => {
-      if (!res.ok) {
-        throw new Error("Failed to fetch");
-      }
-      return res.json();
-    })
-    .catch((e) => {
-      console.log(e);
+  try {
+    const res = await fetch(`${BASE_URL}/${url}`, {
+      headers: {
+        method: "GET",
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
     });
+    if (!res.ok) {
+      throw new Error("Failed to fetch");
+    }
+    return await res.json();
+  } catch (e) {
+    console.log(e);
+  }
 };
 
 export const fetcherWithoutAuth = async (url: string) => {

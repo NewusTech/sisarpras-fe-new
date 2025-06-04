@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import ThemeProvider from "@/components/shared/themeProvider";
 import { Toaster } from "sonner";
 import Script from "next/script";
+import { MyAlertDialog } from "@/components/shared/CustomAlertDialog";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -71,6 +72,7 @@ export default async function RootLayout(
             style={{ display: "none", visibility: "hidden" }}
           ></iframe>
         </noscript>
+        <MyAlertDialog />
       </body>
     </html>
   );
