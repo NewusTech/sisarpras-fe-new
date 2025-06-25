@@ -1,26 +1,64 @@
 "use client";
 
 import { BASE_URL } from "@/constants";
+import { APIError, HTTPMethod } from "@/types";
 import Cookies from "js-cookie";
 
-export const fetcher = async (url: string) => {
+const memoryCache = new Map<string, { data: any; expiresAt: number }>();
+
+export const fetcher = async (url: string, ttl: number = 2) => {
   const token = Cookies.get("accessToken");
-  // Atau ambil dari state/context
+  const cacheKey = `${url}::${token}`;
+  const now = Date.now();
+
+  const cached = memoryCache.get(cacheKey);
+  if (cached && cached.expiresAt > now) {
+    return cached.data;
+  }
+
   try {
     const res = await fetch(`${BASE_URL}/${url}`, {
+      method: "GET",
       headers: {
-        method: "GET",
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
     });
+
     if (!res.ok) {
       throw new Error("Failed to fetch");
     }
-    return await res.json();
+
+    const data = await res.json();
+
+    memoryCache.set(cacheKey, {
+      data,
+      expiresAt: now + ttl * 1000, // TTL in milliseconds
+    });
+
+    return data;
   } catch (e) {
-    console.log(e);
+    console.log("Fetcher error:", e);
   }
+};
+
+export const fetchBlob = async (url: string) => {
+  const token = Cookies.get("accessToken");
+  const response = await fetch(`${BASE_URL}/${url}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/pdf",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    const errorMessage = error.message;
+    throw new Error(`Error fetching : ${errorMessage}`);
+  }
+
+  return response;
 };
 
 export const fetcherWithoutAuth = async (url: string) => {
@@ -41,7 +79,7 @@ export const fetcherWithoutAuth = async (url: string) => {
   }
 };
 
-const hasFile = (data: object): boolean => {
+export const hasFile = (data: object): boolean => {
   return Object.values(data).some((value) => {
     if (Array.isArray(value)) {
       return value.some((item) => item instanceof File);
@@ -53,48 +91,95 @@ const hasFile = (data: object): boolean => {
 export const sendData = async <T, D extends object>(
   url: string,
   data: D,
-  method: "POST" | "PUT" | "DELETE" | "PATCH"
+  method: HTTPMethod = "POST",
+  isFormData?: boolean,
+  headers?: RequestInit["headers"]
 ): Promise<T> => {
   const token = Cookies.get("accessToken");
-  const shouldUseFormData = hasFile(data);
+  const shouldUseFormData = hasFile(data) || isFormData;
 
-  const headers: HeadersInit = shouldUseFormData
-    ? { Authorization: `Bearer ${token}` }
+  const _headers: HeadersInit = shouldUseFormData
+    ? { Authorization: `Bearer ${token}`, ...headers }
     : {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
+        ...headers,
       };
 
   const options: RequestInit = {
     method,
-    headers,
+    headers: _headers,
   };
 
-  if (method !== "DELETE") {
+  if (!["DELETE", "GET"].includes(method)) {
     options.body = shouldUseFormData
       ? convertToFormData(data)
       : JSON.stringify(data);
   }
 
-  const response = await fetch(`${BASE_URL}/${url}`, options);
-
-  if (!response.ok) {
-    const error = await response.json();
-    throw error;
+  let response: Response;
+  try {
+    response = await fetch(`${BASE_URL}/${url}`, options);
+  } catch (err) {
+    throw new APIError("Network Error", 0, null);
   }
 
-  return response.json() as Promise<T>;
+  let responseBody: any = null;
+  try {
+    responseBody = await response.json();
+  } catch (err) {
+    // JSON parse error
+    throw new APIError("Invalid server response", response.status, null);
+  }
+
+  if (!response.ok) {
+    throw new APIError(
+      responseBody.message || "Request failed",
+      response.status,
+      responseBody.data || responseBody // tangkap field error jika ada
+    );
+  }
+
+  return responseBody as T;
 };
 
 // Fungsi untuk mengonversi objek ke FormData
-const convertToFormData = <D extends object>(data: D): FormData => {
+export const convertToFormData = <D extends object>(data: D): FormData => {
   const formData = new FormData();
 
   Object.entries(data).forEach(([key, value]) => {
+    if (value === null || typeof value === "undefined") return;
+
+    // Jika value berupa array
     if (Array.isArray(value)) {
-      value.forEach((item) => formData.append(key, item as string | Blob));
+      const validItems = value.filter((v) => v !== null && v !== undefined);
+
+      if (validItems.length === 1) {
+        const item = validItems[0];
+        if (item instanceof File || item instanceof Blob) {
+          formData.append(key, item);
+        } else if (typeof item === "object") {
+          formData.append(key, JSON.stringify(item));
+        } else {
+          formData.append(key, String(item));
+        }
+      } else {
+        validItems.forEach((item) => {
+          if (item instanceof File || item instanceof Blob) {
+            formData.append(key, item);
+          } else if (typeof item === "object") {
+            formData.append(key, JSON.stringify(item));
+          } else {
+            formData.append(key, String(item));
+          }
+        });
+      }
+    } else if (value instanceof File || value instanceof Blob) {
+      formData.append(key, value);
+    } else if (typeof value === "object") {
+      formData.append(key, JSON.stringify(value));
     } else {
-      formData.append(key, value as string | Blob);
+      formData.append(key, String(value));
     }
   });
 

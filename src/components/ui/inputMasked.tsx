@@ -1,8 +1,10 @@
-import React from "react";
-import InputMask from "react-input-mask";
+"use client";
+
+import * as React from "react";
+import { InputMask } from "@react-input/mask";
 import { cn } from "@/lib/utils";
 
-type MaskedInputProps = {
+type MaskedInputProps = React.InputHTMLAttributes<HTMLInputElement> & {
   mask: string;
   className?: string;
 };
@@ -10,24 +12,17 @@ type MaskedInputProps = {
 export const CustomMaskedInput = React.forwardRef<
   HTMLInputElement,
   MaskedInputProps
->(({ mask, className, ...rest }, ref) => {
+>(({ className, ...props }, ref) => {
   return (
     <InputMask
-      mask={mask}
-      maskChar="_"
-      {...rest} // penting: biar onChange, onBlur, value, dll dari DatePicker tetap masuk
-    >
-      {(inputProps) => (
-        <input
-          {...inputProps}
-          ref={ref}
-          className={cn(
-            "border-none shadow-none focus-visible:ring-0 focus-visible:outline-none p-0",
-            className
-          )}
-        />
+      {...props}
+      ref={ref}
+      replacement={{ _: /\d/ }}
+      className={cn(
+        "border-none shadow-none focus-visible:ring-0 focus-visible:outline-none p-0",
+        className
       )}
-    </InputMask>
+    />
   );
 });
 

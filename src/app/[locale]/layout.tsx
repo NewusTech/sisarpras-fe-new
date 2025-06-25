@@ -38,7 +38,7 @@ export default async function RootLayout(
   const googleTagManager = "";
 
   return (
-    <html lang={locale}>
+    <html lang={locale} suppressHydrationWarning>
       <head>
         {/* GTM Script */}
         <Script id="GT">

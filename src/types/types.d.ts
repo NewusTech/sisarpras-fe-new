@@ -1,3 +1,17 @@
+export type HTTPMethod = "POST" | "PUT" | "DELETE" | "PATCH" | "GET";
+
+export class APIError extends Error {
+  status: number;
+  data: any;
+
+  constructor(message: string, status: number, data: any) {
+    super(message);
+    this.status = status;
+    this.data = data;
+    Object.setPrototypeOf(this, APIError.prototype); // penting untuk instanceof
+  }
+}
+
 // Define the shape of the state
 type BearState = {
   bears: number;
