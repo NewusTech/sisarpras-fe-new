@@ -4,7 +4,7 @@ const { join, extname } = require("path");
 const BASE_DIRS = ["./src/components", "./src/types"].filter(existsSync);
 const kebabCaseRegex = /^[a-z0-9\-]+$/;
 const camelCaseRegex = /^[a-z][a-zA-Z0-9]*$/;
-const IGNORE_FOLDERS = ["ui"];
+const IGNORE_FOLDERS = ["ui", "types"];
 const ALLOWED_FILE_EXTENSIONS = [".ts", ".tsx", ".js", ".jsx"];
 
 let warnings = [];
