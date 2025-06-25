@@ -1,10 +1,10 @@
 const { readdirSync, existsSync } = require("fs");
 const { join, extname } = require("path");
 
-const BASE_DIRS = ["./src/components", "./src/types"].filter(existsSync);
+const BASE_DIRS = ["./src/components"].filter(existsSync);
 const kebabCaseRegex = /^[a-z0-9\-]+$/;
 const camelCaseRegex = /^[a-z][a-zA-Z0-9]*$/;
-const IGNORE_FOLDERS = ["ui", "types"];
+const IGNORE_FOLDERS = ["ui"];
 const ALLOWED_FILE_EXTENSIONS = [".ts", ".tsx", ".js", ".jsx"];
 
 let warnings = [];
