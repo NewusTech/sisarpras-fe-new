@@ -28,20 +28,20 @@ import {
 import { FieldValues, Path, useFormContext } from "react-hook-form";
 import { useRegionData } from "@/hooks/useRegionData";
 
-type RegionType = "provinces" | "cities" | "districts" | "villages";
+type CustomFromRegionsType = "provinces" | "cities" | "districts" | "villages";
 
-type RegionProps<T extends FieldValues = FieldValues> = {
+type CustomFromRegionsProps<T extends FieldValues = FieldValues> = {
   name: Path<T>;
   label?: string;
   description?: string;
-  region: RegionType;
+  region: CustomFromRegionsType;
   code?: string;
   required?: boolean;
   placeholder?: string;
   className?: string;
 };
 
-export default function Region<T extends FieldValues = FieldValues>({
+export default function CustomFromRegions<T extends FieldValues = FieldValues>({
   name,
   region,
   code,
@@ -50,7 +50,7 @@ export default function Region<T extends FieldValues = FieldValues>({
   className,
   label,
   description,
-}: RegionProps<T>) {
+}: CustomFromRegionsProps<T>) {
   const { control, watch } = useFormContext<T>();
   const [open, setOpen] = useState(false);
 
@@ -117,7 +117,7 @@ export default function Region<T extends FieldValues = FieldValues>({
                       Data {placeholder} tidak ditemukan.
                     </CommandEmpty>
                     <CommandGroup>
-                      {data?.map((v) => {
+                      {data?.map((v, i) => {
                         const valueToSave =
                           region === "provinces"
                             ? v.code
@@ -130,7 +130,7 @@ export default function Region<T extends FieldValues = FieldValues>({
                         return (
                           <CommandItem
                             value={v.label}
-                            key={v.value}
+                            key={i}
                             onSelect={() => {
                               field.onChange(valueToSave);
                               setOpen(false);

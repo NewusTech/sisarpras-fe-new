@@ -28,46 +28,42 @@ export const fetcherRegion = async (url: string) => {
 };
 
 export const useProvinces = () => {
-  return useQuery<ApiResponse<DataArray<Provinces>>, Error>(
-    ["useProvinces"],
-    async () => await fetcherRegion("region/provinces")
-  );
+  return useQuery<ApiResponse<DataArray<Provinces>>, Error>({
+    queryKey: ["useProvinces"],
+    queryFn: () => fetcherRegion("region/provinces"),
+  });
 };
 
 export const useCities = (code?: string) => {
-  return useQuery<ApiResponse<DataArray<City>>, Error>(
-    ["useCities", code],
-    () => fetcherRegion(`region/regencies/code/${code}`),
-    {
-      enabled: !!code,
-    }
-  );
+  return useQuery<ApiResponse<DataArray<City>>, Error>({
+    queryKey: ["useCities", code],
+    queryFn: () => fetcherRegion(`region/regencies/code/${code}`),
+    enabled: !!code,
+  });
 };
 
 export const useRegencys = (fullCode: string) => {
-  return useQuery<ApiResponse<DataObject<City>>, Error>(["useRegency"], () =>
-    fetcherRegion(`region/regency/code/${fullCode}`)
-  );
+  return useQuery<ApiResponse<DataObject<City>>, Error>({
+    queryKey: ["useRegency", fullCode],
+    queryFn: () => fetcherRegion(`region/regency/code/${fullCode}`),
+    enabled: !!fullCode,
+  });
 };
 
 export const useDistricts = (fullCode?: string) => {
-  return useQuery<ApiResponse<DataArray<District>>, Error>(
-    ["useDistricts", fullCode],
-    () => fetcherRegion(`region/districts/code/${fullCode}`),
-    {
-      enabled: !!fullCode,
-    }
-  );
+  return useQuery<ApiResponse<DataArray<District>>, Error>({
+    queryKey: ["useDistricts", fullCode],
+    queryFn: () => fetcherRegion(`region/districts/code/${fullCode}`),
+    enabled: !!fullCode,
+  });
 };
 
 export const useVillages = (fullCode?: string) => {
-  return useQuery<ApiResponse<DataArray<Village>>, Error>(
-    ["useVillages", fullCode],
-    () => fetcherRegion(`region/villages/code/${fullCode}`),
-    {
-      enabled: !!fullCode,
-    }
-  );
+  return useQuery<ApiResponse<DataArray<Village>>, Error>({
+    queryKey: ["useVillages", fullCode],
+    queryFn: () => fetcherRegion(`region/villages/code/${fullCode}`),
+    enabled: !!fullCode,
+  });
 };
 
 // export const useGetRegion = <T>(code: string, type: RegionType) => {

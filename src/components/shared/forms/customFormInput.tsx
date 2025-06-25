@@ -13,6 +13,7 @@ import {
 import { Input, InputProps } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { Eye, EyeOff } from "lucide-react";
+import { CustomMaskedInput } from "@/components/ui/inputMasked";
 
 type CustomFormInputProps<T extends FieldValues = FieldValues> = {
   name: Path<T>;
@@ -31,6 +32,7 @@ type CustomFormInputProps<T extends FieldValues = FieldValues> = {
   min?: number;
   max?: number;
   step?: number;
+  mask?: string; // <--- ini dia tambahan utamanya
   filterInput?: (value: string) => string;
 } & InputProps;
 
@@ -53,6 +55,7 @@ export function CustomFormInput<T extends FieldValues = FieldValues>({
   max,
   step,
   filterInput,
+  mask,
 }: CustomFormInputProps<T>) {
   const { control } = useFormContext<T>();
 
@@ -76,32 +79,51 @@ export function CustomFormInput<T extends FieldValues = FieldValues>({
             <div
               className={cn("bg-card rounded-full relative flex items-center")}
             >
-              <Input
-                type={showPassword ? "text" : type}
-                placeholder={placeholder}
-                className={cn("bg-card", isSecureInput && inputClassName)}
-                disabled={disabled}
-                readOnly={readOnly}
-                maxLength={maxLength}
-                minLength={minLength}
-                min={min}
-                max={max}
-                step={step}
-                {...field}
-                onChange={(e) => {
-                  let value = e.target.value;
+              {mask ? (
+                <CustomMaskedInput
+                  mask={mask}
+                  disabled={disabled}
+                  readOnly={readOnly}
+                  className={cn(
+                    "bg-card flex h-9 w-full rounded-full !border border-input px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
+                    inputClassName
+                  )}
+                  placeholder={placeholder}
+                  value={field.value}
+                  onChange={(e) => {
+                    let value = e.target.value;
+                    field.onChange(value);
+                    onChange?.(value);
+                  }}
+                />
+              ) : (
+                <Input
+                  type={showPassword ? "text" : type}
+                  placeholder={placeholder}
+                  className={cn("bg-card", isSecureInput && inputClassName)}
+                  disabled={disabled}
+                  readOnly={readOnly}
+                  maxLength={maxLength}
+                  minLength={minLength}
+                  min={min}
+                  max={max}
+                  step={step}
+                  {...field}
+                  onChange={(e) => {
+                    let value = e.target.value;
 
-                  if (filterInput) {
-                    value = filterInput(value);
-                    e.target.value = value;
-                  }
+                    if (filterInput) {
+                      value = filterInput(value);
+                      e.target.value = value;
+                    }
 
-                  if (pattern && !pattern.test(value)) return;
+                    if (pattern && !pattern.test(value)) return;
 
-                  field.onChange(value);
-                  onChange?.(value);
-                }}
-              />
+                    field.onChange(value);
+                    onChange?.(value);
+                  }}
+                />
+              )}
               {isSecureInput && (
                 <button
                   type="button"

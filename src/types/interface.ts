@@ -1,5 +1,3 @@
-import { AllowedValue } from "./types";
-
 export interface debounceInterface {
   value: string;
   delay: number;

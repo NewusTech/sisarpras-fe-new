@@ -17,7 +17,7 @@ import { useFormContext, FieldValues, Path, PathValue } from "react-hook-form";
 import Image from "next/image";
 import { myAlert } from "@/lib/myAlert";
 
-interface DragAndDropProps<T extends FieldValues = FieldValues> {
+interface CustomFormDragAndDropProps<T extends FieldValues = FieldValues> {
   name: Path<T>;
   label?: string;
   description?: string;
@@ -28,7 +28,7 @@ interface DragAndDropProps<T extends FieldValues = FieldValues> {
   required?: boolean;
 }
 
-export function DragAndDrop<T extends FieldValues = FieldValues>({
+export function CustomFormDragAndDrop<T extends FieldValues = FieldValues>({
   name,
   label,
   description,
@@ -37,7 +37,7 @@ export function DragAndDrop<T extends FieldValues = FieldValues>({
   acceptedFileTypes = ["image/jpeg", "image/png"],
   className,
   required = false,
-}: DragAndDropProps<T>) {
+}: CustomFormDragAndDropProps<T>) {
   const { control, watch, setValue } = useFormContext<T>();
   const fieldValue = watch(name) as PathValue<T, Path<T>> | string | undefined;
 

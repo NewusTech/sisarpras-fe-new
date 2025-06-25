@@ -5,12 +5,8 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function formatToMask(dateFormat: string): string {
-  return dateFormat
-    .replace(/y/g, "9") // tahun
-    .replace(/M/g, "9") // bulan
-    .replace(/d/g, "9") // hari
-    .replace(/[^\d9]/g, (char) => char); // biar separator seperti '-' atau '/' tetap
+export function formatToMask(format: string): string {
+  return format.replace(/[a-zA-Z]/g, "_");
 }
 
 export const formatFileName = (name: string) => {

@@ -47,7 +47,7 @@ export function CustomFormCalender<T extends FieldValues = FieldValues>({
   required = false,
   disabled = false,
   locale = id,
-  dateFormat = "yyyy-MM-dd",
+  dateFormat = "dd-MM-yyyy",
   fromDate,
   toDate = new Date(),
   disabledDates,
@@ -74,7 +74,7 @@ export function CustomFormCalender<T extends FieldValues = FieldValues>({
   return (
     <FormField
       control={form.control}
-      name={name}
+      name={name as Path<T>}
       render={({ field }) => (
         <FormItem className={cn(className)}>
           {label && (
@@ -101,6 +101,9 @@ export function CustomFormCalender<T extends FieldValues = FieldValues>({
               disabled={disabled}
               filterDate={(date) => !isDateDisabled(date)}
               className="w-full focus:ring-0 focus:outline-none"
+              yearDropdownItemNumber={90}
+              scrollableYearDropdown
+              showYearDropdown
               customInput={
                 <CustomMaskedInput
                   mask={formatToMask(dateFormat)}

@@ -1,3 +1,5 @@
+import { LucideIcon } from "lucide-react";
+
 export type HTTPMethod = "POST" | "PUT" | "DELETE" | "PATCH" | "GET";
 
 export class APIError extends Error {
@@ -44,4 +46,21 @@ export type decodedProps = {
   user_data: any;
   iat: number;
   exp: number;
+};
+
+// Define types for our navigation items
+export type SubItem = {
+  title: string;
+  url: string;
+  roles?: string[]; // Roles that can access this subitem
+};
+
+export type NavItem = {
+  title: string;
+  url: string;
+  icon?: LucideIcon;
+  isActive?: boolean;
+  items?: SubItem[];
+  roles?: string[]; // Roles that can access this item
+  directLinkRoles?: string[]; // Roles that should access the main URL directly without seeing sub-items
 };

@@ -17,6 +17,28 @@ import { toast } from "sonner";
 import { formatFileName } from "@/lib/utils";
 import Link from "next/link";
 
+type FileAcceptType =
+  | "image/*"
+  | "image/png"
+  | "image/jpeg"
+  | "image/jpg"
+  | "image/gif"
+  | "application/pdf"
+  | "application/msword" // .doc
+  | "application/vnd.openxmlformats-officedocument.wordprocessingml.document" // .docx
+  | "application/vnd.ms-excel" // .xls
+  | "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" // .xlsx
+  | "text/plain"
+  | ".csv"
+  | ".zip"
+  | ".rar"
+  | ".txt"
+  | ".json"
+  | ".xml"
+  | ".mp4"
+  | ".mp3"
+  | ".wav";
+
 type CustomFormFileInputProps<T extends FieldValues = FieldValues> = {
   name: Path<T>;
   label?: string;
@@ -25,7 +47,7 @@ type CustomFormFileInputProps<T extends FieldValues = FieldValues> = {
   className?: string;
   required?: boolean;
   disabled?: boolean;
-  accept?: string;
+  accept?: Array<FileAcceptType>;
   maxSize?: number; // in bytes
   allowedExtensions?: string[];
 };
@@ -110,7 +132,7 @@ export function CustomFormFileInput<T extends FieldValues = FieldValues>({
               <input
                 ref={fileInputRef}
                 type="file"
-                accept={accept}
+                accept={accept?.join(",")}
                 disabled={disabled}
                 onChange={(e) => handleFileChange(e, field.onChange)}
                 className="hidden"
