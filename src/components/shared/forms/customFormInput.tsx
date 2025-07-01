@@ -149,6 +149,23 @@ export const inputFilters = {
   // Hanya mengizinkan angka
   numbersOnly: (value: string) => value.replace(/[^0-9]/g, ""),
 
+  // Mengizinkan input desimal dengan 1 digit di belakang koma (misal 123 -> 12.3)
+  decimalOnly: (value: string) => {
+    let clean = value.replace(/[^0-9]/g, "");
+
+    if (!clean) return "0.0";
+
+    if (clean.length === 1) {
+      // Jika hanya 1 digit, dianggap 0.x
+      return `0.${clean}`;
+    } else {
+      // Sisakan semua digit kecuali terakhir sebagai integer, terakhir sebagai decimal
+      const intPart = clean.slice(0, -1);
+      const decPart = clean.slice(-1);
+      return `${Number(intPart)}.${decPart}`;
+    }
+  },
+
   // Hanya mengizinkan huruf dan spasi
   lettersOnly: (value: string) => value.replace(/[^A-Za-z\s]/g, ""),
 

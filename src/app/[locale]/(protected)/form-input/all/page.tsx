@@ -1,6 +1,7 @@
 "use client";
 
 import { CustomFormCalender } from "@/components/shared/forms/customFormCalender";
+import CustomFormCheckbox from "@/components/shared/forms/customFormCheckbox";
 import { CustomFormDragAndDrop } from "@/components/shared/forms/customFormDragAndDrop";
 import { CustomFormFileInput } from "@/components/shared/forms/customFormFileInput";
 import {
@@ -9,14 +10,12 @@ import {
 } from "@/components/shared/forms/customFormInput";
 import { CustomFormMultiSelect } from "@/components/shared/forms/customFormMultipleSelect";
 import { CustomFormRadioGroup } from "@/components/shared/forms/customFormRadioGroup";
-import CustomFormRichEditor from "@/components/shared/forms/customFormRichEditor";
 import { CustomFormSelect } from "@/components/shared/forms/customFormSelect";
 import CustomFormSelectSearch from "@/components/shared/forms/customFormSelectSearch";
 import { CustomFormTextArea } from "@/components/shared/forms/customFormTextArea";
 import CustomFromRegions from "@/components/shared/forms/customFromRegions";
 import { BreadcrumbSetItem } from "@/components/shared/layouts/myBreadcrumb";
 import { Form } from "@/components/ui/form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
 import { useForm } from "react-hook-form";
 
@@ -89,6 +88,16 @@ export default function Page() {
             options={[
               { label: "Opsi 1", value: "opsi-1" },
               { label: "Opsi 2", value: "opsi-2" },
+            ]}
+          />
+          <CustomFormCheckbox
+            name="checkbox"
+            label="Checkbox Input"
+            description="Deskripsi checkbox input"
+            options={[
+              { label: "Check 1", value: "1" },
+              { label: "Check 2", value: "2" },
+              { label: "Check 3", value: "3" },
             ]}
           />
           <CustomFormSelect

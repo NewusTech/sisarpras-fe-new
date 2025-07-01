@@ -70,7 +70,7 @@ export function CustomFormSelect<T extends FieldValues = FieldValues>({
             disabled={disabled}
           >
             <FormControl>
-              <SelectTrigger className="bg-card">
+              <SelectTrigger className="bg-card rounded-full">
                 <SelectValue
                   placeholder={placeholder}
                   defaultValue={field.value}
