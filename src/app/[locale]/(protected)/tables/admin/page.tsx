@@ -1,23 +1,15 @@
-// app/products/page.tsx atau sesuai path-mu
 "use client";
 
-import { productColumns, productData } from "@/components/parts/admin/column";
+import { useGetProduct } from "@/components/parts/admin/api";
+import { productColumns } from "@/components/parts/admin/column";
 import LinkButton from "@/components/shared/button/linkButton";
 import DataTable from "@/components/shared/dataTable";
 import Search from "@/components/shared/filter/search";
 import { BreadcrumbSetItem } from "@/components/shared/layouts/myBreadcrumb";
-import { useState } from "react";
 
 export default function ProductPage() {
-  const [page, setPage] = useState(1);
-  const itemsPerPage = 5;
-
-  const totalItems = productData.length;
-  const totalPages = Math.ceil(totalItems / itemsPerPage);
-  const paginatedData = productData.slice(
-    (page - 1) * itemsPerPage,
-    page * itemsPerPage
-  );
+  const { data: _product } = useGetProduct();
+  const product = _product?.data ?? [];
 
   return (
     <div className="p-4">
@@ -33,14 +25,7 @@ export default function ProductPage() {
         <Search name="search" />
         <LinkButton title="Tambah Produk" link="/tables/admin/create" />
       </div>
-      <DataTable
-        columns={productColumns}
-        data={paginatedData}
-        currentPage={page}
-        totalItems={totalItems}
-        itemsPerPage={itemsPerPage}
-        totalPages={totalPages}
-      />
+      <DataTable columns={productColumns} data={product} itemsPerPage={1000} />
     </div>
   );
 }

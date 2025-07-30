@@ -53,7 +53,7 @@ const dialogConfig = {
     borderColor: "border-blue-200",
     glowColor: "shadow-blue-200",
   },
-};
+} as const;
 
 interface ColorScheme {
   header: string;
@@ -102,7 +102,7 @@ const colorSchemes: Record<ColorSchemeType, ColorScheme> = {
     iconRing: "border-gray-300",
     buttonBg: "bg-gray-600 hover:bg-gray-700",
   },
-};
+} as const;
 
 const defaultColorSchemeMapping = {
   success: "success" as ColorSchemeType,
@@ -290,7 +290,7 @@ export function MyAlertDialog() {
         ease: "easeInOut",
       },
     },
-  };
+  } as const;
 
   const iconVariants = {
     hidden: {
@@ -309,7 +309,7 @@ export function MyAlertDialog() {
         delay: 0.2,
       },
     },
-  };
+  } as const;
 
   const textVariants = {
     hidden: {
@@ -327,7 +327,7 @@ export function MyAlertDialog() {
         damping: 20,
       },
     },
-  };
+  } as const;
 
   return (
     <AnimatePresence mode="wait">

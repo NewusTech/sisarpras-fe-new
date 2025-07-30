@@ -8,20 +8,15 @@ import { useQuery } from "@tanstack/react-query";
 const getProduct = async (
   query?: string
 ): Promise<ApiResponse<ProductResponse[]>> => {
-  return await fetcher(
-    query ? `infrastruktur/get?${query}` : `infrastruktur/get`
-  );
+  const mock = await fetch(`/mock/product.json?${query ?? ""}`);
+  return mock.json();
 };
 
 export const useGetProduct = (query?: string) => {
-  return useQuery<ApiResponse<ProductResponse[]>, Error>(
-    ["useGetProduct", query],
-    () => getProduct(query),
-    {
-      keepPreviousData: true,
-      refetchIntervalInBackground: true,
-    }
-  );
+  return useQuery<ApiResponse<ProductResponse[]>, Error>({
+    queryKey: ["useGetProduct", query],
+    queryFn: () => getProduct(query),
+  });
 };
 
 // get by id

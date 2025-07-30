@@ -9,6 +9,14 @@ const withNextIntl = createNextIntlPlugin({
 });
 
 const nextConfig: NextConfig = {
+  images: {
+    domains: [
+      "source.unsplash.com", // ⬅️ Tambahkan ini"
+      "newus-bucket.s3.ap-southeast-2.amazonaws.com",
+      "loremflickr.com",
+      "picsum.photos",
+    ],
+  },
   compiler: {
     styledComponents: true,
     ...(isProduction && {

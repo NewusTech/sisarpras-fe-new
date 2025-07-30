@@ -8,44 +8,7 @@ import {
 import { MoreVerticalIcon } from "lucide-react";
 import Link from "next/link";
 import ModalDelete from "@/components/shared/modalDelete";
-
-export const productData = [
-  {
-    id: 1,
-    name: "Produk A",
-    category: "Elektronik",
-    price: 1200000,
-    stock: 12,
-  },
-  {
-    id: 2,
-    name: "Produk B",
-    category: "Pakaian",
-    price: 250000,
-    stock: 30,
-  },
-  {
-    id: 3,
-    name: "Produk C",
-    category: "Makanan",
-    price: 15000,
-    stock: 100,
-  },
-  {
-    id: 4,
-    name: "Produk D",
-    category: "Minuman",
-    price: 10000,
-    stock: 80,
-  },
-  {
-    id: 5,
-    name: "Produk E",
-    category: "Elektronik",
-    price: 750000,
-    stock: 20,
-  },
-];
+import Image from "next/image";
 
 export const productColumns: ColumnDef<ProductResponse>[] = [
   {
@@ -54,9 +17,24 @@ export const productColumns: ColumnDef<ProductResponse>[] = [
     cell: ({ row }) => row.original.id,
   },
   {
-    accessorKey: "name",
+    accessorKey: "productName",
     header: "Nama Produk",
-    cell: ({ row }) => row.original.name,
+    cell: ({ row }) => row.original.productName,
+  },
+  {
+    accessorKey: "imageUrl",
+    header: "Gambar Produk",
+    cell: ({ row }) => {
+      return (
+        <Image
+          src={row.original.imageUrl}
+          width={90}
+          height={90}
+          alt="pic"
+          className="aspect-square object-cover"
+        />
+      );
+    },
   },
   {
     accessorKey: "category",
@@ -70,9 +48,9 @@ export const productColumns: ColumnDef<ProductResponse>[] = [
       `Rp${Number(row.original.price).toLocaleString("id-ID")}`,
   },
   {
-    accessorKey: "stock",
-    header: "Stok",
-    cell: ({ row }) => row.original.stock,
+    accessorKey: "isAvailable",
+    header: "Ketersediaan",
+    cell: ({ row }) => (row.original.isAvailable ? "Tersedia" : "Tidak"),
   },
   {
     accessorKey: "action",

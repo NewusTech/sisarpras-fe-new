@@ -1,8 +1,11 @@
 interface ProductResponse {
-  id: number;
-  name: string;
+  id: string;
+  productName: string;
   category: string;
-  price: string;
+  isbn: string;
   description: string;
-  stock: string;
+  price: string;
+  isAvailable: boolean;
+  imageUrl: string;
+  createdAt: string;
 }

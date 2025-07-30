@@ -424,7 +424,12 @@ Accses your aplication on : [http://localhost:3000](http://localhost:3000)
 
 ## Credits
 
-This template is setup by collaboration [@aldngrha](https://github.com/aldngrha/) and [@sakatimuna7](https://github.com/sakatimuna7/)
+This template is setup by newus teams :
+
+- [@aldngrha](https://github.com/aldngrha/)
+- [@sakatimuna7](https://github.com/sakatimuna7/)
+- [@robinta19](https://github.com/robinta19/)
+- [@Kaben011201](https://github.com/Kaben011201/)
 
 ---
 

@@ -73,9 +73,9 @@ export default function CustomFormSelectSearch<
   const parentRef = React.useRef(null);
 
   const rowVirtualizer = useVirtualizer({
-    count: filteredItems.length, // ❗️HARUS filteredItems.length
+    count: filteredItems.length,
     getScrollElement: () => parentRef.current!,
-    estimateSize: () => 35, // lebih realistis, bukan 5
+    estimateSize: () => 35,
     overscan: 5,
   });
 
