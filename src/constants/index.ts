@@ -1,5 +1,5 @@
-import { NavItem } from "@/types";
-import { DockIcon, LayoutDashboard, Table2 } from "lucide-react";
+import { NavItem } from "@/types/interface";
+import { DockIcon, LayoutDashboard, Map, Table2 } from "lucide-react";
 
 export const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 export const REGION_URL = process.env.NEXT_PUBLIC_API_REGION;
@@ -49,6 +49,11 @@ export const getNavData = (): navDateType => {
             roles: ["superadmin", "admin"],
           },
         ],
+      },
+      {
+        title: "Tables",
+        url: "/maps",
+        icon: Map,
       },
     ],
   };

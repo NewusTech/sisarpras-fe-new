@@ -1,14 +1,12 @@
-import createNextIntlPlugin from "next-intl/plugin";
-import type { NextConfig } from "next";
-
 export const isProduction = process.env.NEXT_PUBLIC_MODE === "PRODUCTION";
 
-const withNextIntl = createNextIntlPlugin({
-  // Kalau perlu, bisa override message path atau localePrefix manual di sini
-  // default behavior: akan ambil dari `src/i18n/routing.ts` dan `src/i18n/request.ts`
+const withPWA = require("next-pwa")({
+  dest: "public", // build service worker ke /public
+  register: true, // auto register SW
+  skipWaiting: true, // langsung aktifin SW baru
 });
 
-const nextConfig: NextConfig = {
+const nextConfig = {
   images: {
     domains: [
       "source.unsplash.com", // ⬅️ Tambahkan ini"
@@ -18,7 +16,6 @@ const nextConfig: NextConfig = {
     ],
   },
   compiler: {
-    styledComponents: true,
     ...(isProduction && {
       removeConsole: {
         exclude: ["error"],
@@ -28,6 +25,9 @@ const nextConfig: NextConfig = {
   devIndicators: {
     position: "bottom-right",
   },
+  experimental: {
+    authInterrupts: true,
+  },
 };
 
-export default withNextIntl(nextConfig);
+export default withPWA(nextConfig);

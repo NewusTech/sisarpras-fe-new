@@ -66,7 +66,7 @@ export const productColumns: ColumnDef<ProductResponse>[] = [
           </Link>
           <ModalDelete
             endpoint={`infrastruktur/${row.original.id}/delete`}
-            queryKey="useGetSarana"
+            queryKey={["useGetSarana"]}
           />
         </DropdownMenuContent>
       </DropdownMenu>

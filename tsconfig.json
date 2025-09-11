@@ -18,7 +18,12 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@/filter": ["./src/components/filters/index.ts"],
+      "@/table/": ["./src/components/table/index.ts"],
+      "@/generated/*": ["./middleware/*"],
+      "@/parts/*": ["./src/components/parts/*"],
+      "@/sections/*": ["./src/components/sections/*"]
     },
     "target": "ES2017"
   },

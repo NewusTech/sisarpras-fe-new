@@ -1,5 +1,6 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import xss from "xss";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -33,4 +34,25 @@ export function formatErrorMessages(
       return text;
     })
     .join("\n");
+}
+
+/** Helper: base64URL → Uint8Array (untuk VAPID public key) */
+export function urlBase64ToUint8Array(base64: string) {
+  const padding = "=".repeat((4 - (base64.length % 4)) % 4);
+  const base64Safe = (base64 + padding).replace(/-/g, "+").replace(/_/g, "/");
+  const raw = atob(base64Safe);
+  return Uint8Array.from([...raw].map((ch) => ch.charCodeAt(0)));
+}
+
+export function arrayBufferToBase64(buf: ArrayBuffer | null) {
+  if (!buf) return "";
+  return btoa(String.fromCharCode(...new Uint8Array(buf)));
+}
+
+export function cleanHTML(input: string): string {
+  return xss(input, {
+    whiteList: {},
+    stripIgnoreTag: true, // hapus tag yang ga di whitelist
+    stripIgnoreTagBody: ["script", "style"], // buang isi script/style juga
+  });
 }

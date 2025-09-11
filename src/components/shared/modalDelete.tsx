@@ -1,8 +1,9 @@
-import { LoaderCircle } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
-import { DropdownMenuItem } from "../ui/dropdown-menu";
-import { useDelete } from "../api";
+import { Trash2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+
+import { Button } from "../ui/button";
+import { useDelete } from "../parts/api";
 
 const ModalDelete = ({
   endpoint,
@@ -11,7 +12,7 @@ const ModalDelete = ({
 }: {
   endpoint: string;
   endPointBack?: string;
-  queryKey?: string;
+  queryKey?: string[];
 }) => {
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -21,20 +22,21 @@ const ModalDelete = ({
     await deleteMutation.mutateAsync({ endpoint });
     if (queryKey) {
       console.log({ queryKey });
-      queryClient.invalidateQueries([queryKey]);
+      queryClient.invalidateQueries({ queryKey: queryKey });
     }
     if (endPointBack) router.push(endPointBack);
   };
 
   return (
-    <DropdownMenuItem
+    <Button
+      size={"icon"}
+      variant={"ghost"}
       onClick={(e) => {
         handleDelete();
       }}
-      className="cursor-pointer"
     >
-      Hapus
-    </DropdownMenuItem>
+      <Trash2 className="text-red-500 !stroke-[3]" />
+    </Button>
   );
 };
 

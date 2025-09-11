@@ -1,7 +1,6 @@
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
 import { ModeToggle } from "@/components/sections/landing/modeToggle";
-import { LangSwitcher } from "./langSwitcher";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export function SiteHeader() {
   return (
@@ -49,7 +48,6 @@ export function SiteHeader() {
               <Button size="sm">Daftar</Button>
             </Link>
             <ModeToggle />
-            <LangSwitcher />
           </nav>
         </div>
       </div>

@@ -1,7 +1,6 @@
 "use client";
 
 import { BASE_URL } from "@/constants";
-import { APIError, HTTPMethod } from "@/types";
 import Cookies from "js-cookie";
 
 const memoryCache = new Map<string, { data: any; expiresAt: number }>();
@@ -26,7 +25,8 @@ export const fetcher = async (url: string, ttl: number = 2) => {
     });
 
     if (!res.ok) {
-      throw new Error("Failed to fetch");
+      const error = await res.json();
+      throw error;
     }
 
     const data = await res.json();
@@ -39,6 +39,7 @@ export const fetcher = async (url: string, ttl: number = 2) => {
     return data;
   } catch (e) {
     console.log("Fetcher error:", e);
+    throw e;
   }
 };
 
@@ -150,35 +151,20 @@ export const convertToFormData = <D extends object>(data: D): FormData => {
   Object.entries(data).forEach(([key, value]) => {
     if (value === null || typeof value === "undefined") return;
 
-    // Jika value berupa array
+    // Kalau array → stringify langsung (biar konsisten)
     if (Array.isArray(value)) {
-      const validItems = value.filter((v) => v !== null && v !== undefined);
-
-      if (validItems.length === 1) {
-        const item = validItems[0];
-        if (item instanceof File || item instanceof Blob) {
-          formData.append(key, item);
-        } else if (typeof item === "object") {
-          formData.append(key, JSON.stringify(item));
-        } else {
-          formData.append(key, String(item));
-        }
-      } else {
-        validItems.forEach((item) => {
-          if (item instanceof File || item instanceof Blob) {
-            formData.append(key, item);
-          } else if (typeof item === "object") {
-            formData.append(key, JSON.stringify(item));
-          } else {
-            formData.append(key, String(item));
-          }
-        });
-      }
-    } else if (value instanceof File || value instanceof Blob) {
-      formData.append(key, value);
-    } else if (typeof value === "object") {
       formData.append(key, JSON.stringify(value));
-    } else {
+    }
+    // Kalau file/blob
+    else if (value instanceof File || value instanceof Blob) {
+      formData.append(key, value);
+    }
+    // Kalau object biasa (bukan null, file, dsb) → stringify
+    else if (typeof value === "object") {
+      formData.append(key, JSON.stringify(value));
+    }
+    // Selain itu (string, number, boolean) → toString
+    else {
       formData.append(key, String(value));
     }
   });

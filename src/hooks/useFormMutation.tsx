@@ -67,12 +67,13 @@ export function useFormMutation<
       return result;
     },
     onSuccess: (data, variables, context) => {
-      if (successMessage) {
-        myAlert.success("Berhasil", successMessage);
-        setTimeout(() => {
-          myAlert.done();
-        }, 3000);
-      }
+      myAlert.success(
+        "Berhasil",
+        successMessage ?? "Berhasil Melakukan Operasi"
+      );
+      setTimeout(() => {
+        myAlert.done();
+      }, 3000);
       restOptions.onSuccess?.(data, variables, context);
     },
     onError: (error: any, variables, context) => {

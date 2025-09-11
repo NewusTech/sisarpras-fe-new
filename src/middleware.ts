@@ -1,45 +1,66 @@
-import createMiddleware from "next-intl/middleware";
+import { protectedRoutes } from "@/generated/generatedProtectedRoutes";
+import { jwtDecode } from "jwt-decode";
 import { NextRequest, NextResponse } from "next/server";
-import { isI18nEnabled, routing } from "./i18n/routing";
+import { match } from "path-to-regexp";
 
 export const config = {
-  matcher: "/((?!_next|.*\\..*|api).*)",
+  matcher: "/((?!_next|.*\\..*|api).*)", // semua halaman, tapi kita filter manual
 };
 
-const middlewareI18n = isI18nEnabled
-  ? createMiddleware({
-      locales: routing.locales,
-      defaultLocale: routing.defaultLocale,
-      localePrefix: routing.localePrefix,
-    })
-  : function middleware(request: NextRequest) {
-      const { pathname } = request.nextUrl;
+function isProtected(pathname: string): boolean {
+  return protectedRoutes.some((pattern) =>
+    match(pattern, { decode: decodeURIComponent })(pathname)
+  );
+}
 
-      // Allow next internals & static
-      if (
-        pathname.startsWith("/_next") ||
-        pathname.startsWith("/api") ||
-        pathname.startsWith("/favicon.ico") ||
-        pathname.includes(".") // file asset
-      ) {
-        return NextResponse.next();
-      }
+export async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+  const mode = process.env.NEXT_PUBLIC_MODE;
+  const token = request.cookies.get("accessToken")?.value;
+  const loginUrl = new URL("/login", request.url);
 
-      // ⬅️ jika i18n NON-AKTIF, inject defaultLocale ke pathname
-      const defaultLocale = routing.defaultLocale;
+  // ✅ Skip static files, preview, favicon, public routes
+  if (
+    mode === "UI" ||
+    pathname.startsWith("/_next/") ||
+    pathname.startsWith("/static/") ||
+    pathname.startsWith("/favicon.ico") ||
+    /\.(.*)$/.test(pathname) ||
+    pathname === "/unauthorized"
+  ) {
+    return NextResponse.next();
+  }
 
-      // Hindari duplikasi jika sudah ada prefix
-      const isAlreadyPrefixed = routing.locales.some((locale) =>
-        pathname.startsWith(`/${locale}`)
-      );
+  // 🚫 Sudah login tapi akses /login
+  if (token && pathname === "/login") {
+    return NextResponse.redirect(new URL("/dashboard", request.url));
+  }
 
-      if (!isAlreadyPrefixed) {
-        const url = request.nextUrl.clone();
-        url.pathname = `/${defaultLocale}${pathname}`;
-        return NextResponse.rewrite(url); // ⬅️ Rewrite internal, tanpa ubah URL di browser
-      }
+  // ✅ Only check protected routes
+  if (!isProtected(pathname)) {
+    return NextResponse.next(); // ⬅️ non-protected route, skip auth
+  }
 
-      return NextResponse.next();
-    };
+  // 🔐 Start auth check for protected route
+  if (!token) {
+    return NextResponse.redirect(loginUrl);
+  }
 
-export default middlewareI18n;
+  try {
+    const decoded: decodedProps = jwtDecode(token);
+    const now = Date.now() / 1000;
+
+    if (decoded.exp < now) {
+      const res = NextResponse.redirect(loginUrl);
+      res.cookies.delete("accessToken");
+      return res;
+    }
+
+    return NextResponse.next();
+  } catch (err) {
+    console.error("JWT decode error:", err);
+    const res = NextResponse.redirect(loginUrl);
+    res.cookies.delete("accessToken");
+    return res;
+  }
+}

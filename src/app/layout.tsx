@@ -1,15 +1,12 @@
+import { MyAlertDialog } from "@/components/shared/customAlertDialog";
+import ThemeProvider from "@/components/shared/themeProvider";
+import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import Script from "next/script";
+import { Toaster } from "sonner";
 import "./globals.css";
 import QueryProvider from "./QueryProvider";
-import { NextIntlClientProvider } from "next-intl";
-import { getLocale, getMessages } from "next-intl/server";
-import { cn } from "@/lib/utils";
-import "react-datepicker/dist/react-datepicker.css";
-import ThemeProvider from "@/components/shared/themeProvider";
-import { Toaster } from "sonner";
-import Script from "next/script";
-import { MyAlertDialog } from "@/components/shared/customAlertDialog";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -31,15 +28,13 @@ export default async function RootLayout(
   }>
 ) {
   const { children } = props;
-  const locale = await getLocale(); // ✅ ganti dari params
-  const messages = await getMessages({ locale: locale });
 
   // default seo
   const tagManager = "";
   const googleTagManager = "";
 
   return (
-    <html lang={locale} suppressHydrationWarning>
+    <html lang={"id"} suppressHydrationWarning>
       <head>
         {/* GTM Script */}
         <Script id="GT">
@@ -51,9 +46,7 @@ export default async function RootLayout(
       </head>
       <body className={cn(inter.className, "scroll-smooth")}>
         <ThemeProvider>
-          <NextIntlClientProvider locale={locale} messages={messages}>
-            <QueryProvider> {children}</QueryProvider>
-          </NextIntlClientProvider>
+          <QueryProvider> {children}</QueryProvider>
         </ThemeProvider>
         <Toaster visibleToasts={20} />
         {/* GTM NoScript */}

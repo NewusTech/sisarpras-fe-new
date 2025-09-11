@@ -1,27 +1,4 @@
-export interface debounceInterface {
-  value: string;
-  delay: number;
-}
-
-export interface ApiResponse<T> {
-  status: number;
-  message: string;
-  data: T; // Data can be any structure
-}
-
-// Format 1: Paginated data
-export interface DataPaginate<T> {
-  total_items: number;
-  page: number;
-  items: T[];
-  total_pages: number;
-  links: Links;
-}
-
-export interface Links {
-  prev: string | null;
-  next: string | null;
-}
+import { LucideIcon } from "lucide-react";
 
 export interface LoginData {
   email: string | null;
@@ -31,3 +8,19 @@ export interface LoginData {
   type: string;
   user_data: string | null;
 }
+
+// Define types for our navigation items
+export type SubItem = {
+  title: string;
+  url: string;
+  roles?: string[]; // Roles that can access this subitem
+} & AccessRule;
+
+export type NavItem = {
+  title: string;
+  url: string;
+  icon?: LucideIcon;
+  isActive?: boolean;
+  items?: SubItem[];
+  directLinkRoles?: string[]; // Roles that should access the main URL directly without seeing sub-items
+} & AccessRule;

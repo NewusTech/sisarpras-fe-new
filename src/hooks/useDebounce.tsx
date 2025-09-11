@@ -1,6 +1,5 @@
 "use client";
 
-import { debounceInterface } from "@/types/interface";
 import { useState, useEffect } from "react";
 
 /**
@@ -11,7 +10,7 @@ import { useState, useEffect } from "react";
  * @returns The debounced value.
  */
 
-export const useDebounce = ({ value, delay }: debounceInterface) => {
+export const useDebounce = ({ value, delay }: debounceType) => {
   const [debouncedValue, setDebouncedValue] = useState(value);
 
   useEffect(() => {

@@ -7,9 +7,6 @@ Welcome to the **Next.js 15** based project with internal customization from the
 ## Project Structure
 
 ```
-messages/                         # For Multi language
-  ├───id.json
-  └───en.json
 src/
 ├── __tests__/                    # Unit Testing
 ├── app/[locale]/                 # Page and Layout

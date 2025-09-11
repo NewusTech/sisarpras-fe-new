@@ -1,4 +1,3 @@
-import { ApiResponse, DataArray, DataObject } from "@/types";
 import { useQueries, useQuery } from "@tanstack/react-query";
 import {
   City,

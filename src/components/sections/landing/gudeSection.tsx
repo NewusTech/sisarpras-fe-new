@@ -79,12 +79,9 @@ export default function GuideSection() {
             <CardContent>
               <pre className="bg-muted p-4 rounded-lg overflow-auto text-sm">
                 {`
-messages/                         # For Multi language
-  ├───id.json
-  └───en.json
 src/
 ├── __tests__/                    # Unit Testing
-├── app/[locale]/                 # Page and Layout
+├── app/                          # Page and Layout
 ├── assets/                       # Static files (images, fonts)
 ├── components/                   # Reusable UI components
 │   ├── parts/                    # Parts of Component

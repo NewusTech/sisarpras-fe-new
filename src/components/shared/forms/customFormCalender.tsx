@@ -1,11 +1,14 @@
 "use client";
 
-import React from "react";
-import { useFormContext, FieldValues, Path } from "react-hook-form";
+import { cn } from "@/lib/utils";
+import { format } from "date-fns";
+import { Locale, id as localeID } from "date-fns/locale";
 import { CalendarIcon } from "lucide-react";
-import { id, Locale } from "date-fns/locale";
-import { cn, formatToMask } from "@/lib/utils";
-import DatePicker from "react-datepicker";
+import React from "react";
+import { FieldValues, Path, useFormContext } from "react-hook-form";
+
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import {
   FormDescription,
   FormField,
@@ -13,10 +16,13 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Label } from "@/components/ui/label";
-import { CustomMaskedInput } from "@/components/ui/inputMasked";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
-interface CustomFormCalenderProps<T extends FieldValues = FieldValues> {
+interface CustomFormCalendarProps<T extends FieldValues = FieldValues> {
   name: Path<T>;
   label?: string;
   placeholder?: string;
@@ -27,14 +33,18 @@ interface CustomFormCalenderProps<T extends FieldValues = FieldValues> {
   disabled?: boolean;
   locale?: Locale;
   dateFormat?: string;
+  /** batas awal tanggal yang diizinkan */
   fromDate?: Date;
+  /** batas akhir tanggal yang diizinkan (default: today) */
   toDate?: Date;
+  /** fungsi tambahan untuk mendisable tanggal tertentu */
   disabledDates?: (date: Date) => boolean;
+  /** callback ketika tanggal berubah */
   onChange?: (date: Date | undefined) => void;
+  /** dropdown tahun di header calendar (min) */
   fromYear?: number;
+  /** dropdown tahun di header calendar (max) */
   toYear?: number;
-  maxDate?: Date;
-  minDate?: Date;
 }
 
 export function CustomFormCalender<T extends FieldValues = FieldValues>({
@@ -46,79 +56,82 @@ export function CustomFormCalender<T extends FieldValues = FieldValues>({
   buttonClassName,
   required = false,
   disabled = false,
-  locale = id,
-  dateFormat = "dd-MM-yyyy",
+  locale = localeID,
+  dateFormat = "yyyy-MM-dd",
   fromDate,
-  toDate = new Date(),
+  toDate,
   disabledDates,
   onChange,
-  fromYear = 1900,
-  toYear,
-  maxDate,
-  minDate,
-}: CustomFormCalenderProps<T>) {
+}: CustomFormCalendarProps<T>) {
   const form = useFormContext<T>();
-
-  const isDateDisabled = (date: Date) => {
-    if (fromDate && date < fromDate) return true;
-    if (toDate && date > toDate) return true;
-    if (disabledDates && disabledDates(date)) return true;
-
-    const year = date.getFullYear();
-    if (year < fromYear) return true;
-    if (toYear && year > toYear) return true;
-
-    return false;
-  };
+  const [open, setOpen] = React.useState(false);
 
   return (
     <FormField
       control={form.control}
       name={name as Path<T>}
-      render={({ field }) => (
-        <FormItem className={cn(className)}>
-          {label && (
-            <FormLabel>
-              {label}
-              {required && <span className="text-destructive ml-1">*</span>}
-            </FormLabel>
-          )}
-          <Label
-            className={cn(
-              "border border-input rounded-full py-[5px] pl-3 flex justify-between items-center px-4 shadow-sm bg-card",
-              buttonClassName
+      render={({ field }) => {
+        const selected = field.value ? new Date(field.value) : undefined;
+
+        const handleSelect = (d?: Date) => {
+          field.onChange(d ? format(d, dateFormat, { locale }) : undefined);
+          onChange?.(d ?? undefined);
+          setOpen(false);
+        };
+
+        return (
+          <FormItem className={cn(className)}>
+            {label && (
+              <FormLabel className="capitalize">
+                {label}
+                {required && <span className="text-destructive ml-1">*</span>}
+              </FormLabel>
             )}
-          >
-            <DatePicker
-              dateFormat={dateFormat}
-              locale={locale}
-              selected={field.value ? new Date(field.value) : undefined}
-              onChange={(date) => {
-                field.onChange(date?.toISOString().split("T")[0] ?? "");
-                onChange?.(date ?? undefined);
-              }}
-              placeholderText={placeholder}
-              disabled={disabled}
-              filterDate={(date) => !isDateDisabled(date)}
-              className="w-full focus:ring-0 focus:outline-none"
-              yearDropdownItemNumber={90}
-              scrollableYearDropdown
-              showYearDropdown
-              customInput={
-                <CustomMaskedInput
-                  mask={formatToMask(dateFormat)}
-                  className="w-full bg-transparent focus:ring-0 focus:outline-none"
+
+            <Popover open={open} onOpenChange={setOpen}>
+              <PopoverTrigger asChild>
+                <Button
+                  type="button"
+                  variant="outline"
+                  disabled={disabled}
+                  className={cn(
+                    "w-full justify-between rounded-full pl-4 pr-4 py-[9px] h-10 bg-card border-input shadow-sm",
+                    buttonClassName
+                  )}
+                  aria-required={required}
+                  aria-label={label ?? "Tanggal"}
+                >
+                  <span className={cn(!selected && "text-muted-foreground")}>
+                    {selected
+                      ? format(selected, "dd-MM-yyyy", { locale })
+                      : placeholder}
+                  </span>
+                  <CalendarIcon className="h-4 w-4 opacity-70" />
+                </Button>
+              </PopoverTrigger>
+
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                  mode="single"
+                  captionLayout="dropdown"
+                  startMonth={
+                    fromDate
+                      ? new Date(new Date(fromDate).getFullYear() - 10, 0)
+                      : undefined
+                  }
+                  selected={selected}
+                  onSelect={handleSelect}
+                  disabled={toDate ?? disabledDates}
+                  autoFocus
                 />
-              }
-              maxDate={maxDate}
-              minDate={minDate}
-            />
-            <CalendarIcon className="text-gray-500 ml-2" />
-          </Label>
-          {description && <FormDescription>{description}</FormDescription>}
-          <FormMessage />
-        </FormItem>
-      )}
+              </PopoverContent>
+            </Popover>
+
+            {description && <FormDescription>{description}</FormDescription>}
+            <FormMessage />
+          </FormItem>
+        );
+      }}
     />
   );
 }

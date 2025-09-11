@@ -1,4 +1,3 @@
-import { ApiResponse, DataObject } from "@/types";
 import { useMutation } from "@tanstack/react-query";
 import { RegisterPayload } from "./validation";
 import { sendData } from "@/services/api/fetcher";

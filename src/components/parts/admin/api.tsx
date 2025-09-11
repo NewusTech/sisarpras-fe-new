@@ -1,4 +1,3 @@
-import { ApiResponse, DataObject } from "@/types";
 import { ProductFormPayload } from "./validation";
 import { fetcher, sendData } from "@/services/api/fetcher";
 import { useFormMutation } from "@/hooks/useFormMutation";
