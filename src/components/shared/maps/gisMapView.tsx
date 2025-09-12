@@ -22,9 +22,10 @@ type AreaProperties = {
 
 type GisMapViewProps = {
   geoJson: FeatureCollection<GeoJsonPolygon, AreaProperties>;
+  children?: React.ReactNode;
 };
 
-export default function GisMapView({ geoJson }: GisMapViewProps) {
+export default function GisMapView({ geoJson, children }: GisMapViewProps) {
   const { isLoaded } = useGoogleMapsLoader();
   const [selected, setSelected] = useState<
     (AreaProperties & { position: google.maps.LatLngLiteral }) | null
@@ -90,6 +91,8 @@ export default function GisMapView({ geoJson }: GisMapViewProps) {
             </div>
           </InfoWindow>
         )}
+
+        {children}
       </GoogleMap>
     </div>
   );

@@ -51,7 +51,7 @@ export const getNavData = (): navDateType => {
         ],
       },
       {
-        title: "Tables",
+        title: "Maps View",
         url: "/maps",
         icon: Map,
       },

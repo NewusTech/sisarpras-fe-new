@@ -1,11 +1,24 @@
 import GisMapView from "@/components/shared/maps/gisMapView";
+import GoolePoint from "@/components/shared/maps/googlePoint";
 import { FeatureCollection, Polygon } from "geojson";
 import React from "react";
 
 export default function Page() {
   return (
     <div>
-      <GisMapView geoJson={dummyGeoJson} />
+      <GisMapView geoJson={dummyGeoJson}>
+        <GoolePoint position={{ lat: -3.2909468, lng: 103.8467967 }}>
+          <div className="max-w-lg">
+            <p>Tes</p>
+            <p>
+              Lorem ipsum dolor sit, amet consectetur adipisicing elit. Fuga
+              mollitia iusto explicabo ea pariatur cupiditate natus ut magni,
+              saepe cum voluptatum maiores facere fugit eos voluptas? Excepturi
+              minus veniam officiis.
+            </p>
+          </div>
+        </GoolePoint>
+      </GisMapView>
     </div>
   );
 }
