@@ -23,7 +23,8 @@
       "@/table/": ["./src/components/table/index.ts"],
       "@/generated/*": ["./middleware/*"],
       "@/parts/*": ["./src/components/parts/*"],
-      "@/sections/*": ["./src/components/sections/*"]
+      "@/sections/*": ["./src/components/sections/*"],
+      "@/image": ["./src/components/shared/image/index.ts"]
     },
     "target": "ES2017"
   },

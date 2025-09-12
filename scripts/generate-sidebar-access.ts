@@ -116,7 +116,22 @@ function main() {
     const access = extractAccessExport(file);
 
     if (access) {
-      routeMap[routePath] = access;
+      // 🔹 Filter key yang kosong
+      const cleanedAccess = Object.fromEntries(
+        Object.entries(access).filter(([_, val]) => {
+          // Array kosong [] atau [""] → buang
+          if (Array.isArray(val)) {
+            const normalized = val.map((v) => v.trim()).filter(Boolean);
+            return normalized.length > 0;
+          }
+          return true; // kalau bukan array, tetap simpan
+        })
+      );
+
+      // 🔹 Hanya assign kalau masih ada isi
+      if (Object.keys(cleanedAccess).length > 0) {
+        routeMap[routePath] = cleanedAccess;
+      }
     }
   }
 

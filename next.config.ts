@@ -9,7 +9,8 @@ const withPWA = require("next-pwa")({
 const nextConfig = {
   images: {
     domains: [
-      "source.unsplash.com", // ⬅️ Tambahkan ini"
+      "source.unsplash.com",
+      "images.unsplash.com",
       "newus-bucket.s3.ap-southeast-2.amazonaws.com",
       "loremflickr.com",
       "picsum.photos",

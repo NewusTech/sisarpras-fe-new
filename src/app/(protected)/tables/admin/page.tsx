@@ -7,6 +7,11 @@ import { TableProvider } from "@/components/table";
 import DataTable from "@/components/table/dataTable";
 import TableBar from "@/components/table/tableBar";
 
+export const access: AccessRule = {
+  permissions: [""],
+  roles: [""],
+};
+
 export default function ProductPage() {
   const { data: _product } = useGetProduct();
   const product = _product?.data ?? [];
@@ -22,7 +27,11 @@ export default function ProductPage() {
       />
       <h1 className="text-2xl font-bold mb-4">Daftar Produk</h1>
       <TableProvider>
-        <TableBar filterKeys={["filterName"]} filterItems={["date", "kolom"]}>
+        <TableBar
+          filterKeys={["filterName"]}
+          filterItems={["date", "kolom"]}
+          buttonAdd={{ label: "Tambah", href: "/tables/admin/create" }}
+        >
           <DataTable columns={productColumns} data={product} />
         </TableBar>
       </TableProvider>

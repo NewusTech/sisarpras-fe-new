@@ -14,6 +14,11 @@ export function canAccess(
   userRoles: string[],
   userPermissions: string[]
 ): boolean {
+  // 🔹 Auto allow kalau development mode
+  if (process.env.NEXT_PUBLIC_MODE === "UI") {
+    return true;
+  }
+
   for (const [pattern, access] of Object.entries(sidebarAccessMap)) {
     const matcher = match(pattern, { decode: decodeURIComponent });
     const matched = matcher(path);

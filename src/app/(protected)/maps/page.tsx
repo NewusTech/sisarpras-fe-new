@@ -1,3 +1,4 @@
+import { Image } from "@/components/shared/image";
 import { BreadcrumbSetItem } from "@/components/shared/layouts/myBreadcrumb";
 import GisMapView from "@/components/shared/maps/gisMapView";
 import GoolePoint from "@/components/shared/maps/googlePoint";

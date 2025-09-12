@@ -1,39 +1,30 @@
 "use client";
 
-import { useProduct } from "@/components/parts/admin/api";
 import {
-  ProductFormPayload,
-  productFormSchema,
-} from "@/components/parts/admin/validation";
-import { CustomFormInput } from "@/components/shared/forms/customFormInput";
-import { CustomFormSelect } from "@/components/shared/forms/customFormSelect";
+  CustomFormInput,
+  inputFilters,
+} from "@/components/shared/forms/customFormInput";
 import { BreadcrumbSetItem } from "@/components/shared/layouts/myBreadcrumb";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 
-const CreateProductPage = () => {
+export const access: AccessRule = {
+  permissions: [""], // optional overide role jika ada permission
+  roles: [""], // optional
+};
+
+export default function Page() {
   const router = useRouter();
-  const createProductMutation = useProduct("POST");
-  const form = useForm<ProductFormPayload>({
-    resolver: zodResolver(productFormSchema),
-    defaultValues: {
-      name: "",
-      category: "",
-      price: "",
-      stock: "",
-    },
+  const form = useForm<any>({
+    // resolver: zodResolver()// resolver,
+    defaultValues: {},
   });
 
-  const onSubmit = (data: ProductFormPayload) => {
+  const onSubmit = (data: any) => {
     console.log("data", data);
-    // createProductMutation.mutate(data, {
-    //     onSuccess: (data) => {
-    //         router.push("/data-master/category-business");
-    //     },
-    // });
   };
 
   return (
@@ -51,38 +42,36 @@ const CreateProductPage = () => {
       />
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
-          <div className="">
-            <h1 className="text-2xl font-bold mb-4">Tambah Produk</h1>
-            <div className="space-y-3 mt-5">
-              <CustomFormInput<ProductFormPayload>
+          <div className="flex flex-col">
+            <h1 className="text-2xl font-bold mb-4">Tambah Data</h1>
+            <div className="mt-5 grid grid-cols-2 gap-5">
+              <CustomFormInput<any>
                 name="name"
-                label="Nama Produk"
-                placeholder="Masukkan Nama Produk"
+                label="Nama"
+                placeholder="Masukkan Nama"
               />
-              <CustomFormSelect<ProductFormPayload>
-                name="category"
-                label="Kategori"
-                options={[
-                  { label: "Makanan", value: "makanan" },
-                  { label: "Minuman", value: "minuman" },
-                ]}
-              />
-              <CustomFormInput<ProductFormPayload>
-                name="price"
-                label="Harga Produk"
-                placeholder="Masukkan Harga Produk"
-                type="number"
-              />
-              <CustomFormInput<ProductFormPayload>
-                name="stock"
-                label="Stok Produk"
-                placeholder="Masukkan Stok Produk"
-                type="number"
+              <CustomFormInput<any>
+                name="email"
+                label="Email"
+                placeholder="Masukkan Nama"
+                filterInput={inputFilters.email}
               />
             </div>
-            <div className="flex justify-center mt-6 gap-3">
-              <Button type="submit" className="rounded-full w-[200px]">
-                Tambah
+            <div className="flex gap-x-4 justify-end mt-10">
+              <Button
+                type="button"
+                variant={"outline"}
+                className="rounded-full min-w-32"
+                onClick={() => router.back()}
+              >
+                Batal
+              </Button>
+              <Button
+                type="submit"
+                className="rounded-full min-w-32"
+                disabled={false}
+              >
+                {false ? <Loader className="animate-spin" /> : "Simpan"}
               </Button>
             </div>
           </div>
@@ -90,6 +79,4 @@ const CreateProductPage = () => {
       </Form>
     </div>
   );
-};
-
-export default CreateProductPage;
+}

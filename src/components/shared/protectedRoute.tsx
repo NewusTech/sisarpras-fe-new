@@ -3,7 +3,7 @@
 import useGetToken from "@/hooks/useGetToken";
 import { canAccess } from "@/lib/canAccsess";
 import { unauthorized, usePathname } from "next/navigation";
-import React, { Suspense } from "react";
+import React, { Suspense, useMemo } from "react";
 import SwirlingEffectSpinner from "./swirlingEffectSpinner";
 import { usePermission } from "@/hooks/useGetPermission";
 
@@ -15,8 +15,17 @@ export default function ProtectedRoute({
   const path = usePathname();
   const { decode } = useGetToken();
   const { isLoading, permissions } = usePermission();
-  const isPermission =
-    decode?.name && permissions && canAccess(path, [decode?.name], permissions);
+  const isPermission = useMemo(() => {
+    // 🔹 Auto allow kalau development mode
+    if (process.env.NEXT_PUBLIC_MODE === "UI") {
+      return true;
+    }
+    return (
+      decode?.name &&
+      permissions &&
+      canAccess(path, [decode?.name], permissions)
+    );
+  }, [decode?.name, path, permissions]);
 
   if (isLoading)
     return (

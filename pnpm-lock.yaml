@@ -128,6 +128,9 @@ importers:
       react-hook-form:
         specifier: ^7.56.3
         version: 7.56.3(react@18.3.1)
+      react-photo-view:
+        specifier: ^1.2.7
+        version: 1.2.7(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react-quill-new:
         specifier: ^3.4.6
         version: 3.4.6(quill-delta@5.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -5597,6 +5600,12 @@ packages:
 
   react-is@18.3.1:
     resolution: {integrity: sha512-/LLMVyas0ljjAtoYiPqYiL8VWXzUUdThrmU5+n20DZv+a+ClRoevUzw5JxU+Ieh5/c87ytoTBV9G1FiKfNJdmg==}
+
+  react-photo-view@1.2.7:
+    resolution: {integrity: sha512-MfOWVPxuibncRLaycZUNxqYU8D9IA+rbGDDaq6GM8RIoGJal592hEJoRAyRSI7ZxyyJNJTLMUWWL3UIXHJJOpw==}
+    peerDependencies:
+      react: '>=16.8.0'
+      react-dom: '>=16.8.0'
 
   react-quill-new@3.4.6:
     resolution: {integrity: sha512-S2kEAwoKRo+xUIAEpb94fwiPe2QU3FmwIfQ+7Lkchf+izPa2nRu1mr4i4QxyVYg8TjHDryDUiOEYZuFEV45QFA==}
@@ -12716,6 +12725,11 @@ snapshots:
   react-is@17.0.2: {}
 
   react-is@18.3.1: {}
+
+  react-photo-view@1.2.7(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+    dependencies:
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
 
   react-quill-new@3.4.6(quill-delta@5.1.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:

@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import React from "react";
 
@@ -7,11 +8,8 @@ interface Props {
 }
 const LinkButton = (props: Props) => {
   return (
-    <Link
-      className="bg-blue-700 transition-all duration-150 block flex-shrink-0 rounded-full px-3 py-2.5 text-white hover:bg-primary-800"
-      href={props.link ?? "/-"}
-    >
-      {props.title ?? "Tambah"}
+    <Link href={props.link ?? "/-"} className="flex-grow">
+      <Button className="rounded-full w-full">{props.title ?? "Tambah"}</Button>
     </Link>
   );
 };
