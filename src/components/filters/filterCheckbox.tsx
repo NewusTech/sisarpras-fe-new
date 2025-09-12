@@ -16,6 +16,7 @@ type FilterCheckboxProps<T extends Record<string, any>> = {
   options: Option[];
   mode?: "single" | "multiple";
   orientation?: "vertical" | "horizontal";
+  triggerMode?: "auto" | "manual"; // ✅ tambahan
 };
 
 export const FilterCheckbox = <T extends Record<string, any>>({
@@ -24,10 +25,15 @@ export const FilterCheckbox = <T extends Record<string, any>>({
   options,
   mode = "multiple",
   orientation = "vertical",
+  triggerMode = "auto", // ✅ default auto
 }: FilterCheckboxProps<T>) => {
-  const { values, setValue } = useFilterContext();
+  const { values, setValue, tempValues } = useFilterContext();
 
-  const currentValue = values[name as string];
+  // ambil dari buffer kalau manual
+  const currentValue =
+    triggerMode === "manual"
+      ? (tempValues?.[name as string] ?? values[name as string])
+      : values[name as string];
 
   const isChecked = (val: string) => {
     if (mode === "multiple") {
@@ -43,9 +49,9 @@ export const FilterCheckbox = <T extends Record<string, any>>({
       const updatedArr = currentArr.includes(val)
         ? currentArr.filter((v) => v !== val)
         : [...currentArr, val];
-      setValue(name as string, updatedArr);
+      setValue(name as string, updatedArr, triggerMode);
     } else {
-      setValue(name as string, currentValue === val ? "" : val);
+      setValue(name as string, currentValue === val ? "" : val, triggerMode);
     }
   };
 
@@ -58,10 +64,10 @@ export const FilterCheckbox = <T extends Record<string, any>>({
 
   const toggleCheckAll = () => {
     if (isAllChecked) {
-      setValue(name as string, []);
+      setValue(name as string, [], triggerMode);
     } else {
       const allValues = options.map((opt) => opt.value);
-      setValue(name as string, allValues);
+      setValue(name as string, allValues, triggerMode);
     }
   };
 

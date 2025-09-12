@@ -20,9 +20,9 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Pagination from "./pagination";
 import { DataTableRef, useOptionalTableProvider } from "./tableProvider";
-import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 
 interface DataTableProps<TData, TValue> {
@@ -55,6 +55,9 @@ const DataTable = forwardRef<DataTableRef, DataTableProps<any, any>>(
     ref
   ) => {
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const searchQuery = searchParams.get("search") ?? "";
+
     const isClientPaginate =
       !currentPage || !totalItems || !itemsPerPage || !totalPages;
 
@@ -81,12 +84,7 @@ const DataTable = forwardRef<DataTableRef, DataTableProps<any, any>>(
         columnFilters,
         columnVisibility,
         rowSelection,
-      },
-      meta: {
-        serverPageIndex:
-          typeof currentPage === "number" ? currentPage - 1 : undefined,
-        serverPageSize:
-          typeof itemsPerPage === "number" ? itemsPerPage : undefined,
+        globalFilter: searchQuery, // ✅ filter global sync ke query
       },
     });
 
@@ -123,7 +121,6 @@ const DataTable = forwardRef<DataTableRef, DataTableProps<any, any>>(
     return (
       <div className="w-full">
         <div className="rounded-md border">
-          {/* Header terpisah (tetap) */}
           <Table>
             <TableHeader className="bg-primary-200">
               {table.getHeaderGroups().map((headerGroup) => (

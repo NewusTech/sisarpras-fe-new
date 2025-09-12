@@ -15,6 +15,7 @@ export default function FilterSelectItem({ keyName }: { keyName: FilterKey }) {
       options={data}
       placeholder={label}
       loading={isLoading}
+      mode="manual"
     />
   );
 }

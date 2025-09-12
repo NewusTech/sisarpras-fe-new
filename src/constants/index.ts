@@ -15,24 +15,19 @@ export const getNavData = (): navDateType => {
         title: "Dashboard",
         url: "/dashboard",
         icon: LayoutDashboard,
-        roles: ["admin", "superadmin", "user"],
       },
       {
         title: "Form Input",
         url: "/form-input",
         icon: DockIcon,
-        roles: ["superadmin", "admin", "user"],
-        directLinkRoles: ["user"],
         items: [
           {
             title: "Semua Input",
             url: "/form-input/all",
-            roles: ["superadmin", "admin"],
           },
           {
             title: "Surat",
             url: "/form-input/letter",
-            roles: ["superadmin", "admin"],
           },
         ],
       },
@@ -40,13 +35,10 @@ export const getNavData = (): navDateType => {
         title: "Tables",
         url: "/tables",
         icon: Table2,
-        roles: ["superadmin", "admin", "user"],
-        directLinkRoles: ["user"],
         items: [
           {
             title: "tables admin",
             url: "/tables/admin",
-            roles: ["superadmin", "admin"],
           },
         ],
       },

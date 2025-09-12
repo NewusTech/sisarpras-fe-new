@@ -5,6 +5,7 @@ import {
   LoginPayload,
   loginValidation,
 } from "@/components/parts/login/validation";
+import { ensureWebPushSubscription } from "@/components/parts/webpush/api";
 import { CustomFormInput } from "@/components/shared/forms/customFormInput";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
@@ -35,19 +36,10 @@ export default function LoginPage() {
   const onSubmit = (data: LoginPayload) => {
     console.log("Login data:", data);
     loginMutation.mutate(data, {
-      onSuccess: (response) => {
+      onSuccess: async (response) => {
         Cookie.set("accessToken", response.data.token);
-        Swal.fire({
-          icon: "success",
-          title: "Success!",
-          text: "Berhasil Login",
-          timer: 1500,
-          timerProgressBar: true,
-          showConfirmButton: false,
-        });
+        await ensureWebPushSubscription();
       },
-      onError: (error) =>
-        Swal.fire({ icon: "error", title: "Gagal!", text: error.message }),
     });
   };
 

@@ -2,7 +2,6 @@
 
 import { useDebounce } from "@/hooks/useDebounce";
 import { useQueryObject } from "@/hooks/useQueryObject";
-
 import { usePathname, useRouter } from "next/navigation";
 import {
   createContext,
@@ -16,8 +15,10 @@ import {
 type FilterContextType = {
   values: Record<string, any>;
   initialValues: Record<string, any>;
-  setValue: (key: string, value: any) => void;
+  setValue: (key: string, value: any, mode?: "auto" | "manual") => void;
   resetValues: () => void;
+  applyFilters?: () => void;
+  tempValues?: Record<string, any>;
 };
 
 const FilterContext = createContext<FilterContextType | undefined>(undefined);
@@ -28,7 +29,6 @@ export const useFilterContext = (opts?: {
   const ctx = useContext(FilterContext);
   if (!ctx) throw new Error("useFilterContext must be used within <Filter>");
 
-  // kalau ada defaultValues, override initialValues & values yang kosong
   if (opts?.defaultValues) {
     return {
       ...ctx,
@@ -43,49 +43,102 @@ export const useFilterContext = (opts?: {
 type FilterProps = {
   children: React.ReactNode | ((ctx: FilterContextType) => React.ReactNode);
   initialValues?: Record<string, any>;
+  mode?: "auto" | "manual";
 };
 
-export const Filter = ({ children, initialValues = {} }: FilterProps) => {
+export const Filter = ({
+  children,
+  initialValues = {},
+  mode = "auto",
+}: FilterProps) => {
   const pathname = usePathname();
   const router = useRouter();
   const query = useQueryObject();
+
   const [values, setValues] = useState<Record<string, any>>({
     ...initialValues,
     ...query,
   });
+
+  const [tempValues, setTempValues] = useState<Record<string, any>>({});
+
   const debouncedValues = useDebounce({ value: values, delay: 400 });
 
-  useEffect(() => {
-    const params = new URLSearchParams();
+  const pushToUrl = useCallback(
+    (val: Record<string, any>) => {
+      const params = new URLSearchParams();
+      Object.entries(val).forEach(([key, v]) => {
+        if (v !== undefined && v !== "" && v !== null) {
+          params.set(key, Array.isArray(v) ? v.join(",") : String(v));
+        }
+      });
+      const queryStr = params.toString();
+      router.push(queryStr ? `${pathname}?${queryStr}` : pathname, {
+        scroll: false,
+      });
+    },
+    [pathname, router]
+  );
 
-    Object.entries(debouncedValues).forEach(([key, val]) => {
-      if (val !== undefined && val !== "") {
-        if (Array.isArray(val)) {
-          params.set(key, val.join(",")); // ✅ multiple
+  // Auto mode jalan sendiri
+  useEffect(() => {
+    if (mode === "auto") pushToUrl(debouncedValues);
+  }, [debouncedValues, mode, pushToUrl]);
+
+  const applyFilters = useCallback(() => {
+    const merged = { ...values, ...tempValues };
+    // cek apakah semua kosong → reset
+    const allEmpty = Object.values(merged).every(
+      (v) => v === undefined || v === "" || v === null
+    );
+    if (allEmpty) {
+      setValues(initialValues);
+      setTempValues({});
+      pushToUrl(initialValues);
+    } else {
+      setValues(merged);
+      pushToUrl(merged);
+      setTempValues({});
+    }
+  }, [values, tempValues, pushToUrl, initialValues]);
+
+  const setValue = useCallback(
+    (key: string, value: any, m: "auto" | "manual" = mode) => {
+      const isEmpty = value === undefined || value === "" || value === null;
+
+      if (m === "auto") {
+        if (isEmpty) {
+          setValues(initialValues);
         } else {
-          params.set(key, String(val)); // ✅ single
+          setValues((prev) => ({ ...prev, [key]: value }));
+        }
+      } else {
+        if (isEmpty) {
+          setTempValues({});
+        } else {
+          setTempValues((prev) => ({ ...prev, [key]: value }));
         }
       }
-    });
-
-    const queryStr = params.toString();
-    const newUrl = `${pathname}?${queryStr}`;
-
-    router.push(newUrl); // push ke browser URL tanpa reload
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncedValues]);
-
-  const setValue = useCallback((key: string, value: any) => {
-    setValues((prev) => ({ ...prev, [key]: value }));
-  }, []);
+    },
+    [mode, initialValues]
+  );
 
   const resetValues = useCallback(() => {
     setValues(initialValues);
-  }, [initialValues]);
+    setTempValues({});
+    pushToUrl(initialValues);
+  }, [initialValues, pushToUrl]);
 
   const contextValue = useMemo(
-    () => ({ values, setValue, resetValues, initialValues }),
-    [values, setValue, resetValues, initialValues]
+    () => ({
+      values,
+      setValue,
+      resetValues,
+      initialValues,
+      applyFilters,
+      tempValues,
+    }),
+    [values, setValue, resetValues, initialValues, applyFilters, tempValues]
   );
 
   return (

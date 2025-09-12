@@ -1,3 +1,4 @@
+import { BreadcrumbSetItem } from "@/components/shared/layouts/myBreadcrumb";
 import GisMapView from "@/components/shared/maps/gisMapView";
 import GoolePoint from "@/components/shared/maps/googlePoint";
 import { FeatureCollection, Polygon } from "geojson";
@@ -6,6 +7,17 @@ import React from "react";
 export default function Page() {
   return (
     <div>
+      <BreadcrumbSetItem
+        items={[
+          {
+            title: "Dashboard",
+            href: "/dashboard",
+          },
+          {
+            title: "Maps View",
+          },
+        ]}
+      />
       <GisMapView geoJson={dummyGeoJson}>
         <GoolePoint position={{ lat: -3.2909468, lng: 103.8467967 }}>
           <div className="max-w-lg">

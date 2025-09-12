@@ -1,5 +1,4 @@
-import { usePermission } from "@/hooks/useGetPermission";
-import { Archive, Edit, Eye } from "lucide-react";
+import { Edit, Eye } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 import ModalDelete from "../shared/modalDelete";
@@ -22,7 +21,6 @@ export default function ActionOption({
   queryKey,
   other,
 }: actionOptionPops) {
-  const { can } = usePermission();
   return (
     <div className="flex w-full">
       {linkView && (
@@ -39,13 +37,13 @@ export default function ActionOption({
           </Button>
         </Link>
       )}
-      {archiveId && can("write:Arsip") && (
+      {/* {archiveId && can("write:Arsip") && (
         <Link href={`?archiveId=${archiveId}`}>
           <Button size={"icon"} variant={"ghost"}>
             <Archive className="text-secondary-700 !stroke-[3]" />
           </Button>
         </Link>
-      )}
+      )} */}
       {other}
       {linkDelete && queryKey && (
         <ModalDelete endpoint={linkDelete} queryKey={queryKey} />

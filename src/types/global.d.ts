@@ -1,5 +1,5 @@
 interface debounceInterface {
-  value: string;
+  value: any;
   delay: number;
 }
 

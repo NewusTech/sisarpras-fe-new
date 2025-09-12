@@ -19,4 +19,14 @@ export const defaultFilterRegistry: FilterRegistry = {
       { label: "tes 2", value: "tes 2" },
     ],
   },
+  kategoriSurat: {
+    type: "endpoint",
+    url: "configuration/letter-type?limit=9999",
+    map: (data: DataPaginate<any>) => {
+      return [
+        { label: "Semua", value: "" },
+        ...data.items.map((d) => ({ label: d.name, value: String(d.id) })),
+      ];
+    },
+  },
 };

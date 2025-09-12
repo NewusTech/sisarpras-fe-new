@@ -1,31 +1,40 @@
 "use client";
 
+import NavMenu from "@/components/shared/layouts/admin/navMenu";
 import { AppSidebar } from "@/components/shared/layouts/appSidebar";
 import { MyBreadcrumb } from "@/components/shared/layouts/myBreadcrumb";
+import SidebarButtonTrigger from "@/components/shared/layouts/sidebarButtonTrigger";
+import SocketNotificationCustom from "@/components/shared/notification";
 import ProtectedRoute from "@/components/shared/protectedRoute";
-import { Separator } from "@/components/ui/separator";
-import {
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
-} from "@/components/ui/sidebar";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import dynamic from "next/dynamic";
+
+const WebPushWarper = dynamic(
+  () => import("@/components/shared/webPushWarper"),
+  {
+    ssr: false,
+  }
+);
 
 export default function ProtectedLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <SidebarProvider>
-      <AppSidebar />
-      <SidebarInset>
-        <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
-          <SidebarTrigger className="-ml-1" />
-          <Separator orientation="vertical" className="mr-2 h-4" />
-          <MyBreadcrumb />
-        </header>
-        <div className="flex flex-1 flex-col gap-4 p-4">
-          <ProtectedRoute>{children}</ProtectedRoute>
-        </div>
-      </SidebarInset>
-    </SidebarProvider>
+    <WebPushWarper>
+      <SidebarProvider>
+        <AppSidebar />
+        <SidebarInset>
+          <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
+            <SidebarButtonTrigger />
+            <MyBreadcrumb />
+            <NavMenu />
+          </header>
+          <div className="flex flex-1 flex-col gap-4 p-4">
+            <ProtectedRoute>{children}</ProtectedRoute>
+          </div>
+        </SidebarInset>
+      </SidebarProvider>
+      <SocketNotificationCustom />
+    </WebPushWarper>
   );
 }

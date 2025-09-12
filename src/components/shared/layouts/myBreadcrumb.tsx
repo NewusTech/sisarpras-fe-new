@@ -12,6 +12,7 @@ import { create } from "zustand";
 import { useStore } from "zustand";
 import React, { useEffect } from "react";
 import Link from "next/link";
+import { ChevronRight } from "lucide-react";
 
 export type Crumb = { title: string; href?: string };
 
@@ -64,42 +65,77 @@ export const MyBreadcrumb = () => {
   const { items } = useStore(myBreadcrumb);
 
   return (
-    <Breadcrumb>
-      <BreadcrumbList>
-        {items.length === 0 ? (
-          <>
-            {[1, 2, 3].map((_, i) => (
-              <React.Fragment key={i}>
-                <BreadcrumbItem>
-                  <span className="block w-24 h-4 bg-gray-300 rounded animate-pulse" />
-                </BreadcrumbItem>
-                {i !== 2 && <BreadcrumbSeparator>{`/`}</BreadcrumbSeparator>}
-              </React.Fragment>
-            ))}
-          </>
-        ) : (
-          items.map((item, i) => {
-            const isLast = i === items.length - 1;
-            return (
-              <React.Fragment key={i}>
-                <BreadcrumbItem>
-                  {isLast ? (
-                    <BreadcrumbPage>{item.title}</BreadcrumbPage>
-                  ) : item.href && item.href !== "#" ? (
-                    <BreadcrumbLink asChild>
-                      <Link href={item.href}>{item.title}</Link>
-                    </BreadcrumbLink>
-                  ) : (
-                    <BreadcrumbPage>{item.title}</BreadcrumbPage>
+    <div className="flex flex-col">
+      {items.length === 0 ? (
+        <p className="font-semibold h-3 md:h-4 w-12 md:w-20 bg-gray-300 animate-pulse rounded-md mb-2" />
+      ) : items[0].href ? (
+        <Link
+          href={items[0].href}
+          className="font-semibold text-text-800 text-sm md:text-base"
+        >
+          {items[0].title}
+        </Link>
+      ) : (
+        <p className="font-semibold text-text-800 text-sm md:text-base">
+          {items[0].title}
+        </p>
+      )}
+      <Breadcrumb>
+        <BreadcrumbList className="!gap-y-0">
+          {items.length === 0 ? (
+            <>
+              {[1, 2, 3].map((_, i) => (
+                <React.Fragment key={i}>
+                  <BreadcrumbItem>
+                    <span className="block w-12 md:w-24 h-3 md:h-4 bg-gray-300 rounded animate-pulse" />
+                  </BreadcrumbItem>
+                  {i !== 2 && (
+                    <BreadcrumbSeparator>
+                      <ChevronRight />
+                    </BreadcrumbSeparator>
                   )}
-                </BreadcrumbItem>
-                {!isLast && <BreadcrumbSeparator>{`/`}</BreadcrumbSeparator>}
-              </React.Fragment>
-            );
-          })
-        )}
-      </BreadcrumbList>
-    </Breadcrumb>
+                </React.Fragment>
+              ))}
+            </>
+          ) : (
+            items.map((item, i) => {
+              const isLast = i === items.length - 1;
+              const isManyItem = items.length > 1 && i === 0;
+              if (isManyItem) return;
+              return (
+                <React.Fragment key={i}>
+                  <BreadcrumbItem>
+                    {isLast ? (
+                      <BreadcrumbPage className="text-primary font-semibold text-xs md:text-sm">
+                        {item.title}
+                      </BreadcrumbPage>
+                    ) : item.href && item.href !== "#" ? (
+                      <BreadcrumbLink asChild>
+                        <Link
+                          href={item.href}
+                          className="text-text-600 text-xs md:text-sm"
+                        >
+                          {item.title}
+                        </Link>
+                      </BreadcrumbLink>
+                    ) : (
+                      <BreadcrumbPage className="text-text-600 text-xs md:text-sm">
+                        {item.title}
+                      </BreadcrumbPage>
+                    )}
+                  </BreadcrumbItem>
+                  {!isLast && (
+                    <BreadcrumbSeparator>
+                      <ChevronRight />
+                    </BreadcrumbSeparator>
+                  )}
+                </React.Fragment>
+              );
+            })
+          )}
+        </BreadcrumbList>
+      </Breadcrumb>
+    </div>
   );
 };
 

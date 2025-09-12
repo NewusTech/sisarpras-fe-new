@@ -1,7 +1,12 @@
 "use client";
 
-import { ChevronRight, type LucideIcon } from "lucide-react";
 import {
+  Collapsible,
+  CollapsibleTrigger,
+  CollapsibleContent,
+} from "@/components/ui/collapsible";
+import {
+  SidebarFooter,
   SidebarGroup,
   SidebarMenu,
   SidebarMenuButton,
@@ -11,34 +16,44 @@ import {
   SidebarMenuSubItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
+import { canAccess } from "@/lib/canAccsess";
+import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
+import { useState } from "react";
 import { NavItem } from "@/types/interface";
+import NavItemsLogout from "./navItemsLogout";
 
 export function NavItems({
   items,
   userRoles = [],
   isLoading,
+  userPermissions = [],
 }: {
   items: NavItem[];
-  userRoles?: string[]; // Current user's roles
+  userRoles?: string[];
+  userPermissions?: string[];
   isLoading?: boolean;
 }) {
   const { isMobile } = useSidebar();
   const pathname = usePathname();
+  const [openStates, setOpenStates] = useState<Record<string, boolean>>({});
 
-  // Filter items based on user roles
-  const authorizedItems = items.filter((item) => {
-    // If no roles specified, everyone can access
-    if (!item.roles || item.roles.length === 0) return true;
-    // Check if user has at least one of the required roles
-    return item.roles.some((role) => userRoles.includes(role));
-  });
+  const toggleOpen = (key: string) => {
+    setOpenStates((prev) => {
+      const isCurrentlyOpen = !!prev[key];
+      const newState: Record<string, boolean> = {};
+      if (!isCurrentlyOpen) {
+        newState[key] = true; // hanya buka dropdown yang diklik
+      }
+      return newState;
+    });
+  };
+
+  const authorizedItems = items.filter((item) =>
+    canAccess(item.url, userRoles, userPermissions)
+  );
 
   if (isLoading || !authorizedItems) {
     return (
@@ -47,8 +62,8 @@ export function NavItems({
           {[...Array(4)].map((_, idx) => (
             <SidebarMenuItem key={idx}>
               <SidebarMenuButton className="animate-pulse">
-                <div className="w-5 h-5 bg-muted rounded" />
-                <div className="h-3 w-20 bg-muted rounded ml-2" />
+                <div className="w-7 h-5 bg-gray-300 rounded" />
+                <div className="h-4 w-full bg-gray-300 rounded ml-2" />
               </SidebarMenuButton>
             </SidebarMenuItem>
           ))}
@@ -57,36 +72,34 @@ export function NavItems({
     );
   }
 
+  const isSubRouteActive = (pathname: string, base: string) =>
+    pathname === base || pathname.startsWith(base + "/");
+
   return (
     <SidebarGroup>
-      <SidebarMenu>
+      <SidebarMenu className="flex flex-col gap-2">
         {authorizedItems.map((item) => {
           const hasSubItems = item.items && item.items.length > 0;
           const normalizedUrl = item.url.startsWith("/")
             ? item.url
             : `/${item.url}`;
-          const isSubRouteActive = (pathname: string, base: string) => {
-            return pathname === base || pathname.startsWith(base + "/");
-          };
-          const isActive =
-            isSubRouteActive(pathname, normalizedUrl) ||
-            (item.items?.some((sub) => isSubRouteActive(pathname, sub.url)) ??
-              false);
 
-          // Filter subItems based on user roles
           const authorizedSubItems = item.items?.filter((subItem) => {
             if (!subItem.roles || subItem.roles.length === 0) return true;
             return subItem.roles.some((role) => userRoles.includes(role));
           });
 
-          // Check if this user role should see this item as a direct link
-          // without showing subitems, even if subitems exist
           const shouldRenderDirectLink = item.directLinkRoles?.some((role) =>
             userRoles.includes(role)
           );
 
-          // If no authorized subitems and this item had subitems, don't render
-          // UNLESS the item is configured to be a direct link for this role
+          // ✅ Aktif hanya jika salah satu sub-menu URL cocok
+          const isActive =
+            item.items?.some((sub) => isSubRouteActive(pathname, sub.url)) ??
+            false;
+
+          const isOpen = openStates[item.title] ?? false;
+
           if (
             hasSubItems &&
             (!authorizedSubItems || authorizedSubItems.length === 0) &&
@@ -95,14 +108,16 @@ export function NavItems({
             return null;
           }
 
-          // For items without subitems OR items that should be direct links for this role
+          // 🔗 Jika tidak punya sub-menu atau punya akses langsung
           if (!hasSubItems || shouldRenderDirectLink) {
             return (
               <SidebarMenuItem key={item.title}>
                 <Link href={item.url} passHref>
                   <SidebarMenuButton
-                    className={`hover:!bg-primary hover:!text-white ${
-                      isActive ? "text-primary font-medium" : ""
+                    className={`hover:pl-7 p-5 transition-all duration-200 ${
+                      isSubRouteActive(pathname, normalizedUrl)
+                        ? "text-white bg-primary font-medium hover:!bg-primary hover:!text-white"
+                        : "text-textSub font-medium hover:text-textSub"
                     }`}
                     tooltip={item.title}
                   >
@@ -114,55 +129,82 @@ export function NavItems({
             );
           }
 
-          // For items with subitems, render a collapsible menu
+          // 🧩 Menu dengan dropdown
           return (
             <Collapsible
               key={item.title}
-              asChild
-              defaultOpen={isActive}
+              open={isOpen}
+              onOpenChange={() => toggleOpen(item.title)}
               className="group/collapsible"
             >
               <SidebarMenuItem>
                 <CollapsibleTrigger asChild>
                   <SidebarMenuButton
-                    className={`hover:!bg-primary hover:!text-white ${
-                      isActive ? "text-primary" : ""
+                    className={`transition-all hover:pl-7 p-5 duration-200  ${
+                      isActive
+                        ? "text-white bg-primary font-medium hover:!bg-primary hover:!text-white"
+                        : "text-textSub font-medium hover:text-textSub"
                     }`}
                     tooltip={item.title}
                   >
                     {item.icon && <item.icon />}
                     <span>{item.title}</span>
-                    <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                    <ChevronRight
+                      className={`ml-auto transition-transform duration-200 ${
+                        isOpen ? "rotate-90" : ""
+                      }`}
+                    />
                   </SidebarMenuButton>
                 </CollapsibleTrigger>
-                <CollapsibleContent>
-                  <SidebarMenuSub className="pl-1 ml-0">
-                    {authorizedSubItems?.map((subItem) => {
-                      const isSubActive = isSubRouteActive(
-                        pathname,
-                        subItem.url
-                      );
-                      return (
-                        <SidebarMenuSubItem key={subItem.title} className="">
-                          <Link href={subItem.url}>
-                            <SidebarMenuSubButton
-                              asChild
-                              className={`hover:bg-primary hover:text-white pl-2 group/sub ${
-                                isSubActive ? "font-medium text-primary" : ""
-                              }`}
-                            >
-                              <div className="flex gap-2">
-                                <div className="w-2 h-2 bg-primary rounded-full group-hover/sub:bg-white" />
 
-                                <span>{subItem.title}</span>
-                              </div>
-                            </SidebarMenuSubButton>
-                          </Link>
-                        </SidebarMenuSubItem>
-                      );
-                    })}
-                  </SidebarMenuSub>
-                </CollapsibleContent>
+                <AnimatePresence initial={false}>
+                  {isOpen && (
+                    <CollapsibleContent asChild forceMount>
+                      <motion.div
+                        key="dropdown"
+                        className="overflow-hidden"
+                        initial={{ height: 0 }}
+                        animate={{ height: "auto" }}
+                        exit={{ height: 0 }}
+                        transition={{ duration: 0.3, ease: "easeInOut" }}
+                      >
+                        <SidebarMenuSub className="pl-4 ml-0 flex flex-col gap-2 mt-2">
+                          {authorizedSubItems?.map((subItem) => {
+                            const isSubActive = isSubRouteActive(
+                              pathname,
+                              subItem.url
+                            );
+                            return (
+                              <SidebarMenuSubItem key={subItem.title}>
+                                <Link href={subItem.url}>
+                                  <SidebarMenuSubButton
+                                    asChild
+                                    className={`hover:text-primary transition-all duration-300 pl-2 group/sub ${
+                                      isSubActive
+                                        ? "font-medium text-primary"
+                                        : "text--textSub"
+                                    }`}
+                                  >
+                                    <div className="flex gap-2">
+                                      <div
+                                        className={`w-2 mr-1 h-2 rounded-full group-hover/sub:bg-primary ${
+                                          isSubActive
+                                            ? "bg-primary"
+                                            : "bg-textSub"
+                                        }`}
+                                      />
+                                      <span>{subItem.title}</span>
+                                    </div>
+                                  </SidebarMenuSubButton>
+                                </Link>
+                              </SidebarMenuSubItem>
+                            );
+                          })}
+                        </SidebarMenuSub>
+                      </motion.div>
+                    </CollapsibleContent>
+                  )}
+                </AnimatePresence>
               </SidebarMenuItem>
             </Collapsible>
           );

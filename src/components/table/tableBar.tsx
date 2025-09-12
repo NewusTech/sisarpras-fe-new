@@ -71,7 +71,7 @@ export default function TableBar({
 
   return (
     <Filter>
-      {({ resetValues }) => (
+      {({ resetValues, applyFilters }) => (
         <div className={cn(className)}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 justify-between">
             <div className="flex gap-2 items-center">
@@ -107,7 +107,10 @@ export default function TableBar({
                         </Button>
                         <Button
                           className="rounded-full w-40"
-                          onClick={() => setDialogOpen(false)}
+                          onClick={() => {
+                            setDialogOpen(false);
+                            applyFilters?.();
+                          }}
                         >
                           Terapkan
                         </Button>

@@ -9,6 +9,7 @@ import { MoreVerticalIcon } from "lucide-react";
 import Link from "next/link";
 import ModalDelete from "@/components/shared/modalDelete";
 import Image from "next/image";
+import ActionOption from "@/components/table/actionOption";
 
 export const productColumns: ColumnDef<ProductResponse>[] = [
   {
@@ -55,21 +56,6 @@ export const productColumns: ColumnDef<ProductResponse>[] = [
   {
     accessorKey: "action",
     header: "Aksi",
-    cell: ({ row }) => (
-      <DropdownMenu>
-        <DropdownMenuTrigger className="flex items-center justify-center w-[30px]">
-          <MoreVerticalIcon />
-        </DropdownMenuTrigger>
-        <DropdownMenuContent>
-          <Link href={`/tables/admin/edit/${row.original.id}`}>
-            <DropdownMenuItem className="cursor-pointer">Edit</DropdownMenuItem>
-          </Link>
-          <ModalDelete
-            endpoint={`infrastruktur/${row.original.id}/delete`}
-            queryKey={["useGetSarana"]}
-          />
-        </DropdownMenuContent>
-      </DropdownMenu>
-    ),
+    cell: ({ row }) => <ActionOption />,
   },
 ];

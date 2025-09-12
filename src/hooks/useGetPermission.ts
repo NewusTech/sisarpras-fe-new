@@ -16,7 +16,7 @@ export function usePermission() {
     [data]
   );
 
-  // 2️⃣ memoize can function (optional, tapi recommended)
+  // 2️⃣ memoize can function
   const can = useCallback(
     (required: string | string[], mode: "all" | "some" = "all") => {
       const requiredArray = Array.isArray(required) ? required : [required];

@@ -26,6 +26,7 @@ type FilterDateRangeProps<T extends Record<string, any>> = {
   orientation?: "horizontal" | "vertical";
   /** format tampilan input; default: "dd MMM yyyy" / "dd MMM" */
   displayFormat?: string;
+  mode?: "auto" | "manual"; // ✅ per-komponen
 };
 
 export const FilterDateRange = <T extends Record<string, any>>({
@@ -34,22 +35,30 @@ export const FilterDateRange = <T extends Record<string, any>>({
   endKey,
   orientation = "horizontal",
   displayFormat = "dd MMM yyyy",
+  mode = "auto", // ✅ default auto
 }: FilterDateRangeProps<T>) => {
-  const { values, setValue } = useFilterContext();
+  const { values, setValue, tempValues } = useFilterContext();
   const [open, setOpen] = useState(false);
   const isMobile = useIsMobile();
 
+  // ambil value dari tempValues kalau manual
+  const startRaw =
+    mode === "manual"
+      ? (tempValues?.[startKey as string] ?? values[startKey as string])
+      : values[startKey as string];
+
+  const endRaw =
+    mode === "manual"
+      ? (tempValues?.[endKey as string] ?? values[endKey as string])
+      : values[endKey as string];
+
   const startDate = useMemo(() => {
-    const raw = values[startKey as string];
-    return raw ? new Date(raw) : undefined;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [values[startKey as string]]);
+    return startRaw ? new Date(startRaw) : undefined;
+  }, [startRaw]);
 
   const endDate = useMemo(() => {
-    const raw = values[endKey as string];
-    return raw ? new Date(raw) : undefined;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [values[endKey as string]]);
+    return endRaw ? new Date(endRaw) : undefined;
+  }, [endRaw]);
 
   const range = useMemo<DateRange | undefined>(() => {
     if (!startDate && !endDate) return undefined;
@@ -62,7 +71,10 @@ export const FilterDateRange = <T extends Record<string, any>>({
       const sameMonth = sameYear && startDate.getMonth() === endDate.getMonth();
 
       const leftFmt = sameMonth ? "dd" : sameYear ? "dd MMM" : displayFormat;
-      return `${format(startDate, leftFmt)} – ${format(endDate, displayFormat)}`;
+      return `${format(startDate, leftFmt)} – ${format(
+        endDate,
+        displayFormat
+      )}`;
     }
     if (startDate) return format(startDate, displayFormat);
     if (endDate) return format(endDate, displayFormat);
@@ -73,16 +85,13 @@ export const FilterDateRange = <T extends Record<string, any>>({
     const from = next?.from ?? null;
     const to = next?.to ?? null;
 
-    setValue(startKey as string, from ? format(from, "yyyy-MM-dd") : "");
-    setValue(endKey as string, to ? format(to, "yyyy-MM-dd") : "");
-
-    // Tutup popover kalau range sudah lengkap
-    // if (from && to) setOpen(false);
+    setValue(startKey as string, from ? format(from, "yyyy-MM-dd") : "", mode);
+    setValue(endKey as string, to ? format(to, "yyyy-MM-dd") : "", mode);
   };
 
   const handleClear = () => {
-    setValue(startKey as string, "");
-    setValue(endKey as string, "");
+    setValue(startKey as string, "", mode);
+    setValue(endKey as string, "", mode);
   };
 
   return (
@@ -147,7 +156,6 @@ export const FilterDateRange = <T extends Record<string, any>>({
               numberOfMonths={isMobile ? 1 : 2}
               selected={range}
               onSelect={handleSelect}
-              // Opsional: batasi tanggal (contoh tidak boleh lewat hari ini)
               disabled={(d) => d > new Date()}
               autoFocus
             />

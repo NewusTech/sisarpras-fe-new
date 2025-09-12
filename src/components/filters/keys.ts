@@ -1,5 +1,6 @@
 export const filterMapping = {
   filterName: "filterBeVariable",
+  kategoriSurat: "kategoriSurat",
 } as const;
 
 export type FilterKey = keyof typeof filterMapping;

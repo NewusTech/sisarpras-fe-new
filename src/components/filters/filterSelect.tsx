@@ -32,6 +32,7 @@ type FilterSelectProps<T extends Record<string, any>> = {
   loadingText?: string; // ⬅️ baru
   notFoundText?: string; // ⬅️ opsional
   disabled?: boolean; // ⬅️ opsional
+  mode?: "auto" | "manual"; // ✅ per-komponen
 };
 
 export const FilterSelect = <T extends Record<string, any>>({
@@ -44,9 +45,17 @@ export const FilterSelect = <T extends Record<string, any>>({
   loadingText = "Memuat…",
   notFoundText,
   disabled,
+  mode = "auto", // ✅ default auto
 }: FilterSelectProps<T>) => {
-  const { values, setValue } = useFilterContext();
-  const selectedId = String(values[name as string] ?? "");
+  const { values, setValue, tempValues } = useFilterContext();
+
+  // kalau manual, ambil dari tempValues dulu
+  const rawValue =
+    mode === "manual"
+      ? (tempValues?.[name as string] ?? values[name as string])
+      : values[name as string];
+
+  const selectedId = String(rawValue ?? "");
   const selected = options.find((opt) => opt.value === selectedId);
 
   // skeleton item untuk efek shimmer saat loading
@@ -89,7 +98,7 @@ export const FilterSelect = <T extends Record<string, any>>({
           </Button>
         </PopoverTrigger>
 
-        <PopoverContent className="min-w-[450px] p-0">
+        <PopoverContent className="md:min-w-[400px] p-0">
           <Command key={`${selected?.value}-${options.length}`}>
             <CommandInput
               placeholder={`Search ${placeholder}...`}
@@ -123,7 +132,7 @@ export const FilterSelect = <T extends Record<string, any>>({
                     <CommandItem
                       key={opt.value}
                       value={opt.label}
-                      onSelect={() => setValue(name as string, opt.value)}
+                      onSelect={() => setValue(name as string, opt.value, mode)} // ✅ fix
                     >
                       {opt.label}
                       <Check

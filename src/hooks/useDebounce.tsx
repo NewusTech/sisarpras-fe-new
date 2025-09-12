@@ -10,7 +10,7 @@ import { useState, useEffect } from "react";
  * @returns The debounced value.
  */
 
-export const useDebounce = ({ value, delay }: debounceType) => {
+export const useDebounce = ({ value, delay }: debounceInterface) => {
   const [debouncedValue, setDebouncedValue] = useState(value);
 
   useEffect(() => {
