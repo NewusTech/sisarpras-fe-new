@@ -9,6 +9,7 @@ import "./globals.css";
 import QueryProvider from "./QueryProvider";
 import { ToastProvider } from "@/components/shared/toast/toastComponent";
 import { ImageProvider } from "@/image";
+import { FilterRegistryProvider } from "@/components/filters";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -50,7 +51,9 @@ export default async function RootLayout(
       <body className={cn(inter.className, "scroll-smooth")}>
         <ThemeProvider>
           <QueryProvider>
-            <ImageProvider>{children}</ImageProvider>
+            <FilterRegistryProvider>
+              <ImageProvider>{children}</ImageProvider>
+            </FilterRegistryProvider>
           </QueryProvider>
         </ThemeProvider>
         <Toaster visibleToasts={20} />

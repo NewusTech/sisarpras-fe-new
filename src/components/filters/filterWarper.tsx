@@ -19,6 +19,7 @@ type FilterContextType = {
   resetValues: () => void;
   applyFilters?: () => void;
   tempValues?: Record<string, any>;
+  activeFilterCount: number;
 };
 
 const FilterContext = createContext<FilterContextType | undefined>(undefined);
@@ -107,20 +108,26 @@ export const Filter = ({
       const isEmpty = value === undefined || value === "" || value === null;
 
       if (m === "auto") {
-        if (isEmpty) {
-          setValues(initialValues);
-        } else {
-          setValues((prev) => ({ ...prev, [key]: value }));
-        }
+        setValues((prev) => {
+          if (isEmpty) {
+            const next = { ...prev };
+            delete next[key]; // ✅ cuma hapus field itu
+            return next;
+          }
+          return { ...prev, [key]: value };
+        });
       } else {
-        if (isEmpty) {
-          setTempValues({});
-        } else {
-          setTempValues((prev) => ({ ...prev, [key]: value }));
-        }
+        setTempValues((prev) => {
+          if (isEmpty) {
+            const next = { ...prev };
+            delete next[key]; // ✅ cuma hapus field itu
+            return next;
+          }
+          return { ...prev, [key]: value };
+        });
       }
     },
-    [mode, initialValues]
+    [mode]
   );
 
   const resetValues = useCallback(() => {
@@ -128,6 +135,26 @@ export const Filter = ({
     setTempValues({});
     pushToUrl(initialValues);
   }, [initialValues, pushToUrl]);
+
+  const activeFilterCount = useMemo(() => {
+    return Object.entries(values).filter(([key, v]) => {
+      const initVal = initialValues[key];
+
+      // kosong → skip
+      const isEmpty =
+        v === undefined ||
+        v === null ||
+        v === "" ||
+        (Array.isArray(v) && v.length === 0);
+
+      if (isEmpty) return false;
+
+      // sama dengan initial value → skip
+      if (JSON.stringify(v) === JSON.stringify(initVal)) return false;
+
+      return true; // ✅ hanya yang aktif & sudah apply
+    }).length;
+  }, [values, initialValues]);
 
   const contextValue = useMemo(
     () => ({
@@ -137,8 +164,17 @@ export const Filter = ({
       initialValues,
       applyFilters,
       tempValues,
+      activeFilterCount,
     }),
-    [values, setValue, resetValues, initialValues, applyFilters, tempValues]
+    [
+      values,
+      setValue,
+      resetValues,
+      initialValues,
+      applyFilters,
+      tempValues,
+      activeFilterCount,
+    ]
   );
 
   return (

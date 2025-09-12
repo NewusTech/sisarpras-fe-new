@@ -21,6 +21,7 @@ import { EllipsisVertical, ListFilter, Search } from "lucide-react";
 import { useEffect, useState } from "react";
 import LinkButton from "../shared/button/linkButton";
 import { useTableProvider } from "./tableProvider"; // ⬅️ pakai provider terpisah
+import { Badge } from "../ui/badge";
 
 type FilterItems = "date" | "kolom";
 
@@ -71,7 +72,7 @@ export default function TableBar({
 
   return (
     <Filter>
-      {({ resetValues, applyFilters }) => (
+      {({ resetValues, applyFilters, activeFilterCount }) => (
         <div className={cn(className)}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 justify-between">
             <div className="flex gap-2 items-center">
@@ -79,9 +80,14 @@ export default function TableBar({
               {filterKeys.length != 0 && (
                 <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
                   <DialogTrigger asChild>
-                    <Button variant="outline" className="rounded-full">
+                    <Button variant="outline" className="rounded-full relative">
                       <ListFilter className="md:mr-2" />
                       <span className="hidden md:block">Filter</span>
+                      {activeFilterCount !== 0 && (
+                        <Badge className="aspect-square !w-5 !h-5 !p-0 absolute -top-2 -right-2 items-center text-xs justify-center rounded-full animate-pulse">
+                          {activeFilterCount}
+                        </Badge>
+                      )}
                     </Button>
                   </DialogTrigger>
                   <DialogContent className="sm:max-w-xl max-h-[40rem] overflow-y-auto">
