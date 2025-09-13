@@ -8,7 +8,7 @@ type PointProps = {
   children?: React.ReactNode;
 };
 
-export default function GoolePoint({ position, children }: PointProps) {
+export default function GooglePoint({ position, children }: PointProps) {
   const [open, setOpen] = useState(false);
 
   return (

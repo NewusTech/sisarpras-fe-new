@@ -1,35 +1,41 @@
 "use client";
 
-import React, { useState } from "react";
-import { GoogleMap, Polygon, InfoWindow } from "@react-google-maps/api";
-import { useGoogleMapsLoader } from "./gmapsLoader";
+import { getCoords } from "@/lib/utils";
+import { GoogleMap, Polygon } from "@react-google-maps/api";
 import type {
-  FeatureCollection,
   Feature,
+  FeatureCollection,
   Polygon as GeoJsonPolygon,
 } from "geojson";
+import React, { useState } from "react";
+import { useGoogleMapsLoader } from "./gmapsLoader";
 
 const containerStyle = {
   width: "100%",
   height: "100%",
 };
 
-type AreaProperties = {
-  id: number;
-  name: string;
-  color: string;
-};
-
 type GisMapViewProps = {
-  geoJson: FeatureCollection<GeoJsonPolygon, AreaProperties>;
+  geoJson?: FeatureCollection<GeoJsonPolygon, AreaProperties>;
   children?: React.ReactNode;
+  onSelected?: (data: AreaProperties) => void;
+  selected?: AreaProperties;
+  colorMap?: Record<string, string>;
+  center?: google.maps.LatLngLiteral;
+  handleClick?: (e: google.maps.MapMouseEvent) => void;
 };
 
-export default function GisMapView({ geoJson, children }: GisMapViewProps) {
+export default function GisMapView({
+  geoJson,
+  children,
+  onSelected,
+  colorMap,
+  selected,
+  center = { lat: -3.2929468, lng: 103.8467967 },
+  handleClick,
+}: GisMapViewProps) {
   const { isLoaded } = useGoogleMapsLoader();
-  const [selected, setSelected] = useState<
-    (AreaProperties & { position: google.maps.LatLngLiteral }) | null
-  >(null);
+  const [hovered, setHovered] = useState<string | null>(null);
 
   if (!isLoaded) {
     return (
@@ -39,61 +45,59 @@ export default function GisMapView({ geoJson, children }: GisMapViewProps) {
     );
   }
 
+  const getColor = (name: string): string => {
+    // Saat ada hovered → highlight hanya polygon yg dihover, lainnya abu-abu
+    if (hovered) {
+      return hovered === name ? colorMap?.[name] || "#f59e0b" : "#00000055";
+    }
+    // Kalau tidak ada hovered → fallback ke logika selected
+    if (!selected) return colorMap?.[name] || "#ccc";
+    return selected.nm_kecamatan === name
+      ? colorMap?.[name] || "#ccc"
+      : "#00000055";
+  };
+
   return (
-    <div className="w-full h-[600px]">
-      <GoogleMap
-        mapContainerStyle={containerStyle}
-        center={{ lat: -3.2929468, lng: 103.8467967 }}
-        zoom={13}
-        options={{
-          mapTypeId: "satellite",
-          fullscreenControl: false,
-        }}
-      >
-        {geoJson.features.map(
+    // <div className="w-full h-[600px]">
+    <GoogleMap
+      mapContainerStyle={containerStyle}
+      center={center}
+      zoom={13}
+      options={{
+        fullscreenControl: false,
+      }}
+      onClick={handleClick}
+    >
+      {geoJson &&
+        geoJson.features.map(
           (feature: Feature<GeoJsonPolygon, AreaProperties>) => {
-            const coords = feature.geometry.coordinates[0].map(
-              ([lng, lat]) => ({ lat, lng })
-            );
+            const coords = getCoords(feature);
+            const name = feature.properties.nm_kecamatan;
 
             return (
               <Polygon
-                key={feature.properties.id}
+                key={feature.properties.kd_kecamatan}
                 paths={coords}
                 options={{
-                  fillColor: feature.properties.color,
-                  fillOpacity: 0.35,
-                  strokeColor: feature.properties.color,
-                  strokeOpacity: 0.8,
-                  strokeWeight: 2,
+                  fillColor: getColor(name),
+                  fillOpacity: 0.45,
+                  strokeColor:
+                    hovered === name ? colorMap?.[name] || "#f59e0b" : "#666",
+                  strokeOpacity: 0.9,
+                  strokeWeight: hovered === name ? 3 : 2,
                 }}
-                onClick={(e) =>
-                  setSelected({
-                    ...feature.properties,
-                    position: e.latLng
-                      ? { lat: e.latLng.lat(), lng: e.latLng.lng() }
-                      : coords[0],
-                  })
-                }
+                onClick={(e) => {
+                  handleClick?.(e);
+                  onSelected?.(feature.properties);
+                }}
+                onMouseOver={() => setHovered(name)}
+                onMouseOut={() => setHovered(null)}
               />
             );
           }
         )}
-
-        {selected && (
-          <InfoWindow
-            position={selected.position}
-            onCloseClick={() => setSelected(null)}
-          >
-            <div className="text-sm">
-              <p className="font-semibold">{selected.name}</p>
-              <p className="text-gray-600">ID: {selected.id}</p>
-            </div>
-          </InfoWindow>
-        )}
-
-        {children}
-      </GoogleMap>
-    </div>
+      {children}
+    </GoogleMap>
+    // </div>
   );
 }

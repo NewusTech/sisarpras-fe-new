@@ -11,7 +11,8 @@ import { cn } from "@/lib/utils";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import { FieldValues, Path, PathValue, useFormContext } from "react-hook-form";
-import GoogleCurrentLocationButton from "../maps/googleCurrentLocationButton";
+import * as turf from "@turf/turf";
+import { FeatureCollection, Polygon as GeoJsonPolygon } from "geojson";
 
 // Load map dynamically
 const GoogleMapComponent = dynamic(
@@ -32,6 +33,7 @@ type CustomFormMapsProps<T extends FieldValues = FieldValues> = {
   label?: string;
   className?: string;
   containerClassName?: string;
+  geoJson?: FeatureCollection<GeoJsonPolygon, AreaProperties>; // <- geoJson yang diizinkan
 };
 
 export default function CustomFormGmaps<T extends FieldValues = FieldValues>({
@@ -40,6 +42,7 @@ export default function CustomFormGmaps<T extends FieldValues = FieldValues>({
   label,
   className,
   containerClassName,
+  geoJson,
 }: CustomFormMapsProps<T>) {
   const { control, setValue, watch } = useFormContext<T>();
   const [position, setPosition] = useState<[number, number]>([
@@ -71,6 +74,30 @@ export default function CustomFormGmaps<T extends FieldValues = FieldValues>({
   }, [latitude, longitude]);
 
   const handlePositionChange = (newPosition: [number, number]) => {
+    const point = turf.point([newPosition[1], newPosition[0]]); // lng, lat
+    let isInside = true;
+
+    if (geoJson) {
+      if (geoJson.type === "FeatureCollection") {
+        // cek tiap feature
+        isInside = geoJson.features.some((feature) =>
+          turf.booleanPointInPolygon(point, feature as any)
+        );
+      } else if (geoJson.type === "Feature") {
+        isInside = turf.booleanPointInPolygon(point, geoJson as any);
+      } else {
+        // Polygon atau MultiPolygon langsung
+        isInside = turf.booleanPointInPolygon(point, geoJson as any);
+      }
+    }
+
+    if (!isInside) {
+      setLocationError("Lokasi di luar area yang diperbolehkan");
+      alert("Lokasi di luar area yang diperbolehkan 🚫");
+      return;
+    }
+
+    setLocationError(null);
     setPosition(newPosition);
     setValue(nameLat, newPosition[0].toString() as PathValue<T, Path<T>>, {
       shouldValidate: true,
@@ -100,6 +127,7 @@ export default function CustomFormGmaps<T extends FieldValues = FieldValues>({
                   <GoogleMapComponent
                     position={position}
                     onPositionChange={handlePositionChange}
+                    geoJson={geoJson} // bisa dipakai untuk render polygon juga
                   />
                 )}
               </div>

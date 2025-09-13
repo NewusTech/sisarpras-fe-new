@@ -1,10 +1,12 @@
 "use client";
 
 import { GoogleMap, Marker } from "@react-google-maps/api";
+import { FeatureCollection, Polygon as GeoJsonPolygon } from "geojson";
 import { useCallback } from "react";
+import GisMapView from "./gisMapView";
 import { useGoogleMapsLoader } from "./gmapsLoader";
-import GoogleMapSearchBox from "./googleMapsSearchBox";
 import GoogleCurrentLocationButton from "./googleCurrentLocationButton";
+import GoogleMapSearchBox from "./googleMapsSearchBox";
 
 const containerStyle = {
   width: "100%",
@@ -13,12 +15,14 @@ const containerStyle = {
 
 type GoogleMapComponentProps = {
   position: [number, number];
+  geoJson?: FeatureCollection<GeoJsonPolygon, AreaProperties>;
   onPositionChange?: (newPosition: [number, number]) => void;
 };
 
 export default function GoogleMapComponent({
   position,
   onPositionChange,
+  geoJson,
 }: GoogleMapComponentProps) {
   const { isLoaded } = useGoogleMapsLoader();
 
@@ -46,19 +50,13 @@ export default function GoogleMapComponent({
       <GoogleMapSearchBox
         onPlaceSelected={(lat, lng) => onPositionChange?.([lat, lng])}
       />
-
-      <GoogleMap
-        mapContainerStyle={containerStyle}
+      <GisMapView
+        geoJson={geoJson}
         center={{ lat: position[0], lng: position[1] }}
-        zoom={14}
-        onClick={handleClick}
-        options={{
-          fullscreenControl: false,
-        }}
+        handleClick={handleClick}
       >
         <Marker position={{ lat: position[0], lng: position[1] }} />
-      </GoogleMap>
-
+      </GisMapView>
       <div className="absolute bottom-7 right-20 z-[999]">
         <GoogleCurrentLocationButton
           onLocationSuccess={(val) => onPositionChange?.(val)}

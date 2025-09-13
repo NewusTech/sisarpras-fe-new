@@ -1,5 +1,6 @@
 "use client";
 
+import { useGetGeo } from "@/components/parts/maps/api";
 import { CustomFormCalender } from "@/components/shared/forms/customFormCalender";
 import CustomFormCheckbox from "@/components/shared/forms/customFormCheckbox";
 import { CustomFormDragAndDrop } from "@/components/shared/forms/customFormDragAndDrop";
@@ -24,6 +25,8 @@ import React, { useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 
 export default function Page() {
+  const { data: geo } = useGetGeo();
+
   // State untuk simpan daftar opsi
   const [options, setOptions] = useState([
     { label: "Opsi 1", value: "opsi-1" },
@@ -47,6 +50,8 @@ export default function Page() {
   }, [polyWatch]);
 
   const onSubmit = (data: any) => {};
+
+  if (!geo) return null;
 
   return (
     <div>
@@ -191,6 +196,7 @@ export default function Page() {
             label="Maps"
             className="col-span-2 md:col-span-1"
             containerClassName="h-[52rem]" // jika ingin custom mapnya
+            geoJson={geo}
           />
           <CustomFormGmapsPoligon name="polygon" label="Poligon" />
         </form>

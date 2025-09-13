@@ -1,5 +1,6 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import type { Feature, Polygon as GeoJsonPolygon } from "geojson";
 import xss from "xss";
 
 export function cn(...inputs: ClassValue[]) {
@@ -55,4 +56,36 @@ export function cleanHTML(input: string): string {
     stripIgnoreTag: true, // hapus tag yang ga di whitelist
     stripIgnoreTagBody: ["script", "style"], // buang isi script/style juga
   });
+}
+
+export const getCoords = (feature: Feature<GeoJsonPolygon, AreaProperties>) => {
+  if (feature.geometry.type === "Polygon") {
+    return feature.geometry.coordinates[0].map(([lng, lat]) => ({ lat, lng }));
+  }
+  if (feature.geometry.type === "MultiPolygon") {
+    return feature.geometry.coordinates[0][0].map(([lng, lat]: any) => ({
+      lat,
+      lng,
+    }));
+  }
+  return [];
+};
+
+export function getPolygonCenter(coords: google.maps.LatLngLiteral[]) {
+  let minLat = coords[0].lat,
+    maxLat = coords[0].lat,
+    minLng = coords[0].lng,
+    maxLng = coords[0].lng;
+
+  coords.forEach(({ lat, lng }) => {
+    if (lat < minLat) minLat = lat;
+    if (lat > maxLat) maxLat = lat;
+    if (lng < minLng) minLng = lng;
+    if (lng > maxLng) maxLng = lng;
+  });
+
+  return {
+    lat: (minLat + maxLat) / 2,
+    lng: (minLng + maxLng) / 2,
+  };
 }

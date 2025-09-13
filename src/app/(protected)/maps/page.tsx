@@ -1,11 +1,30 @@
-import { Image } from "@/components/shared/image";
+"use client";
+
+import { useGetGeo } from "@/components/parts/maps/api";
 import { BreadcrumbSetItem } from "@/components/shared/layouts/myBreadcrumb";
 import GisMapView from "@/components/shared/maps/gisMapView";
-import GoolePoint from "@/components/shared/maps/googlePoint";
+import GooglePoint from "@/components/shared/maps/googlePoint";
+
+import MapBadgeOverlay from "@/components/shared/maps/mapBadgeOverlay";
+import { getCoords, getPolygonCenter } from "@/lib/utils";
 import { FeatureCollection, Polygon } from "geojson";
-import React from "react";
+import { useMemo } from "react";
 
 export default function Page() {
+  const { data: geo } = useGetGeo();
+
+  // jika mau otomatis
+  const mappingBadge = useMemo(() => {
+    const dataCoor = geo?.features.map((feature) => {
+      const coords = getCoords(feature);
+      const centerCoor = getPolygonCenter(coords);
+      return { ...feature.properties, position: centerCoor };
+    });
+
+    return dataCoor;
+  }, [geo]);
+
+  if (!geo) return null;
   return (
     <div>
       <BreadcrumbSetItem
@@ -19,19 +38,41 @@ export default function Page() {
           },
         ]}
       />
-      <GisMapView geoJson={dummyGeoJson}>
-        <GoolePoint position={{ lat: -3.2909468, lng: 103.8467967 }}>
-          <div className="max-w-lg">
-            <p>Tes</p>
-            <p>
-              Lorem ipsum dolor sit, amet consectetur adipisicing elit. Fuga
-              mollitia iusto explicabo ea pariatur cupiditate natus ut magni,
-              saepe cum voluptatum maiores facere fugit eos voluptas? Excepturi
-              minus veniam officiis.
-            </p>
-          </div>
-        </GoolePoint>
-      </GisMapView>
+      <div className="w-full h-[600px]">
+        <GisMapView
+          geoJson={geo}
+          onSelected={(e) => console.log(e)}
+          colorMap={{
+            "Talang Ubi": "#f94144",
+            Penukal: "#f3722c",
+            Abab: "#f9c74f",
+            "Penukal Utara": "#90be6d",
+            "Tanah Abang": "#0077b6",
+          }}
+        >
+          {/* untuk point titik */}
+          <GooglePoint position={{ lat: -3.2909468, lng: 103.8467967 }}>
+            <div className="max-w-lg">
+              <p>Tes</p>
+              <p>
+                Lorem ipsum dolor sit, amet consectetur adipisicing elit. Fuga
+                mollitia iusto explicabo ea pariatur cupiditate natus ut magni,
+                saepe cum voluptatum maiores facere fugit eos voluptas?
+                Excepturi minus veniam officiis.
+              </p>
+            </div>
+          </GooglePoint>
+          {/* untuk badge overlay */}
+          {mappingBadge?.map((data, i) => (
+            <MapBadgeOverlay
+              key={i}
+              position={data.position}
+              title={data.nm_kecamatan}
+              value={"desc"}
+            />
+          ))}
+        </GisMapView>
+      </div>
     </div>
   );
 }

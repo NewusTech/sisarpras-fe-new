@@ -1,5 +1,12 @@
 import { NavItem } from "@/types/interface";
-import { DockIcon, Image, LayoutDashboard, Map, Table2 } from "lucide-react";
+import {
+  DockIcon,
+  Image,
+  LayoutDashboard,
+  Map,
+  Table2,
+  View,
+} from "lucide-react";
 
 export const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 export const REGION_URL = process.env.NEXT_PUBLIC_API_REGION;
@@ -51,6 +58,11 @@ export const getNavData = (): navDateType => {
         title: "Images",
         url: "/images",
         icon: Image,
+      },
+      {
+        title: "View Label",
+        url: "/view-label",
+        icon: View,
       },
     ],
   };
