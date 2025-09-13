@@ -16,6 +16,7 @@ import { cn } from "@/lib/utils";
 type Option = {
   label: string;
   value: string;
+  disabled?: boolean;
 };
 
 type CustomFormRadioGroupProps<T extends FieldValues = FieldValues> = {
@@ -24,6 +25,7 @@ type CustomFormRadioGroupProps<T extends FieldValues = FieldValues> = {
   options: Option[];
   description?: string;
   className?: string;
+  containerClassName?: string;
   inline?: boolean;
   required?: boolean;
   disabled?: boolean;
@@ -38,6 +40,7 @@ export function CustomFormRadioGroup<T extends FieldValues = FieldValues>({
   inline = true,
   required = false,
   disabled = false,
+  containerClassName,
 }: CustomFormRadioGroupProps<T>) {
   const { control } = useFormContext<T>();
 
@@ -48,7 +51,7 @@ export function CustomFormRadioGroup<T extends FieldValues = FieldValues>({
       render={({ field }) => (
         <FormItem className={className}>
           {label && (
-            <FormLabel>
+            <FormLabel className="capitalize">
               {label}
               {required && <span className="text-destructive ml-1">*</span>}
             </FormLabel>
@@ -59,20 +62,24 @@ export function CustomFormRadioGroup<T extends FieldValues = FieldValues>({
               defaultValue={field.value}
               className={cn(
                 "gap-4",
-                inline ? "flex items-center" : "flex flex-col"
+                inline ? "flex items-center" : "flex flex-col",
+                containerClassName
               )}
             >
               {options.map((opt) => (
                 <FormItem
                   key={opt.value}
                   className={cn(
-                    "space-y-0",
+                    "space-y-0 space-x-2",
                     "flex items-center",
                     inline && "space-x-3"
                   )}
                 >
                   <FormControl>
-                    <RadioGroupItem value={opt.value} disabled={disabled} />
+                    <RadioGroupItem
+                      value={opt.value}
+                      disabled={opt.disabled ?? disabled}
+                    />
                   </FormControl>
                   <FormLabel className="font-normal">{opt.label}</FormLabel>
                 </FormItem>

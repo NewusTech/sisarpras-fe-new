@@ -9,7 +9,12 @@ import {
 } from "@/components/ui/form";
 import { FieldValues, Path, useFormContext } from "react-hook-form";
 import { cn } from "@/lib/utils";
-import RichTextEditor from "@/components/ui/richTextEditor";
+import { PlaceholderValue } from "@/components/ui/richTextEditor";
+import dynamic from "next/dynamic";
+
+const RichTextEditor = dynamic(() => import("@/components/ui/richTextEditor"), {
+  ssr: false,
+});
 
 interface CustomFormRichEditorProps<T extends FieldValues = FieldValues> {
   name: Path<T>;
@@ -21,6 +26,7 @@ interface CustomFormRichEditorProps<T extends FieldValues = FieldValues> {
   required?: boolean;
   disabled?: boolean;
   onChange?: (value: string) => void;
+  placeholderKeys?: PlaceholderValue[];
 }
 
 export default function CustomFormRichEditor<
@@ -32,6 +38,7 @@ export default function CustomFormRichEditor<
   className,
   editorClassName,
   onChange,
+  placeholderKeys,
 }: CustomFormRichEditorProps<T>) {
   const { control } = useFormContext<T>();
 
@@ -41,7 +48,7 @@ export default function CustomFormRichEditor<
       name={name}
       render={({ field }) => (
         <FormItem className={cn("w-full", className)}>
-          {label && <FormLabel>{label}</FormLabel>}
+          {label && <FormLabel className="capitalize">{label}</FormLabel>}
           <FormControl>
             <RichTextEditor
               value={field.value}
@@ -51,6 +58,7 @@ export default function CustomFormRichEditor<
               }}
               placeholder={placeholder}
               editorClassName={editorClassName}
+              placeholderKeys={placeholderKeys}
             />
           </FormControl>
           <FormMessage />

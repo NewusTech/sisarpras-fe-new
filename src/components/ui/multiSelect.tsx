@@ -1,3 +1,5 @@
+"use client";
+
 // src/components/multi-select.tsx
 
 import * as React from "react";
@@ -78,6 +80,15 @@ interface MultiSelectProps
    */
   onValueChange: (value: string[]) => void;
 
+  /**
+   * Callback function triggered when a new option is created.
+   * Receives the new option object.
+   */
+  onOptionCreate?: (
+    option: { label: string; value: string },
+    onSuccessSet?: (created: { label: string; value: string }) => void
+  ) => void;
+
   /** The default selected values when the component mounts. */
   defaultValue?: string[];
 
@@ -86,6 +97,12 @@ interface MultiSelectProps
    * Optional, defaults to "Select options".
    */
   placeholder?: string;
+
+  /**
+   * Whether to allow creating new options by typing and pressing Enter.
+   * Optional, defaults to false.
+   */
+  allowCreate?: boolean;
 
   /**
    * Animation duration in seconds for the visual effects (e.g., bouncing badges).
@@ -127,9 +144,11 @@ export const MultiSelect = React.forwardRef<
     {
       options,
       onValueChange,
+      onOptionCreate,
       variant,
       defaultValue = [],
       placeholder = "Select options",
+      allowCreate = false,
       animation = 0,
       maxCount = 3,
       modalPopover = false,
@@ -143,12 +162,54 @@ export const MultiSelect = React.forwardRef<
       React.useState<string[]>(defaultValue);
     const [isPopoverOpen, setIsPopoverOpen] = React.useState(false);
     const [isAnimating, setIsAnimating] = React.useState(false);
+    const [dynamicOptions, setDynamicOptions] = React.useState(options);
+    const [inputValue, setInputValue] = React.useState("");
 
     const handleInputKeyDown = (
       event: React.KeyboardEvent<HTMLInputElement>
     ) => {
       if (event.key === "Enter") {
-        setIsPopoverOpen(true);
+        const trimmedValue = inputValue.trim();
+
+        if (
+          allowCreate &&
+          trimmedValue &&
+          !dynamicOptions.some(
+            (opt) => opt.value.toLowerCase() === trimmedValue.toLowerCase()
+          )
+        ) {
+          const newOption = {
+            label: trimmedValue,
+            value: trimmedValue.toLowerCase().replace(/\s+/g, "-"),
+          };
+
+          // 👉 kalau ada onOptionCreate, kasih kesempatan BE balikin id/value
+          if (onOptionCreate) {
+            onOptionCreate(newOption, (created) => {
+              // created → hasil dari BE, misal { id: 6, name: "Surat Pengantar 2" }
+              const optionFromBe = {
+                value: created.value,
+                label: created.label,
+              };
+              setDynamicOptions((prev) => [...prev, optionFromBe]);
+
+              const newSelectedValues = [...selectedValues, optionFromBe.value];
+              setSelectedValues(newSelectedValues);
+              onValueChange(newSelectedValues);
+            });
+          } else {
+            // fallback ke behavior lama
+            setDynamicOptions((prev) => [...prev, newOption]);
+            const newSelectedValues = [...selectedValues, newOption.value];
+            setSelectedValues(newSelectedValues);
+            onValueChange(newSelectedValues);
+          }
+
+          setInputValue("");
+          event.preventDefault();
+        } else if (!allowCreate) {
+          setIsPopoverOpen(true);
+        }
       } else if (event.key === "Backspace" && !event.currentTarget.value) {
         const newSelectedValues = [...selectedValues];
         newSelectedValues.pop();
@@ -181,14 +242,18 @@ export const MultiSelect = React.forwardRef<
     };
 
     const toggleAll = () => {
-      if (selectedValues.length === options.length) {
+      if (selectedValues.length === dynamicOptions.length) {
         handleClear();
       } else {
-        const allValues = options.map((option) => option.value);
+        const allValues = dynamicOptions.map((option) => option.value);
         setSelectedValues(allValues);
         onValueChange(allValues);
       }
     };
+
+    React.useEffect(() => {
+      setDynamicOptions(options);
+    }, [options]);
 
     return (
       <Popover
@@ -210,7 +275,9 @@ export const MultiSelect = React.forwardRef<
               <div className="flex justify-between items-center w-full">
                 <div className="flex flex-wrap items-center">
                   {selectedValues?.slice(0, maxCount)?.map((value) => {
-                    const option = options.find((o) => o.value === value);
+                    const option = dynamicOptions.find(
+                      (o) => o.value === value
+                    );
                     const IconComponent = option?.icon;
                     return (
                       <Badge
@@ -281,17 +348,29 @@ export const MultiSelect = React.forwardRef<
           </Button>
         </PopoverTrigger>
         <PopoverContent
-          className="w-auto p-0"
+          className="w-[var(--radix-popover-trigger-width)] p-0"
           align="start"
           onEscapeKeyDown={() => setIsPopoverOpen(false)}
         >
           <Command>
             <CommandInput
-              placeholder="Search..."
+              placeholder={
+                allowCreate ? "Search or type to create..." : "Search..."
+              }
               onKeyDown={handleInputKeyDown}
+              value={inputValue}
+              onValueChange={setInputValue}
             />
             <CommandList>
-              <CommandEmpty>No results found.</CommandEmpty>
+              <CommandEmpty>
+                {allowCreate && inputValue.trim() ? (
+                  <div className="p-2 text-sm text-muted-foreground">
+                    Press Enter to create &quot;{inputValue.trim()}&quot;
+                  </div>
+                ) : (
+                  "No results found."
+                )}
+              </CommandEmpty>
               <CommandGroup>
                 <CommandItem
                   key="all"
@@ -301,7 +380,7 @@ export const MultiSelect = React.forwardRef<
                   <div
                     className={cn(
                       "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
-                      selectedValues.length === options.length
+                      selectedValues.length === dynamicOptions.length
                         ? "bg-primary text-primary-foreground"
                         : "opacity-50 [&_svg]:invisible"
                     )}
@@ -310,7 +389,7 @@ export const MultiSelect = React.forwardRef<
                   </div>
                   <span>(Select All)</span>
                 </CommandItem>
-                {options.map((option) => {
+                {dynamicOptions.map((option) => {
                   const isSelected = selectedValues.includes(option.value);
                   return (
                     <CommandItem

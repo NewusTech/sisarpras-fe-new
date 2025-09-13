@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { FieldValues, Path, useFormContext } from "react-hook-form";
 import {
   FormField,
@@ -35,6 +35,14 @@ interface CustomFormMultiSelectProps<T extends FieldValues = FieldValues> {
     | undefined;
   animation?: number;
   maxCount?: number;
+  /**
+   * Callback function triggered when a new option is created.
+   * Receives the new option object.
+   */
+  onOptionCreate?: (
+    option: { label: string; value: string },
+    onSuccessSet?: (created: { label: string; value: string }) => void
+  ) => void;
 }
 
 export function CustomFormMultiSelect<T extends FieldValues = FieldValues>({
@@ -49,8 +57,16 @@ export function CustomFormMultiSelect<T extends FieldValues = FieldValues>({
   variant,
   animation,
   maxCount,
+  onOptionCreate,
 }: CustomFormMultiSelectProps<T>) {
   const { control } = useFormContext<T>();
+  const [newOptions, setNewOptions] = useState<SelectOption[]>([]);
+
+  useEffect(() => {
+    if (options) {
+      setNewOptions(options);
+    }
+  }, [options]);
 
   return (
     <FormField
@@ -59,7 +75,7 @@ export function CustomFormMultiSelect<T extends FieldValues = FieldValues>({
       render={({ field }) => (
         <FormItem className={className}>
           {label && (
-            <FormLabel>
+            <FormLabel className="capitalize">
               {label}
               {required && <span className="text-destructive ml-1">*</span>}
             </FormLabel>
@@ -67,7 +83,7 @@ export function CustomFormMultiSelect<T extends FieldValues = FieldValues>({
           <FormControl>
             <MultiSelect
               key={field.value}
-              options={options}
+              options={newOptions}
               onValueChange={(values) => field.onChange(values)}
               defaultValue={field.value || []}
               placeholder={placeholder}
@@ -75,6 +91,9 @@ export function CustomFormMultiSelect<T extends FieldValues = FieldValues>({
               animation={animation}
               maxCount={maxCount}
               disabled={disabled}
+              allowCreate={!!onOptionCreate}
+              className="shadow-none min-h-9"
+              onOptionCreate={onOptionCreate}
             />
           </FormControl>
           {description && <FormDescription>{description}</FormDescription>}

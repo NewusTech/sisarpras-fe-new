@@ -33,6 +33,7 @@ interface CustomFormSelectProps<T extends FieldValues = FieldValues> {
   required?: boolean;
   disabled?: boolean;
   onValueChange?: (value: string) => void;
+  leadingIcon?: React.ReactNode;
 }
 
 export function CustomFormSelect<T extends FieldValues = FieldValues>({
@@ -45,6 +46,7 @@ export function CustomFormSelect<T extends FieldValues = FieldValues>({
   required = false,
   disabled = false,
   onValueChange,
+  leadingIcon,
 }: CustomFormSelectProps<T>) {
   const { control } = useFormContext<T>();
 
@@ -55,7 +57,7 @@ export function CustomFormSelect<T extends FieldValues = FieldValues>({
       render={({ field }) => (
         <FormItem className={className}>
           {label && (
-            <FormLabel>
+            <FormLabel className="capitalize">
               {label}
               {required && <span className="text-destructive ml-1">*</span>}
             </FormLabel>
@@ -70,13 +72,16 @@ export function CustomFormSelect<T extends FieldValues = FieldValues>({
             disabled={disabled}
           >
             <FormControl>
-              <SelectTrigger className="bg-card rounded-full">
-                <SelectValue
-                  placeholder={placeholder}
-                  defaultValue={field.value}
-                >
-                  {options.find((opt) => opt.value === field.value)?.label}
-                </SelectValue>
+              <SelectTrigger className="bg-card rounded-full flex gap-x-4">
+                <div className="flex items-center gap-x-2">
+                  {leadingIcon}
+                  <SelectValue
+                    placeholder={placeholder}
+                    defaultValue={field.value}
+                  >
+                    {options.find((opt) => opt.value === field.value)?.label}
+                  </SelectValue>
+                </div>
               </SelectTrigger>
             </FormControl>
             <SelectContent>

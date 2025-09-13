@@ -1,21 +1,22 @@
 "use client";
 
-import React, { useRef } from "react";
-import { useFormContext, FieldValues, Path } from "react-hook-form";
+import { Button } from "@/components/ui/button";
 import {
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-  FormDescription,
 } from "@/components/ui/form";
-import { Button } from "@/components/ui/button";
-import { Eye, File, X } from "lucide-react";
 import { Label } from "@/components/ui/label";
-import { toast } from "sonner";
 import { formatFileName } from "@/lib/utils";
+import { Crop, Eye, File, X } from "lucide-react";
 import Link from "next/link";
+import React, { useRef, useState } from "react";
+import { FieldValues, Path, useFormContext } from "react-hook-form";
+import { toast } from "sonner";
+import ImageCropModal from "../imageCropModal";
 
 type FileAcceptType =
   | "image/*"
@@ -50,6 +51,8 @@ type CustomFormFileInputProps<T extends FieldValues = FieldValues> = {
   accept?: Array<FileAcceptType>;
   maxSize?: number; // in bytes
   allowedExtensions?: string[];
+  enableCrop?: boolean; // New prop to enable cropping
+  cropAspectRatio?: number | null; // Aspect ratio for crop (default: 1 for square, null for free)
 };
 
 export function CustomFormFileInput<T extends FieldValues = FieldValues>({
@@ -61,12 +64,24 @@ export function CustomFormFileInput<T extends FieldValues = FieldValues>({
   required = false,
   disabled = false,
   accept,
-  maxSize = 5 * 1024 * 1024,
+  maxSize = 20 * 1024 * 1024,
   allowedExtensions,
+  enableCrop = false,
+  cropAspectRatio = 1,
 }: CustomFormFileInputProps<T>) {
   const { control, setValue, watch } = useFormContext<T>();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const fieldValue = watch(name);
+
+  // Crop states
+  const [cropModalOpen, setCropModalOpen] = useState(false);
+  const [currentImageToCrop, setCurrentImageToCrop] = useState<string | null>(
+    null
+  );
+  const [pendingFile, setPendingFile] = useState<File | null>(null);
+  const [pendingOnChange, setPendingOnChange] = useState<
+    ((value: any) => void) | null
+  >(null);
 
   const formatFileSize = (bytes: number): string => {
     if (bytes === 0) return "0 Bytes";
@@ -91,6 +106,61 @@ export function CustomFormFileInput<T extends FieldValues = FieldValues>({
     return "";
   };
 
+  const isImageFile = (file: File): boolean => {
+    return (
+      file.type.startsWith("image/") &&
+      [
+        "image/jpeg",
+        "image/jpg",
+        "image/png",
+        "image/gif",
+        "image/webp",
+      ].includes(file.type)
+    );
+  };
+
+  const shouldCropFile = (file: File): boolean => {
+    return enableCrop && isImageFile(file);
+  };
+
+  const startCropProcess = (file: File, onChange: (value: any) => void) => {
+    setPendingFile(file);
+    setPendingOnChange(() => onChange);
+    const reader = new FileReader();
+    reader.onload = () => {
+      setCurrentImageToCrop(reader.result as string);
+      setCropModalOpen(true);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleCropComplete = (croppedFile: File) => {
+    if (pendingOnChange) {
+      pendingOnChange(croppedFile);
+    }
+    setCropModalOpen(false);
+    setCurrentImageToCrop(null);
+    setPendingFile(null);
+    setPendingOnChange(null);
+  };
+
+  const handleCropCancel = () => {
+    // For default crop behavior, still save the original file
+    if (pendingFile && pendingOnChange) {
+      pendingOnChange(pendingFile);
+    }
+
+    setCropModalOpen(false);
+    setCurrentImageToCrop(null);
+    setPendingFile(null);
+    setPendingOnChange(null);
+
+    // Reset file input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
   const handleFileChange = (
     e: React.ChangeEvent<HTMLInputElement>,
     onChange: (value: any) => void
@@ -104,7 +174,12 @@ export function CustomFormFileInput<T extends FieldValues = FieldValues>({
       return;
     }
 
-    onChange(file);
+    // Check if we should crop this file
+    if (shouldCropFile(file)) {
+      startCropProcess(file, onChange);
+    } else {
+      onChange(file);
+    }
   };
 
   const handleRemoveFile = (onChange: (value: any) => void) => {
@@ -115,6 +190,37 @@ export function CustomFormFileInput<T extends FieldValues = FieldValues>({
     }
   };
 
+  const handleCropExistingFile = (
+    currentFile: File,
+    onChange: (value: any) => void
+  ) => {
+    if (currentFile && isImageFile(currentFile)) {
+      startCropProcess(currentFile, onChange);
+    }
+  };
+
+  const renderFilePreview = () => {
+    if (typeof fieldValue === "string" && fieldValue) {
+      // URL string - existing file
+      return (
+        <div className="flex items-center gap-2 mt-2 p-2 bg-muted/50 rounded-md">
+          <File className="h-4 w-4 text-muted-foreground" />
+          <span className="text-sm text-muted-foreground truncate flex-1">
+            {formatFileName(fieldValue)}
+          </span>
+          <Link
+            href={fieldValue}
+            target="_blank"
+            className="p-1 hover:bg-gray-100 rounded-sm"
+          >
+            <Eye className="text-muted-foreground h-4 w-4" />
+          </Link>
+        </div>
+      );
+    }
+    return null;
+  };
+
   return (
     <FormField
       control={control}
@@ -122,7 +228,7 @@ export function CustomFormFileInput<T extends FieldValues = FieldValues>({
       render={({ field }) => (
         <FormItem className={className}>
           {label && (
-            <FormLabel>
+            <FormLabel className="capitalize">
               {label}
               {required && <span className="text-destructive ml-1">*</span>}
             </FormLabel>
@@ -138,7 +244,7 @@ export function CustomFormFileInput<T extends FieldValues = FieldValues>({
                 className="hidden"
               />
 
-              <div className="border border-border rounded-full p-2 ps-4 flex justify-between items-center bg-card">
+              <div className="border border-border rounded-full p-1 ps-4 flex justify-between items-center bg-card">
                 <span className="truncate text-sm text-muted-foreground">
                   {typeof field.value === "object" && field.value !== null
                     ? field.value?.name
@@ -147,6 +253,25 @@ export function CustomFormFileInput<T extends FieldValues = FieldValues>({
                       : placeholder}
                 </span>
                 <div className="flex gap-2 items-center">
+                  {/* Crop button for existing image files */}
+                  {enableCrop &&
+                    typeof field.value === "object" &&
+                    field.value !== null &&
+                    isImageFile(field.value) && (
+                      <Button
+                        size="icon"
+                        type="button"
+                        variant="ghost"
+                        className="h-7 w-7 p-0"
+                        onClick={() =>
+                          handleCropExistingFile(field.value, field.onChange)
+                        }
+                        title="Crop Image"
+                      >
+                        <Crop className="h-4 w-4" />
+                      </Button>
+                    )}
+
                   {typeof field.value === "object" && field.value !== null ? (
                     <Button
                       size="icon"
@@ -168,6 +293,7 @@ export function CustomFormFileInput<T extends FieldValues = FieldValues>({
                       </Link>
                     )
                   )}
+
                   <Button
                     type="button"
                     variant="ghost"
@@ -187,13 +313,38 @@ export function CustomFormFileInput<T extends FieldValues = FieldValues>({
                   <span>{formatFileSize(field.value?.size)}</span>
                 </div>
               )}
+
+              {renderFilePreview()}
             </Label>
           </FormControl>
 
           {description && <FormDescription>{description}</FormDescription>}
           <FormMessage />
+
+          {/* Crop Modal */}
+          {currentImageToCrop && (
+            <ImageCropModal
+              open={cropModalOpen}
+              imageUrl={currentImageToCrop}
+              onClose={handleCropCancel}
+              onCropComplete={handleCropComplete}
+              aspectRatio={cropAspectRatio}
+            />
+          )}
         </FormItem>
       )}
     />
   );
 }
+
+// Updated ImageCropModal interface to support aspectRatio
+interface ImageCropModalProps {
+  open: boolean;
+  imageUrl: string;
+  onClose: () => void;
+  onCropComplete: (file: File) => void;
+  aspectRatio?: number | null;
+}
+
+// Export the component with crop support
+export default CustomFormFileInput;

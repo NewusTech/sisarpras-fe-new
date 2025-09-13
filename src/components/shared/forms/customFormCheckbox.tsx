@@ -58,7 +58,7 @@ export default function CustomFormCheckbox<
           <FormItem className={className}>
             <div className="mb-2">
               {label && (
-                <FormLabel>
+                <FormLabel className="capitalize">
                   {label}
                   {required && <span className="text-destructive ml-1">*</span>}
                 </FormLabel>

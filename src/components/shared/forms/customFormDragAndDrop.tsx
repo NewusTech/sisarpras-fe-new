@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, ChangeEvent, DragEvent } from "react";
 import { cn } from "@/lib/utils";
-import { Upload, File as FileIcon, X } from "lucide-react";
+import { Upload, File as FileIcon, X, Cloud } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import {
@@ -16,6 +16,30 @@ import {
 import { useFormContext, FieldValues, Path, PathValue } from "react-hook-form";
 import Image from "next/image";
 import { myAlert } from "@/lib/myAlert";
+import ImageCropModal from "@/components/shared/imageCropModal";
+
+type FileAcceptType =
+  | "image/*"
+  | "image/png"
+  | "image/jpeg"
+  | "image/jpg"
+  | "image/gif"
+  | "image/webp"
+  | "application/pdf"
+  | "application/msword" // .doc
+  | "application/vnd.openxmlformats-officedocument.wordprocessingml.document" // .docx
+  | "application/vnd.ms-excel" // .xls
+  | "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" // .xlsx
+  | "text/plain"
+  | ".csv"
+  | ".zip"
+  | ".rar"
+  | ".txt"
+  | ".json"
+  | ".xml"
+  | ".mp4"
+  | ".mp3"
+  | ".wav";
 
 interface CustomFormDragAndDropProps<T extends FieldValues = FieldValues> {
   name: Path<T>;
@@ -23,20 +47,22 @@ interface CustomFormDragAndDropProps<T extends FieldValues = FieldValues> {
   description?: string;
   maxSize?: number; // in MB
   maxFiles?: number;
-  acceptedFileTypes?: string[];
+  acceptedFileTypes?: FileAcceptType[];
   className?: string;
   required?: boolean;
+  handleDeleteFile?: (val: string) => void;
 }
 
 export function CustomFormDragAndDrop<T extends FieldValues = FieldValues>({
   name,
   label,
   description,
-  maxSize = 100,
+  maxSize = 5,
   maxFiles = 1,
   acceptedFileTypes = ["image/jpeg", "image/png"],
   className,
   required = false,
+  handleDeleteFile,
 }: CustomFormDragAndDropProps<T>) {
   const { control, watch, setValue } = useFormContext<T>();
   const fieldValue = watch(name) as PathValue<T, Path<T>> | string | undefined;
@@ -48,7 +74,7 @@ export function CustomFormDragAndDrop<T extends FieldValues = FieldValues>({
       render={({ field }) => (
         <FormItem className={className}>
           {label && (
-            <FormLabel>
+            <FormLabel className="capitalize">
               {label}
               {required && <span className="text-destructive ml-1">*</span>}
             </FormLabel>
@@ -69,8 +95,13 @@ export function CustomFormDragAndDrop<T extends FieldValues = FieldValues>({
               maxFiles={maxFiles}
               acceptedFileTypes={acceptedFileTypes}
               fieldValue={
-                typeof fieldValue === "string" ? fieldValue : undefined
+                typeof fieldValue === "string"
+                  ? [fieldValue]
+                  : Array.isArray(fieldValue)
+                    ? fieldValue.filter((f: any) => typeof f === "string")
+                    : undefined
               }
+              handleDeleteFile={handleDeleteFile}
             />
           </FormControl>
           {description && <FormDescription>{description}</FormDescription>}
@@ -87,7 +118,9 @@ interface FileUploadControlProps {
   maxSize?: number;
   maxFiles?: number;
   acceptedFileTypes?: string[];
-  fieldValue?: string;
+  fieldValue?: string[];
+  handleDeleteFile?: (url: string) => void;
+  pickerType?: "google";
 }
 
 const FileUploadControl: React.FC<FileUploadControlProps> = ({
@@ -97,6 +130,8 @@ const FileUploadControl: React.FC<FileUploadControlProps> = ({
   maxFiles = 1,
   acceptedFileTypes = ["image/jpeg", "image/png"],
   fieldValue,
+  handleDeleteFile,
+  pickerType,
 }) => {
   const [files, setFiles] = useState<File[]>(value);
   const [isDragging, setIsDragging] = useState(false);
@@ -104,52 +139,160 @@ const FileUploadControl: React.FC<FileUploadControlProps> = ({
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // crop file
+  const [cropQueue, setCropQueue] = useState<File[]>([]);
+  const [croppedFiles, setCroppedFiles] = useState<File[]>([]);
+  const [currentImageToCrop, setCurrentImageToCrop] = useState<string | null>(
+    null
+  );
+  const [cropModalOpen, setCropModalOpen] = useState(false);
+  const [currentCropIndex, setCurrentCropIndex] = useState(0);
+
   const acceptedFileTypesString = acceptedFileTypes.join(",");
   const fileTypeLabels: Record<string, string> = {
     "image/jpeg": "JPG",
     "image/png": "PNG",
   };
 
+  const startCroppingQueue = (images: File[]) => {
+    if (images.length === 0) return;
+    setCropQueue(images);
+    setCroppedFiles([]);
+    setCurrentCropIndex(0);
+    loadImageForCrop(images[0]);
+  };
+
+  const loadImageForCrop = (file: File) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      setCurrentImageToCrop(reader.result as string);
+      setCropModalOpen(true);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleCropComplete = async (croppedFile: File) => {
+    // Tambahkan file yang sudah di-crop ke array croppedFiles
+    const newCroppedFiles = [...croppedFiles, croppedFile];
+    setCroppedFiles(newCroppedFiles);
+
+    const nextIndex = currentCropIndex + 1;
+
+    if (nextIndex < cropQueue.length) {
+      // Masih ada gambar yang perlu di-crop
+      setCurrentCropIndex(nextIndex);
+      loadImageForCrop(cropQueue[nextIndex]);
+    } else {
+      // Semua crop selesai, update files
+      const existingFiles = files.filter((f) => !cropQueue.includes(f)); // Hapus file original dari queue
+      const combinedFiles = [...existingFiles, ...newCroppedFiles];
+
+      // Validasi jumlah file
+      if (combinedFiles.length > maxFiles) {
+        myAlert.error(
+          "Terlalu banyak file",
+          `Anda hanya dapat mengunggah maksimum ${maxFiles} file${maxFiles > 1 ? "s" : ""}.`
+        );
+        // Reset state
+        setCropModalOpen(false);
+        setCurrentImageToCrop(null);
+        setCropQueue([]);
+        setCroppedFiles([]);
+        return;
+      }
+
+      setFiles(combinedFiles);
+      onChange(combinedFiles as never);
+
+      // Reset crop state
+      setCropModalOpen(false);
+      setCurrentImageToCrop(null);
+      setCropQueue([]);
+      setCroppedFiles([]);
+      setCurrentCropIndex(0);
+    }
+  };
+
+  const handleCropCancel = () => {
+    setCropModalOpen(false);
+    setCurrentImageToCrop(null);
+    setCropQueue([]);
+    setCroppedFiles([]);
+    setCurrentCropIndex(0);
+  };
+
   const renderPreview = () => {
-    // Helper cek ekstensi dari URL/file name
     const isPdf = (url: string) => url.toLowerCase().endsWith(".pdf");
     const isImage = (url: string) =>
       /\.(jpg|jpeg|png|gif|webp|bmp)$/i.test(url);
 
-    // Kalau fieldValue string (URL), cek tipe file dulu
-    if (typeof fieldValue === "string" && fieldValue) {
-      if (isPdf(fieldValue)) {
-        return (
-          <iframe
-            src={fieldValue}
-            title="Preview PDF"
-            className="max-w-xs rounded-md mt-4 w-48 h-48"
-          />
-        );
-      } else if (isImage(fieldValue)) {
-        return (
-          <Image
-            src={fieldValue}
-            alt="Preview"
-            className="max-w-xs rounded-md mt-4 w-24 h-24 object-cover"
-            width={300}
-            height={300}
-          />
-        );
-      } else {
-        // fallback tampil link saja kalau bukan image/pdf
-        return (
-          <a
-            href={fieldValue}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-blue-600 underline mt-4 block max-w-xs truncate"
-          >
-            {fieldValue}
-          </a>
-        );
-      }
+    if (Array.isArray(fieldValue) && fieldValue.length > 0) {
+      return (
+        <div className="flex flex-wrap gap-4 mt-4">
+          {fieldValue.map((url, index) => {
+            if (isPdf(url)) {
+              return (
+                <div className="relative" key={index}>
+                  <Button
+                    className="absolute -top-2 -right-2 w-5 h-5 rounded-full py-0 px-0"
+                    type="button"
+                    onClick={() => handleDeleteFile!(url)}
+                  >
+                    <X width={2} height={2} />
+                  </Button>
+                  <iframe
+                    src={url}
+                    title={`Preview PDF ${index}`}
+                    className="rounded-md w-48 h-48"
+                  />
+                </div>
+              );
+            } else if (isImage(url)) {
+              return (
+                <div className="relative" key={index}>
+                  <Button
+                    className="absolute -top-2 -right-2 w-5 h-5 rounded-full py-0 px-0"
+                    type="button"
+                    onClick={() => handleDeleteFile!(url)}
+                  >
+                    <X width={2} height={2} />
+                  </Button>
+                  <Image
+                    src={url}
+                    alt={`Preview ${index}`}
+                    className="rounded-md w-24 h-24 object-cover"
+                    width={96}
+                    height={96}
+                  />
+                </div>
+              );
+            } else {
+              return (
+                <div className="relative" key={index}>
+                  <Button
+                    className="absolute -top-2 -right-2 w-5 h-5 rounded-full py-0 px-0"
+                    type="button"
+                    onClick={() => handleDeleteFile!(url)}
+                  >
+                    <X width={2} height={2} />
+                  </Button>
+                  <a
+                    href={url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 underline block max-w-xs truncate"
+                  >
+                    {url}
+                  </a>
+                </div>
+              );
+            }
+          })}
+        </div>
+      );
     }
+
+    return null;
   };
 
   const getFileTypeLabel = () => {
@@ -160,12 +303,11 @@ const FileUploadControl: React.FC<FileUploadControlProps> = ({
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
-      handleFiles(Array.from(e.target.files), files);
+      handleFiles(Array.from(e.target.files));
     }
   };
 
-  // Tambahkan props value: string | File[] (atau buat parameter terpisah)
-  const handleFiles = (selectedFiles: File[], prevValue: string | File[]) => {
+  const handleFiles = (selectedFiles: File[]) => {
     const validFiles: File[] = [];
 
     for (const file of selectedFiles) {
@@ -182,8 +324,8 @@ const FileUploadControl: React.FC<FileUploadControlProps> = ({
 
       if (!isValidSize) {
         myAlert.error(
-          "File too large",
-          `File "${file.name}" exceeds the maximum size of ${maxSize}MB.`
+          "Berkas terlalu besar",
+          `Berkas "${file.name}" melebihi ukuran maksimum dari ${maxSize}MB.`
         );
         continue;
       }
@@ -193,24 +335,33 @@ const FileUploadControl: React.FC<FileUploadControlProps> = ({
 
     if (validFiles.length === 0) return;
 
-    // Cek tipe prevValue, kalau string (bukan array) replace langsung
-    let newFiles: File[];
-    if (typeof prevValue === "string" || !Array.isArray(prevValue)) {
-      newFiles = validFiles; // replace
-    } else {
-      // prevValue adalah array File[], append
-      if (prevValue.length + validFiles.length > maxFiles) {
-        myAlert.error(
-          "Too many files",
-          `You can only upload a maximum of ${maxFiles} file${maxFiles > 1 ? "s" : ""}.`
-        );
-        return;
-      }
-      newFiles = [...prevValue, ...validFiles];
+    // Check if adding these files would exceed maxFiles limit
+    const totalFiles = files.length + validFiles.length;
+    if (totalFiles > maxFiles) {
+      myAlert.error(
+        "Too many files",
+        `You can only upload a maximum of ${maxFiles} file${maxFiles > 1 ? "s" : ""}.`
+      );
+      return;
     }
 
-    setFiles(newFiles);
-    onChange(newFiles);
+    // Start cropping process for image files
+    const imageFiles = validFiles.filter(
+      (file) =>
+        file.type.startsWith("image/") &&
+        !file.type.startsWith("image/gif") &&
+        !file.type.startsWith("image/webp") &&
+        acceptedFileTypes.includes(file.type)
+    );
+
+    if (imageFiles.length > 0) {
+      startCroppingQueue(imageFiles);
+    } else {
+      // No images to crop, add files directly
+      const newFiles = [...files, ...validFiles];
+      setFiles(newFiles);
+      onChange(newFiles as never);
+    }
 
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
@@ -258,7 +409,7 @@ const FileUploadControl: React.FC<FileUploadControlProps> = ({
     setIsDragging(false);
 
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-      handleFiles(Array.from(e.dataTransfer.files), files);
+      handleFiles(Array.from(e.dataTransfer.files));
     }
   };
 
@@ -307,27 +458,9 @@ const FileUploadControl: React.FC<FileUploadControlProps> = ({
               {getFileTypeLabel()} (Max {maxSize} MB)
             </p>
           </div>
-          <Button size="sm" variant="secondary" type="button">
-            <Upload className="h-4 w-4 mr-2" />
-            Browse File
-          </Button>
         </div>
 
         {fieldValue && renderPreview()}
-        {/* {fieldValue && files.length === 0 && (
-          <div className="mt-4 space-y-4">
-            Klik{" "}
-            <Link
-              target="_blank"
-              href={fieldValue as string}
-              className="text-blue-500 underline"
-            >
-              disini
-            </Link>{" "}
-            untuk melihat file yang diunggah
-          </div>
-        )} */}
-
         {files.length > 0 && (
           <div className="mt-4 space-y-4">
             {isUploading && (
@@ -355,6 +488,7 @@ const FileUploadControl: React.FC<FileUploadControlProps> = ({
                       size="icon"
                       variant="ghost"
                       onClick={() => handleRemoveFile(index)}
+                      type="button"
                     >
                       <X className="h-4 w-4" />
                     </Button>
@@ -365,6 +499,16 @@ const FileUploadControl: React.FC<FileUploadControlProps> = ({
         )}
       </div>
       <FormMessage />
+      {currentImageToCrop && (
+        <ImageCropModal
+          open={cropModalOpen}
+          imageUrl={currentImageToCrop}
+          onClose={handleCropCancel}
+          onCropComplete={handleCropComplete}
+          currentIndex={currentCropIndex + 1}
+          totalImages={cropQueue.length}
+        />
+      )}
     </div>
   );
 };

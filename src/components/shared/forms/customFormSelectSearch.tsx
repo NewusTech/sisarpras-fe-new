@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { CommandItem } from "cmdk";
-import { Check, ChevronDown } from "lucide-react";
+import { Check, ChevronDown, Plus } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { FieldValues, Path, useFormContext } from "react-hook-form";
 import { useVirtualizer } from "@tanstack/react-virtual";
@@ -38,7 +38,10 @@ type CustomFormSelectSearchProps<T extends FieldValues = FieldValues> = {
   className?: string;
   required?: boolean;
   disabled?: boolean;
-  onValueChange?: (value: string) => void;
+  onOptionCreate?: (
+    option: { label: string; value: string },
+    onSuccessSet?: (created: { label: string; value: string }) => void
+  ) => void;
 };
 
 export default function CustomFormSelectSearch<
@@ -52,9 +55,9 @@ export default function CustomFormSelectSearch<
   className,
   required = false,
   disabled = false,
-  onValueChange,
+  onOptionCreate,
 }: CustomFormSelectSearchProps<T>) {
-  const { control, watch } = useFormContext<T>();
+  const { control, watch, setValue } = useFormContext<T>();
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [readyToRender, setReadyToRender] = useState(false);
@@ -85,11 +88,10 @@ export default function CustomFormSelectSearch<
         if (parentRef.current) {
           setReadyToRender(true);
         }
-      }, 10); // delay sedikit biar ref keisi
-
+      }, 10);
       return () => clearTimeout(timeout);
     } else {
-      setReadyToRender(false); // reset saat close
+      setReadyToRender(false);
     }
   }, [open]);
 
@@ -100,7 +102,7 @@ export default function CustomFormSelectSearch<
       render={({ field }) => (
         <FormItem className={className}>
           {label && (
-            <FormLabel>
+            <FormLabel className="capitalize">
               {label}
               {required && <span className="text-destructive ml-1">*</span>}
             </FormLabel>
@@ -113,42 +115,71 @@ export default function CustomFormSelectSearch<
                   variant="outline"
                   role="combobox"
                   className={cn(
-                    "w-full border border-primary-700 text-black rounded-full justify-between py-[17px] text-sm"
+                    "w-full border text-black rounded-full justify-between py-[17px] text-sm font-normal",
+                    !findLabel() && "text-gray-500"
                   )}
                   size={"sm"}
+                  disabled={disabled}
                 >
                   {findLabel() || `Pilih ${placeholder}`}
                   <ChevronDown className="opacity-50" />
                 </Button>
               </PopoverTrigger>
               <PopoverContent
-                className="w-full p-0"
+                className="w-[var(--radix-popover-trigger-width)] p-0"
                 onOpenAutoFocus={() => {
                   requestAnimationFrame(() => {
-                    rowVirtualizer.scrollToIndex(0); // optional
+                    rowVirtualizer.scrollToIndex(0);
                   });
                 }}
+                align="start"
               >
-                <Command className="w-96">
+                <Command className="w-full">
                   <CommandInput
                     placeholder={`Cari ${placeholder}...`}
                     className="h-9"
                     value={search}
                     onValueChange={setSearch}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && search.trim() !== "") {
+                        e.preventDefault();
+                        if (onOptionCreate) {
+                          onOptionCreate(
+                            { label: search, value: search },
+                            (created) => {
+                              field.onChange(created.value);
+                              setOpen(false);
+                              setSearch("");
+                            }
+                          );
+                        }
+                      }
+                    }}
                   />
                   <CommandList ref={parentRef} className="max-h-80">
                     <CommandEmpty>
-                      Data {placeholder} tidak ditemukan.
+                      {onOptionCreate && search.trim() !== "" ? (
+                        <>
+                          Ketik Enter untuk membuat
+                          <span className="ml-2">
+                            &quot;
+                            {search}
+                            &quot;
+                          </span>
+                        </>
+                      ) : (
+                        `Data ${placeholder} tidak ditemukan.`
+                      )}
                     </CommandEmpty>
                     <CommandGroup>
                       {readyToRender &&
                         rowVirtualizer.getVirtualItems().map((virtualRow) => {
-                          const option = filteredItems[virtualRow.index]; // 🔥 ambil data aslinya
-                          if (!option) return undefined;
+                          const option = filteredItems[virtualRow.index];
+                          if (!option) return null;
                           return (
                             <CommandItem
                               key={virtualRow.key}
-                              value={option?.label}
+                              value={option.label}
                               onSelect={(selectedLabel) => {
                                 const selectedOption = options.find(
                                   (opt) => opt.label === selectedLabel
@@ -158,7 +189,7 @@ export default function CustomFormSelectSearch<
                                   setOpen(false);
                                 }
                               }}
-                              className="cursor-pointer px-2"
+                              className="cursor-pointer px-2 min-h-8 hover:bg-gray-100 place-content-center"
                             >
                               <span className="flex items-center justify-between">
                                 {option.label}

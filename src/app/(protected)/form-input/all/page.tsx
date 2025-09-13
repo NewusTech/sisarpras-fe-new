@@ -14,14 +14,22 @@ import { CustomFormMultiSelect } from "@/components/shared/forms/customFormMulti
 import { CustomFormRadioGroup } from "@/components/shared/forms/customFormRadioGroup";
 import { CustomFormSelect } from "@/components/shared/forms/customFormSelect";
 import CustomFormSelectSearch from "@/components/shared/forms/customFormSelectSearch";
+import { CustomFormSignature } from "@/components/shared/forms/customFormSignature";
 import { CustomFormTextArea } from "@/components/shared/forms/customFormTextArea";
+import CustomFormTime from "@/components/shared/forms/customFormTime";
 import CustomFromRegions from "@/components/shared/forms/customFromRegions";
 import { BreadcrumbSetItem } from "@/components/shared/layouts/myBreadcrumb";
 import { Form } from "@/components/ui/form";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 
 export default function Page() {
+  // State untuk simpan daftar opsi
+  const [options, setOptions] = useState([
+    { label: "Opsi 1", value: "opsi-1" },
+    { label: "Opsi 2", value: "opsi-2" },
+  ]);
+
   const form = useForm<any>({
     // resolver: zodResolver(),
     defaultValues: {
@@ -86,6 +94,12 @@ export default function Page() {
             label="Input Tanggal"
             placeholder="dd-MM-yyyy"
           />
+          <CustomFormTime
+            name="inputTime"
+            label="Input Waktu"
+            placeholder="HH:MM"
+          />
+          <CustomFormSignature name="inputSignature" label="Tanda tangan" />
           <CustomFormFileInput name="fileInput" label="File Input" />
           <CustomFormDragAndDrop name="fileDrop" label="Drop Zone" />
           <CustomFormRadioGroup
@@ -106,29 +120,39 @@ export default function Page() {
               { label: "Check 3", value: "3" },
             ]}
           />
-          <CustomFormSelect
-            name="select"
-            label="Select"
-            options={[
-              { label: "Opsi 1", value: "opsi-1" },
-              { label: "Opsi 2", value: "opsi-2" },
-            ]}
-          />
+          <CustomFormSelect name="select" label="Select" options={options} />
           <CustomFormSelectSearch
             name="selectSearch"
             label="Select Search"
-            options={[
-              { label: "Opsi 1", value: "opsi-1" },
-              { label: "Opsi 2", value: "opsi-2" },
-            ]}
+            options={options}
+          />
+          <CustomFormSelectSearch
+            name="selectSearchCreate"
+            label="Select Search Create"
+            options={options}
+            onOptionCreate={(option, onSuccessSet) => {
+              // tambahin ke state
+              setOptions((prev) => [...prev, option]);
+
+              // update value form secara otomatis
+              onSuccessSet?.(option);
+            }}
           />
           <CustomFormMultiSelect
             name="selectMultiple"
             label="Select Multiple"
-            options={[
-              { label: "Opsi 1", value: "opsi-1" },
-              { label: "Opsi 2", value: "opsi-2" },
-            ]}
+            options={options}
+          />
+          <CustomFormMultiSelect
+            name="selectMultipleCreate"
+            label="Select Multiple Create"
+            options={options}
+            onOptionCreate={(option, onSuccessSet) => {
+              // tambahin ke state
+              setOptions((prev) => [...prev, option]);
+              // update value form secara otomatis
+              onSuccessSet?.(option);
+            }}
           />
           <CustomFromRegions
             name="provincesCode"
