@@ -97,16 +97,16 @@ export default function CustomFromRegions<T extends FieldValues = FieldValues>({
                   variant="outline"
                   role="combobox"
                   className={cn(
-                    "w-full border border-primary-700 text-black rounded-full justify-between py-[17px] text-sm",
-                    !selectedCode && "text-black"
+                    "w-full rounded-full h-10 justify-between text-sm",
+                    selectedCode ? "text-black" : "text-gray-500"
                   )}
-                  size={"sm"}
+                  size="sm"
                 >
                   {findLabel() || `Pilih ${placeholder}`}
                   <ChevronDown className="opacity-50" />
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="w-full p-0">
+              <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0">
                 <Command>
                   <CommandInput
                     placeholder={`Cari ${placeholder}...`}

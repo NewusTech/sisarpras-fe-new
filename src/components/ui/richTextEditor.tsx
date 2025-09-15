@@ -230,7 +230,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
   return (
     <div className={cn("rounded-[14px] bg-card", className)}>
       {/* Toolbar custom kecil: placeholders + margin presets */}
-      <div className="flex items-center gap-3 pt-0 p-3 border-b border-border">
+      <div className="flex items-center gap-3 pt-0 p-3 ">
         {placeholderKeys?.length ? (
           <>
             <span className="text-sm font-medium text-muted-foreground">

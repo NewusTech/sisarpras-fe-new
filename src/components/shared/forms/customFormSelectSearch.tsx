@@ -49,7 +49,7 @@ export default function CustomFormSelectSearch<
 >({
   name,
   label,
-  placeholder = "Pilih opsi",
+  placeholder = "Pilih Opsi",
   description,
   options,
   className,
@@ -115,13 +115,13 @@ export default function CustomFormSelectSearch<
                   variant="outline"
                   role="combobox"
                   className={cn(
-                    "w-full border text-black rounded-full justify-between py-[17px] text-sm font-normal",
+                    "w-full border text-black rounded-full justify-between h-10 text-sm font-normal",
                     !findLabel() && "text-gray-500"
                   )}
                   size={"sm"}
                   disabled={disabled}
                 >
-                  {findLabel() || `Pilih ${placeholder}`}
+                  {findLabel() || `${placeholder}`}
                   <ChevronDown className="opacity-50" />
                 </Button>
               </PopoverTrigger>
@@ -189,7 +189,7 @@ export default function CustomFormSelectSearch<
                                   setOpen(false);
                                 }
                               }}
-                              className="cursor-pointer px-2 min-h-8 hover:bg-gray-100 place-content-center"
+                              className="cursor-pointer text-sm px-2 min-h-8 hover:bg-gray-100 place-content-center"
                             >
                               <span className="flex items-center justify-between">
                                 {option.label}

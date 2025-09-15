@@ -4,6 +4,7 @@ import { useGetGeo } from "@/components/parts/maps/api";
 import { CustomFormCalender } from "@/components/shared/forms/customFormCalender";
 import CustomFormCheckbox from "@/components/shared/forms/customFormCheckbox";
 import { CustomFormDragAndDrop } from "@/components/shared/forms/customFormDragAndDrop";
+import CustomFormFileFotoProfile from "@/components/shared/forms/customFormFileFotoProfil";
 import { CustomFormFileInput } from "@/components/shared/forms/customFormFileInput";
 import CustomFormGmaps from "@/components/shared/forms/customFormGmaps";
 import CustomFormGmapsPoligon from "@/components/shared/forms/customFormGmapsPoligon";
@@ -106,7 +107,13 @@ export default function Page() {
           />
           <CustomFormSignature name="inputSignature" label="Tanda tangan" />
           <CustomFormFileInput name="fileInput" label="File Input" />
-          <CustomFormDragAndDrop name="fileDrop" label="Drop Zone" />
+          <CustomFormFileFotoProfile name="sds" label="Owner" />
+          <CustomFormDragAndDrop
+            // previewType="thumbnail" //thumbnail atau card
+            name="fileDrop"
+            label="Drop Zone"
+            maxFiles={5}
+          />
           <CustomFormRadioGroup
             name="radioGroup"
             label="Radio Group"
@@ -170,23 +177,23 @@ export default function Page() {
             name="citiesCode"
             region="cities"
             label="Kabupaten/Kota"
-            placeholder="Pilih kabupaten/kota"
+            placeholder="Kabupaten/kota"
             code={form.watch("provincesCode")}
             className="col-span-2 md:col-span-1"
           />
           <CustomFromRegions
             name="districtsCode"
             region="districts"
-            label="Pilih kecamatan"
-            placeholder="Pilih kecamatan"
+            label="Kecamatan"
+            placeholder="Kecamatan"
             code={form.watch("citiesCode")}
             className="col-span-2 md:col-span-1"
           />
           <CustomFromRegions
             name="subdistrictsCode"
             region="villages"
-            label="Pilih Kelurahan"
-            placeholder="Pilih Kelurahan"
+            label="Kelurahan"
+            placeholder="Kelurahan"
             code={form.watch("districtsCode")}
             className="col-span-2 md:col-span-1"
           />

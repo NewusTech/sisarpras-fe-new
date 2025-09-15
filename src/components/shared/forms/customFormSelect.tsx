@@ -17,6 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { cn } from "@/lib/utils";
 
 export interface SelectOption {
   value: string;
@@ -39,7 +40,7 @@ interface CustomFormSelectProps<T extends FieldValues = FieldValues> {
 export function CustomFormSelect<T extends FieldValues = FieldValues>({
   name,
   label,
-  placeholder = "Pilih opsi",
+  placeholder = "Pilih Opsi",
   description,
   options,
   className,
@@ -72,7 +73,12 @@ export function CustomFormSelect<T extends FieldValues = FieldValues>({
             disabled={disabled}
           >
             <FormControl>
-              <SelectTrigger className="bg-card rounded-full flex gap-x-4">
+              <SelectTrigger
+                className={cn(
+                  "bg-card rounded-full flex gap-x-4 h-10",
+                  !field.value ? "text-gray-500" : "text-black"
+                )}
+              >
                 <div className="flex items-center gap-x-2">
                   {leadingIcon}
                   <SelectValue

@@ -40,8 +40,8 @@ export default function Page() {
           className="grid grid-cols-1 gap-y-3"
         >
           <CustomFormRichEditor name="IsiSurat1" label="Kop Surat" />
-          <CustomFormRichEditor name="IsiSurat2" label="Isi Surat" />
-          <CustomFormRichEditor name="IsiSurat3" label="Footer Surat" />
+          {/* <CustomFormRichEditor name="IsiSurat2" label="Isi Surat" />
+          <CustomFormRichEditor name="IsiSurat3" label="Footer Surat" /> */}
         </form>
       </Form>
     </div>

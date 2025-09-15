@@ -117,7 +117,7 @@ export function NavItems({
                     className={`hover:pl-7 p-5 transition-all duration-200 ${
                       isSubRouteActive(pathname, normalizedUrl)
                         ? "text-white bg-primary font-medium hover:!bg-primary hover:!text-white"
-                        : "text-textSub font-medium hover:text-textSub"
+                        : "text-black font-medium hover:text-black"
                     }`}
                     tooltip={item.title}
                   >
@@ -143,7 +143,7 @@ export function NavItems({
                     className={`transition-all hover:pl-7 p-5 duration-200  ${
                       isActive
                         ? "text-white bg-primary font-medium hover:!bg-primary hover:!text-white"
-                        : "text-textSub font-medium hover:text-textSub"
+                        : "text-black font-medium hover:text-black"
                     }`}
                     tooltip={item.title}
                   >
@@ -182,7 +182,7 @@ export function NavItems({
                                     className={`hover:text-primary transition-all duration-300 pl-2 group/sub ${
                                       isSubActive
                                         ? "font-medium text-primary"
-                                        : "text--textSub"
+                                        : "text--black"
                                     }`}
                                   >
                                     <div className="flex gap-2">
@@ -190,7 +190,7 @@ export function NavItems({
                                         className={`w-2 mr-1 h-2 rounded-full group-hover/sub:bg-primary ${
                                           isSubActive
                                             ? "bg-primary"
-                                            : "bg-textSub"
+                                            : "bg-black"
                                         }`}
                                       />
                                       <span>{subItem.title}</span>

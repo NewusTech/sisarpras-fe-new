@@ -48,7 +48,7 @@ interface CustomFormMultiSelectProps<T extends FieldValues = FieldValues> {
 export function CustomFormMultiSelect<T extends FieldValues = FieldValues>({
   name,
   label,
-  placeholder = "Pilih opsi",
+  placeholder = "Pilih Opsi",
   description,
   options,
   className,

@@ -111,3 +111,19 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Quill editor wrapper */
+.ql-container {
+  border-radius: 0 0 14px 14px !important; /* sesuaikan dengan kebutuhan */
+  background-color: white; /* opsional */
+  border: 1px solid #d1d5db; /* Tailwind gray-300 */
+  padding: 8px;
+}
+
+/* Quill toolbar */
+.ql-toolbar {
+  border-radius: 14px 14px 0 0 !important;
+  background-color: #f9fafb; /* Tailwind gray-50 */
+  border: 1px solid #d1d5db;
+  border-bottom: none;
+}
