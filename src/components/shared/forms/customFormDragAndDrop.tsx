@@ -272,6 +272,7 @@ const FileUploadControl: React.FC<FileUploadControlProps> = ({
             const fileUrl = URL.createObjectURL(file);
             return (
               <div key={`${file.name}-${index}`} className="relative">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={fileUrl}
                   alt={file.name}

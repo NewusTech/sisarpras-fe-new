@@ -1,6 +1,5 @@
 "use client";
 
-import { Calendar, Home, Inbox, Search, Settings } from "lucide-react";
 import type * as React from "react";
 
 import {
@@ -10,10 +9,10 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 import { getNavData } from "@/constants";
-import AppSidebarHeader from "./appSidebarHeader";
-import { NavItems } from "./navItems";
 import { usePermission } from "@/hooks/useGetPermission";
 import useGetToken from "@/hooks/useGetToken";
+import AppSidebarHeader from "./appSidebarHeader";
+import { NavItems } from "./navItems";
 import NavItemsLogout from "./navItemsLogout";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {

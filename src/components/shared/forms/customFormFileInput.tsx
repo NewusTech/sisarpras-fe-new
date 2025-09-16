@@ -337,14 +337,4 @@ export function CustomFormFileInput<T extends FieldValues = FieldValues>({
   );
 }
 
-// Updated ImageCropModal interface to support aspectRatio
-interface ImageCropModalProps {
-  open: boolean;
-  imageUrl: string;
-  onClose: () => void;
-  onCropComplete: (file: File) => void;
-  aspectRatio?: number | null;
-}
-
-// Export the component with crop support
 export default CustomFormFileInput;

@@ -1,9 +1,8 @@
-import { useMutation } from "@tanstack/react-query";
-import { sendData } from "@/services/api/fetcher";
-import { LoginPayload } from "./validation";
-import { LoginData } from "@/types/interface";
 import { useFormMutation } from "@/hooks/useFormMutation";
+import { sendData } from "@/services/api/fetcher";
+import { LoginData } from "@/types/interface";
 import { unsubscribeWebPush } from "../webpush/api";
+import { LoginPayload } from "./validation";
 
 export const useLoginMutation = () => {
   return useFormMutation<

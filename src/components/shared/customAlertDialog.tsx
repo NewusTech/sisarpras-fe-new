@@ -13,9 +13,11 @@ import {
   Loader2,
   X,
   Check,
+  type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
+import { Textarea } from "../ui/textarea";
 
 const dialogConfig = {
   info: {
@@ -112,14 +114,33 @@ const defaultColorSchemeMapping = {
   loading: "warning" as ColorSchemeType,
 };
 
+type InputType = "input" | "textarea";
+
 interface AlertDialogState {
   open: boolean;
   type: DialogType;
   title?: string;
   description?: string;
   confirmLabel?: string;
+
+  /** Placeholder jika dialog membutuhkan input teks */
   inputPlaceholder?: string;
+
+  /** NEW: toggle ini mengaktifkan field input terlepas dari placeholder */
+  inputEnabled?: boolean;
+
+  /** NEW: tipe field input: "input" (default) atau "textarea" */
+  inputType?: InputType;
+
+  /** Skema warna custom untuk dialog (optional) */
   colorScheme?: ColorScheme | ColorSchemeType;
+
+  /** NEW: override ikon bawaan */
+  customIcon?: LucideIcon;
+
+  /** NEW: custom class untuk warna/size ikon (opsional) */
+  customIconClassName?: string;
+
   resolve?: (value: any) => void;
 }
 
@@ -130,7 +151,15 @@ interface AlertDialogActions {
     description?: string;
     confirmLabel?: string;
     inputPlaceholder?: string;
+    /** NEW */
+    inputEnabled?: boolean;
+    /** NEW */
+    inputType?: InputType;
     colorScheme?: ColorScheme | ColorSchemeType;
+    /** NEW */
+    customIcon?: LucideIcon;
+    /** NEW */
+    customIconClassName?: string;
   }) => Promise<any>;
   close: () => void;
 }
@@ -167,8 +196,20 @@ export const useMyAlertDialog = create<AlertDialogState & AlertDialogActions>(
     /** Placeholder jika dialog membutuhkan input teks */
     inputPlaceholder: undefined,
 
+    /** NEW: kontrol aktif/tidaknya field input */
+    inputEnabled: false,
+
+    /** NEW: tipe field input */
+    inputType: "input",
+
     /** Skema warna custom untuk dialog (optional) */
     colorScheme: undefined,
+
+    /** NEW: ikon custom (opsional) */
+    customIcon: undefined,
+
+    /** NEW: className untuk ikon custom (opsional) */
+    customIconClassName: undefined,
 
     /** Fungsi resolve yang digunakan untuk await hasil (true, false, atau string) */
     resolve: undefined,
@@ -189,7 +230,11 @@ export const useMyAlertDialog = create<AlertDialogState & AlertDialogActions>(
           description: config.description,
           confirmLabel: config.confirmLabel,
           inputPlaceholder: config.inputPlaceholder,
+          inputEnabled: config.inputEnabled ?? false, // NEW
+          inputType: config.inputType ?? "input", // NEW
           colorScheme: config.colorScheme,
+          customIcon: config.customIcon, // NEW
+          customIconClassName: config.customIconClassName, // NEW
           resolve,
         });
       });
@@ -206,7 +251,11 @@ export const useMyAlertDialog = create<AlertDialogState & AlertDialogActions>(
         description: undefined,
         confirmLabel: undefined,
         inputPlaceholder: undefined,
+        inputEnabled: false, // NEW
+        inputType: "input", // NEW
         colorScheme: undefined,
+        customIcon: undefined, // NEW
+        customIconClassName: undefined, // NEW
         resolve: undefined,
       });
     },
@@ -223,13 +272,18 @@ export function MyAlertDialog() {
     resolve,
     confirmLabel,
     inputPlaceholder,
+    inputEnabled, // NEW
+    inputType, // NEW
     colorScheme: customColorScheme,
+    customIcon, // NEW
+    customIconClassName, // NEW
   } = useMyAlertDialog();
 
   const [inputValue, setInputValue] = useState("");
 
   const handleConfirm = () => {
-    resolve?.(inputPlaceholder ? inputValue : true);
+    // NEW: hanya kirim nilai input jika inputEnabled true
+    resolve?.(inputEnabled ? inputValue : true);
     setInputValue("");
     close();
   };
@@ -242,21 +296,18 @@ export function MyAlertDialog() {
 
   const isConfirm = type === "confirm";
   const config = dialogConfig[type];
-  const Icon = config.icon;
+
+  // NEW: dukung custom icon, fallback ke config.icon
+  const EffectiveIcon = customIcon ? customIcon : config.icon;
 
   // Get color scheme - priority: custom > default mapping > fallback
   const getColorScheme = (): ColorScheme => {
-    // Jika ada custom color scheme
     if (customColorScheme) {
-      // Jika berupa string (ColorSchemeType), ambil dari predefined schemes
       if (typeof customColorScheme === "string") {
         return colorSchemes[customColorScheme];
       }
-      // Jika berupa object (ColorScheme), gunakan langsung
       return customColorScheme;
     }
-
-    // Fallback ke default mapping berdasarkan type
     const defaultSchemeType = defaultColorSchemeMapping[type] || "neutral";
     return colorSchemes[defaultSchemeType];
   };
@@ -265,11 +316,7 @@ export function MyAlertDialog() {
 
   // Advanced animation variants
   const containerVariants = {
-    hidden: {
-      scale: 0.8,
-      opacity: 0,
-      y: 50,
-    },
+    hidden: { scale: 0.8, opacity: 0, y: 50 },
     visible: {
       scale: 1,
       opacity: 1,
@@ -285,49 +332,32 @@ export function MyAlertDialog() {
       scale: 0.9,
       opacity: 0,
       y: -20,
-      transition: {
-        duration: 0.3,
-        ease: "easeInOut",
-      },
+      transition: { duration: 0.3, ease: "easeInOut" },
     },
   } as const;
 
   const iconVariants = {
-    hidden: {
-      scale: 0,
-      rotate: -180,
-      opacity: 0,
-    },
+    hidden: { scale: 0, rotate: -180, opacity: 0 },
     visible: {
       scale: 1,
       rotate: 0,
       opacity: 1,
-      transition: {
-        type: "spring",
-        stiffness: 400,
-        damping: 15,
-        delay: 0.2,
-      },
+      transition: { type: "spring", stiffness: 400, damping: 15, delay: 0.2 },
     },
   } as const;
 
   const textVariants = {
-    hidden: {
-      opacity: 0,
-      y: 20,
-      scale: 0.8,
-    },
+    hidden: { opacity: 0, y: 20, scale: 0.8 },
     visible: {
       opacity: 1,
       y: 0,
       scale: 1,
-      transition: {
-        type: "spring",
-        stiffness: 300,
-        damping: 20,
-      },
+      transition: { type: "spring", stiffness: 300, damping: 20 },
     },
   } as const;
+
+  // NEW: kondisi tampilkan input jika inputEnabled = true
+  const shouldShowInput = !!inputEnabled;
 
   return (
     <AnimatePresence mode="wait">
@@ -341,10 +371,7 @@ export function MyAlertDialog() {
               animate="visible"
               exit="exit"
               className="relative bg-white rounded-2xl overflow-hidden"
-              style={{
-                perspective: "1000px",
-                pointerEvents: "auto",
-              }}
+              style={{ perspective: "1000px", pointerEvents: "auto" }}
             >
               {/* Header Section with Dynamic Color */}
               <motion.div
@@ -418,7 +445,12 @@ export function MyAlertDialog() {
                               animate={{ scale: 1, opacity: 1 }}
                               transition={{ delay: 0.7, duration: 0.3 }}
                             >
-                              <Check className="w-6 h-6 text-white" />
+                              <EffectiveIcon
+                                className={cn(
+                                  "w-6 h-6 text-white",
+                                  customIconClassName
+                                )}
+                              />
                             </motion.div>
                           </div>
                         </motion.div>
@@ -495,7 +527,13 @@ export function MyAlertDialog() {
                               animate={{ scale: 1, opacity: 1 }}
                               transition={{ delay: 0.7, duration: 0.3 }}
                             >
-                              <Icon className="w-6 h-6 text-white" />
+                              {/* NEW: gunakan custom icon jika ada */}
+                              <EffectiveIcon
+                                className={cn(
+                                  "w-6 h-6 text-white",
+                                  customIconClassName
+                                )}
+                              />
                             </motion.div>
                           </div>
                         </motion.div>
@@ -508,10 +546,7 @@ export function MyAlertDialog() {
                           colorScheme.iconRing
                         )}
                         initial={{ scale: 1, opacity: 0 }}
-                        animate={{
-                          scale: [1, 1.2, 1],
-                          opacity: [0, 0.3, 0],
-                        }}
+                        animate={{ scale: [1, 1.2, 1], opacity: [0, 0.3, 0] }}
                         transition={{
                           delay: 0.8,
                           duration: 2,
@@ -539,7 +574,7 @@ export function MyAlertDialog() {
                 </div>
 
                 {/* Input Field if needed */}
-                {inputPlaceholder && (
+                {shouldShowInput && (
                   <motion.div
                     variants={textVariants}
                     className="mb-6"
@@ -547,12 +582,22 @@ export function MyAlertDialog() {
                     animate={{ y: 0, opacity: 1 }}
                     transition={{ delay: 0.6, duration: 0.4 }}
                   >
-                    <Input
-                      placeholder={inputPlaceholder}
-                      value={inputValue}
-                      onChange={(e) => setInputValue(e.target.value)}
-                      className="w-full"
-                    />
+                    {inputType === "textarea" ? (
+                      <Textarea
+                        placeholder={inputPlaceholder}
+                        value={inputValue}
+                        onChange={(e) => setInputValue(e.target.value)}
+                        className="w-full"
+                        rows={4}
+                      />
+                    ) : (
+                      <Input
+                        placeholder={inputPlaceholder}
+                        value={inputValue}
+                        onChange={(e) => setInputValue(e.target.value)}
+                        className="w-full"
+                      />
+                    )}
                   </motion.div>
                 )}
 
@@ -578,13 +623,11 @@ export function MyAlertDialog() {
                         <motion.div
                           whileHover={{ scale: 1.02, y: -1 }}
                           whileTap={{ scale: 0.98 }}
-                          style={{ pointerEvents: "auto" }}
                         >
                           <Button
                             variant="outline"
                             onClick={handleCancel}
                             className="px-6 py-2 font-medium border-gray-300 text-gray-700 hover:bg-gray-50 rounded-full min-w-[100px] transition-colors duration-200"
-                            style={{ pointerEvents: "auto" }}
                           >
                             Batal
                           </Button>
@@ -592,7 +635,6 @@ export function MyAlertDialog() {
                         <motion.div
                           whileHover={{ scale: 1.02, y: -1 }}
                           whileTap={{ scale: 0.98 }}
-                          style={{ pointerEvents: "auto" }}
                         >
                           <Button
                             onClick={handleConfirm}
@@ -600,7 +642,6 @@ export function MyAlertDialog() {
                               "px-6 py-2 font-medium text-white rounded-full min-w-[100px] shadow-sm transition-colors duration-200",
                               colorScheme.buttonBg
                             )}
-                            style={{ pointerEvents: "auto" }}
                           >
                             {confirmLabel || "Setujui"}
                           </Button>
@@ -610,7 +651,6 @@ export function MyAlertDialog() {
                       <motion.div
                         whileHover={{ scale: 1.02, y: -1 }}
                         whileTap={{ scale: 0.98 }}
-                        style={{ pointerEvents: "auto" }}
                       >
                         <Button
                           onClick={handleConfirm}
@@ -618,7 +658,6 @@ export function MyAlertDialog() {
                             "px-8 py-2 font-medium rounded-full min-w-[120px] shadow-sm transition-colors duration-200 text-white",
                             colorScheme.buttonBg
                           )}
-                          style={{ pointerEvents: "auto" }}
                         >
                           {confirmLabel || "OK"}
                         </Button>
