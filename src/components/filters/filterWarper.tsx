@@ -30,13 +30,17 @@ export const useFilterContext = (opts?: {
   const ctx = useContext(FilterContext);
   if (!ctx) throw new Error("useFilterContext must be used within <Filter>");
 
-  if (opts?.defaultValues) {
-    return {
-      ...ctx,
-      initialValues: { ...opts.defaultValues, ...ctx.initialValues },
-      values: { ...opts.defaultValues, ...ctx.values },
-    };
-  }
+  // inject defaultValues ke provider sekali aja
+  useEffect(() => {
+    if (opts?.defaultValues) {
+      Object.entries(opts.defaultValues).forEach(([key, val]) => {
+        if (ctx.values[key] === undefined) {
+          ctx.setValue(key, val, "auto"); // set langsung ke state provider
+        }
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // ✅ jalan sekali waktu mount
 
   return ctx;
 };
@@ -176,6 +180,15 @@ export const Filter = ({
       activeFilterCount,
     ]
   );
+
+  useEffect(() => {
+    setValues((prev) => {
+      const next = { ...initialValues, ...prev };
+      // jangan update kalau sama → biar gak infinite loop
+      if (JSON.stringify(prev) === JSON.stringify(next)) return prev;
+      return next;
+    });
+  }, [initialValues]);
 
   return (
     <FilterContext.Provider value={contextValue}>
