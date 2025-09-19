@@ -144,18 +144,26 @@ export const sendData = async <T, D extends object>(
   return responseBody as T;
 };
 
-// Fungsi untuk mengonversi objek ke FormData
 export const convertToFormData = <D extends object>(data: D): FormData => {
   const formData = new FormData();
 
   Object.entries(data).forEach(([key, value]) => {
     if (value === null || typeof value === "undefined") return;
 
-    // Kalau array → stringify langsung (biar konsisten)
+    // Kalau array, periksa setiap elemen dalam array
     if (Array.isArray(value)) {
-      formData.append(key, JSON.stringify(value));
+      value.forEach((item, index) => {
+        // Kalau item adalah file atau blob, tambahkan langsung sebagai file
+        if (item instanceof File || item instanceof Blob) {
+          formData.append(`${key}[${index}]`, item);
+        }
+        // Kalau item bukan file, stringify dan append
+        else {
+          formData.append(key, JSON.stringify(value));
+        }
+      });
     }
-    // Kalau file/blob
+    // Kalau file/blob, tambahkan langsung
     else if (value instanceof File || value instanceof Blob) {
       formData.append(key, value);
     }

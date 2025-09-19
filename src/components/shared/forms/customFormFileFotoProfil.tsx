@@ -1,22 +1,20 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import React, { useRef, useState } from "react";
-import { useFormContext, FieldValues, Path } from "react-hook-form";
 import {
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-  FormDescription,
 } from "@/components/ui/form";
-import { Button } from "@/components/ui/button";
-import { Cloud, Eye, File, X, Crop } from "lucide-react";
-import { Label } from "@/components/ui/label";
-import { toast } from "sonner";
 import { formatFileName } from "@/lib/utils";
+import { Eye, File } from "lucide-react";
 import Link from "next/link";
+import React, { useRef, useState } from "react";
+import { FieldValues, Path, useFormContext } from "react-hook-form";
+import { toast } from "sonner";
 import ImageCropModal from "../imageCropModal";
 
 type FileAcceptType =
