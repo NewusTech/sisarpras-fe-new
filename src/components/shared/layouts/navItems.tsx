@@ -1,12 +1,12 @@
 "use client";
 
+import RowDownIcon from "@/assets/icons/rowDownIcon";
 import {
   Collapsible,
-  CollapsibleTrigger,
   CollapsibleContent,
+  CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import {
-  SidebarFooter,
   SidebarGroup,
   SidebarMenu,
   SidebarMenuButton,
@@ -17,13 +17,11 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { canAccess } from "@/lib/canAccsess";
-import { ChevronRight } from "lucide-react";
+import { NavItem } from "@/types/interface";
+import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
-import { NavItem } from "@/types/interface";
-import NavItemsLogout from "./navItemsLogout";
 
 export function NavItems({
   items,
@@ -62,8 +60,8 @@ export function NavItems({
           {[...Array(4)].map((_, idx) => (
             <SidebarMenuItem key={idx}>
               <SidebarMenuButton className="animate-pulse">
-                <div className="w-7 h-5 bg-gray-300 rounded" />
-                <div className="h-4 w-full bg-gray-300 rounded ml-2" />
+                <div className="w-7 h-5 bg-400 rounded" />
+                <div className="h-4 w-full bg-400 rounded ml-2" />
               </SidebarMenuButton>
             </SidebarMenuItem>
           ))}
@@ -117,7 +115,7 @@ export function NavItems({
                     className={`hover:pl-7 p-5 transition-all duration-200 ${
                       isSubRouteActive(pathname, normalizedUrl)
                         ? "text-white bg-primary font-medium hover:!bg-primary hover:!text-white"
-                        : "text-[#2E2E2E] font-medium hover:text-[#2E2E2E]"
+                        : "text-400 font-medium hover:text-400"
                     }`}
                     tooltip={item.title}
                   >
@@ -143,17 +141,19 @@ export function NavItems({
                     className={`transition-all hover:pl-7 p-5 duration-200  ${
                       isActive
                         ? "text-white bg-primary font-medium hover:!bg-primary hover:!text-white"
-                        : "text-[#2E2E2E] font-medium hover:text-[#2E2E2E]"
+                        : "text-400 font-medium hover:text-400"
                     }`}
                     tooltip={item.title}
                   >
                     {item.icon && <item.icon className="!size-[19px]" />}
                     <span>{item.title}</span>
-                    <ChevronRight
-                      className={`ml-auto transition-transform duration-200 ${
-                        isOpen ? "rotate-90" : ""
+                    <div
+                      className={`ml-auto transition-transform duration-500 ${
+                        isOpen ? "rotate-180" : ""
                       }`}
-                    />
+                    >
+                      <RowDownIcon />
+                    </div>
                   </SidebarMenuButton>
                 </CollapsibleTrigger>
 

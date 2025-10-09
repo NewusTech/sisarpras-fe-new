@@ -19,7 +19,7 @@ export type SubItem = {
 export type NavItem = {
   title: string;
   url: string;
-  icon?: LucideIcon;
+  icon?: LucideIcon | React.FC<React.SVGProps<SVGSVGElement>>;
   isActive?: boolean;
   items?: SubItem[];
   directLinkRoles?: string[]; // Roles that should access the main URL directly without seeing sub-items

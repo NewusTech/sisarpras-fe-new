@@ -1,3 +1,6 @@
+import Box3DIcon from "@/assets/icons/box3DIcon";
+import BuildingIcon from "@/assets/icons/buildingIcon";
+import DashboardIcon from "@/assets/icons/dashboardIcon";
 import { NavItem } from "@/types/interface";
 import {
   DockIcon,
@@ -22,7 +25,37 @@ export const getNavData = (): navDateType => {
       {
         title: "Dashboard",
         url: "/dashboard",
-        icon: LayoutDashboard,
+        icon: DashboardIcon,
+      },
+      {
+        title: "Sarana Prasarana",
+        url: "/facilities-infrastructure",
+        icon: BuildingIcon,
+        items: [
+          {
+            title: "Permohonan",
+            url: "/facilities-infrastructure/submissions",
+          },
+          {
+            title: "Pelaporan",
+            url: "/facilities-infrastructure/reports",
+          },
+        ],
+      },
+      {
+        title: "Penyimpanan",
+        url: "/storage",
+        icon: Box3DIcon,
+        items: [
+          {
+            title: "Sarana",
+            url: "/storage/facilities",
+          },
+          {
+            title: "Prasarana",
+            url: "/storage/infrastructures",
+          },
+        ],
       },
       {
         title: "Form Input",
