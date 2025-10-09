@@ -1,6 +1,6 @@
 "use client";
 
-import { useGetUsersDetail } from "@/components/parts/(manajemen-user)/users/api";
+import { useGetUsersDetail } from "@/components/parts/manajemen-user/users/api";
 import UsersForm from "@/components/sections/users/form";
 import { BreadcrumbSetItem } from "@/components/shared/layouts/myBreadcrumb";
 import { useParams } from "next/navigation";

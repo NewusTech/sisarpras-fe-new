@@ -1,6 +1,6 @@
 "use client";
 
-import { useGetUsers } from "@/components/parts/(manajemen-user)/users/api";
+import { useGetUsers } from "@/components/parts/manajemen-user/users/api";
 import { usersColumns } from "@/components/parts/users/column";
 import UpdatePasswordAction from "@/components/sections/users/updatePasswordAction";
 import { BreadcrumbSetItem } from "@/components/shared/layouts/myBreadcrumb";
