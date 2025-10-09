@@ -7,16 +7,19 @@ import {
 } from "@/components/parts/login/validation";
 import { ensureWebPushSubscription } from "@/components/parts/webpush/api";
 import { CustomFormInput } from "@/components/shared/forms/customFormInput";
+import GoogleSignInButton from "@/components/shared/googleSignInButton";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import useShowErrors from "@/hooks/useShowErrors";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Cookie from "js-cookie";
+import { jwtDecode } from "jwt-decode";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
-import Swal from "sweetalert2";
 
 export default function LoginPage() {
+  const router = useRouter();
   const form = useForm<LoginPayload>({
     resolver: zodResolver(loginValidation),
     defaultValues: {
@@ -38,6 +41,13 @@ export default function LoginPage() {
     loginMutation.mutate(data, {
       onSuccess: async (response) => {
         Cookie.set("accessToken", response.data.token);
+        // Decode JWT token
+        const decoded: decodedProps = jwtDecode(response.data.token);
+        if (decoded.role.toLowerCase() === "user") {
+          router.push("/profile");
+        } else {
+          router.push("/dashboard");
+        }
         await ensureWebPushSubscription();
       },
     });
@@ -84,12 +94,7 @@ export default function LoginPage() {
               </div>
             </div>
             <div className="grid gap-2">
-              <Button variant="outline" type="button">
-                Google
-              </Button>
-              <Button variant="outline" type="button">
-                GitHub
-              </Button>
+              <GoogleSignInButton />
             </div>
           </div>
           <p className="px-8 text-center text-sm text-muted-foreground">

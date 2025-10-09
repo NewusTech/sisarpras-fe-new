@@ -1,4 +1,5 @@
 import { fetcher, sendData } from "@/services/api/fetcher";
+import { APIError } from "@/types/interface";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
 const fetchNotification = async (

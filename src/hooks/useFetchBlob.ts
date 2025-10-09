@@ -1,6 +1,6 @@
+import { toast } from "@/lib/myToast";
 import { fetchBlob } from "@/services/api/fetcher";
 import { useMutation } from "@tanstack/react-query";
-import { toast } from "sonner";
 
 async function fetchWithFilename(
   url: string

@@ -2,7 +2,14 @@
 
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, CheckCircle, AlertCircle, AlertTriangle, Info } from "lucide-react";
+import {
+  X,
+  CheckCircle,
+  AlertCircle,
+  AlertTriangle,
+  Info,
+  Loader,
+} from "lucide-react";
 import { Toast, useToastStore } from "./toastStore";
 import { Button } from "@/components/ui/button";
 
@@ -17,6 +24,8 @@ const iconMap = {
   error: AlertCircle,
   warning: AlertTriangle,
   info: Info,
+  loading: Loader, // Loader icon untuk tipe loading
+  confirm: Info, // Ganti sesuai preferensi untuk confirm
 };
 
 // Mapping warna untuk setiap tipe notifikasi
@@ -45,12 +54,20 @@ const colorMap = {
     icon: "text-blue-600 dark:text-blue-400",
     text: "text-blue-900 dark:text-blue-100",
   },
+  loading: {
+    bg: "bg-gray-50 dark:bg-gray-950/20",
+    border: "border-gray-200 dark:border-gray-800",
+    icon: "text-gray-600 dark:text-gray-400",
+    text: "text-gray-900 dark:text-gray-100",
+  },
+  confirm: {
+    bg: "bg-indigo-50 dark:bg-indigo-950/20",
+    border: "border-indigo-200 dark:border-indigo-800",
+    icon: "text-indigo-600 dark:text-indigo-400",
+    text: "text-indigo-900 dark:text-indigo-100",
+  },
 } as const;
 
-/**
- * Komponen item notifikasi individual dengan animasi dan progress bar
- * Menampilkan icon, title, message, dan action button jika ada
- */
 function ToastItem({ toast, onRemove }: ToastItemProps) {
   const [progress, setProgress] = useState(100);
   const Icon = iconMap[toast.type];
@@ -61,7 +78,7 @@ function ToastItem({ toast, onRemove }: ToastItemProps) {
    * Effect untuk mengupdate progress bar secara real-time
    */
   useEffect(() => {
-    if (duration <= 0) return;
+    if (duration <= 0 || toast.type === "loading") return;
 
     const interval = setInterval(() => {
       setProgress((prev) => {
@@ -71,7 +88,18 @@ function ToastItem({ toast, onRemove }: ToastItemProps) {
     }, 100);
 
     return () => clearInterval(interval);
-  }, [duration]);
+  }, [duration, toast.type]);
+
+  // Handle confirmation action
+  const handleConfirm = () => {
+    toast.confirmAction?.onConfirm();
+    onRemove(toast.id!);
+  };
+
+  const handleCancel = () => {
+    toast.confirmAction?.onCancel?.();
+    onRemove(toast.id!);
+  };
 
   return (
     <motion.div
@@ -93,7 +121,7 @@ function ToastItem({ toast, onRemove }: ToastItemProps) {
       `}
     >
       {/* Progress bar */}
-      {duration > 0 && (
+      {duration > 0 && toast.type !== "loading" && (
         <motion.div
           className="absolute bottom-0 left-0 h-1 bg-current opacity-20"
           initial={{ width: "100%" }}
@@ -103,12 +131,14 @@ function ToastItem({ toast, onRemove }: ToastItemProps) {
       )}
 
       {/* Close button */}
-      <button
-        onClick={() => onRemove(toast.id)}
-        className="absolute top-3 right-3 p-1 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
-      >
-        <X className="w-4 h-4 opacity-60" />
-      </button>
+      {toast.type !== "loading" && (
+        <button
+          onClick={() => onRemove(toast.id!)}
+          className="absolute top-3 right-3 p-1 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+        >
+          <X className="w-4 h-4 opacity-60" />
+        </button>
+      )}
 
       <div className="flex gap-3">
         <Icon className={`w-5 h-5 mt-0.5 flex-shrink-0 ${colors.icon}`} />
@@ -124,15 +154,33 @@ function ToastItem({ toast, onRemove }: ToastItemProps) {
             </p>
           )}
 
-          {toast.action && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={toast.action.onClick}
-              className={`mt-2 h-7 px-2 text-xs ${colors.text} hover:bg-black/5 dark:hover:bg-white/5`}
-            >
-              {toast.action.label}
-            </Button>
+          {toast.type === "confirm" && (
+            <div className="flex gap-2 mt-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleConfirm}
+                className="h-7 text-xs"
+              >
+                {toast.confirmAction?.confirmLabel}
+              </Button>
+              {toast.confirmAction?.cancelLabel && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleCancel}
+                  className="h-7 text-xs"
+                >
+                  {toast.confirmAction?.cancelLabel}
+                </Button>
+              )}
+            </div>
+          )}
+
+          {toast.type === "loading" && (
+            <div className="flex justify-center mt-2">
+              <Loader className="animate-spin text-gray-600 dark:text-gray-400" />
+            </div>
           )}
         </div>
       </div>
@@ -140,10 +188,6 @@ function ToastItem({ toast, onRemove }: ToastItemProps) {
   );
 }
 
-/**
- * Provider komponen yang menampilkan semua notifikasi aktif
- * Menggunakan AnimatePresence untuk animasi smooth saat notifikasi muncul/hilang
- */
 export function ToastProvider() {
   const { toasts, removeToast } = useToastStore();
 

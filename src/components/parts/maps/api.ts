@@ -1,3 +1,4 @@
+import { APIError } from "@/types/interface";
 import { Polygon as GeoJsonPolygon } from "@react-google-maps/api";
 import { useQuery } from "@tanstack/react-query";
 import { FeatureCollection } from "geojson";

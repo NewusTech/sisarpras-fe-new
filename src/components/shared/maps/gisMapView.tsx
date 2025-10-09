@@ -18,11 +18,15 @@ const containerStyle = {
 type GisMapViewProps = {
   geoJson?: FeatureCollection<GeoJsonPolygon, AreaProperties>;
   children?: React.ReactNode;
-  onSelected?: (data: AreaProperties) => void;
-  selected?: AreaProperties;
+  onSelected?: (data: Feature<GeoJsonPolygon, AreaProperties>) => void;
+  selected?: Feature<GeoJsonPolygon, AreaProperties>;
   colorMap?: Record<string, string>;
   center?: google.maps.LatLngLiteral;
   handleClick?: (e: google.maps.MapMouseEvent) => void;
+  handleClicPolygon?: (e: google.maps.MapMouseEvent) => void;
+  zoom?: number;
+  mapRef?: (e: google.maps.Map | null) => void;
+  onLoad?: (e: google.maps.Map | null) => void;
 };
 
 export default function GisMapView({
@@ -32,10 +36,27 @@ export default function GisMapView({
   colorMap,
   selected,
   center = { lat: -3.2929468, lng: 103.8467967 },
+  zoom = 10,
   handleClick,
+  handleClicPolygon,
+  mapRef,
+  onLoad,
 }: GisMapViewProps) {
   const { isLoaded } = useGoogleMapsLoader();
   const [hovered, setHovered] = useState<string | null>(null);
+
+  const [map, setMap] = useState<google.maps.Map | null>(null);
+  const [mapZoom, setMapZoom] = useState(zoom);
+
+  const getColor = (name: string): string => {
+    if (hovered) {
+      return hovered === name ? colorMap?.[name] || "#f59e0b" : "#00000055";
+    }
+    if (!selected) return colorMap?.[name] || "#ccc";
+    return selected.properties.nm_kecamatan === name
+      ? colorMap?.[name] || "#ccc"
+      : "#00000055";
+  };
 
   if (!isLoaded) {
     return (
@@ -45,30 +66,28 @@ export default function GisMapView({
     );
   }
 
-  const getColor = (name: string): string => {
-    // Saat ada hovered → highlight hanya polygon yg dihover, lainnya abu-abu
-    if (hovered) {
-      return hovered === name ? colorMap?.[name] || "#f59e0b" : "#00000055";
-    }
-    // Kalau tidak ada hovered → fallback ke logika selected
-    if (!selected) return colorMap?.[name] || "#ccc";
-    return selected.nm_kecamatan === name
-      ? colorMap?.[name] || "#ccc"
-      : "#00000055";
-  };
-
   return (
-    // <div className="w-full h-[600px]">
     <GoogleMap
+      onLoad={(mapInstance) => {
+        setMap(mapInstance);
+        onLoad?.(mapInstance);
+        mapInstance.setCenter(center);
+        mapRef?.(mapInstance);
+      }}
+      onZoomChanged={() => {
+        if (map) {
+          setMapZoom(map.getZoom() || zoom);
+        }
+      }}
       mapContainerStyle={containerStyle}
-      center={center}
-      zoom={13}
+      zoom={zoom}
       options={{
         fullscreenControl: false,
       }}
       onClick={handleClick}
     >
       {geoJson &&
+        mapZoom <= 13.5 && // 👉 kalau zoom <= 11 baru render polygon
         geoJson.features.map(
           (feature: Feature<GeoJsonPolygon, AreaProperties>) => {
             const coords = getCoords(feature);
@@ -88,7 +107,8 @@ export default function GisMapView({
                 }}
                 onClick={(e) => {
                   handleClick?.(e);
-                  onSelected?.(feature.properties);
+                  handleClicPolygon?.(e);
+                  onSelected?.(feature);
                 }}
                 onMouseOver={() => setHovered(name)}
                 onMouseOut={() => setHovered(null)}
@@ -98,6 +118,5 @@ export default function GisMapView({
         )}
       {children}
     </GoogleMap>
-    // </div>
   );
 }

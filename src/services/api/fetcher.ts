@@ -1,6 +1,7 @@
 "use client";
 
 import { BASE_URL } from "@/constants";
+import { APIError } from "@/types/interface";
 import Cookies from "js-cookie";
 
 const memoryCache = new Map<string, { data: any; expiresAt: number }>();

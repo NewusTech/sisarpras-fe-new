@@ -1,17 +1,23 @@
+import { Filter, FilterRegistryProvider } from "@/components/filters";
 import { MyAlertDialog } from "@/components/shared/customAlertDialog";
+import NetInfo from "@/components/shared/netInfo";
 import ThemeProvider from "@/components/shared/themeProvider";
-import { cn } from "@/lib/utils";
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import Script from "next/script";
-import { Toaster } from "sonner";
-import "./globals.css";
-import QueryProvider from "./QueryProvider";
 import { ToastProvider } from "@/components/shared/toast/toastComponent";
 import { ImageProvider } from "@/image";
-import { FilterRegistryProvider } from "@/components/filters";
+import { cn } from "@/lib/utils";
+import type { Metadata } from "next";
+import { Poppins } from "next/font/google";
+import Script from "next/script";
+import NextTopLoader from "nextjs-toploader";
+import { Suspense } from "react";
+import "./globals.css";
+import QueryProvider from "./QueryProvider";
 
-const inter = Inter({ subsets: ["latin"] });
+const poppins = Poppins({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800", "900"],
+  display: "swap",
+});
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
@@ -48,15 +54,20 @@ export default async function RootLayout(
           {`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start': new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0], j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtag/js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','${googleTagManager}');`}
         </Script>
       </head>
-      <body className={cn(inter.className, "scroll-smooth")}>
+      <body className={cn(poppins.className, "scroll-smooth")}>
         <ThemeProvider>
           <QueryProvider>
+            <NextTopLoader showSpinner={false} color="#475D37" />
             <FilterRegistryProvider>
-              <ImageProvider>{children}</ImageProvider>
+              <Suspense>
+                <Filter>
+                  <ImageProvider>{children}</ImageProvider>
+                </Filter>
+                <NetInfo />
+              </Suspense>
             </FilterRegistryProvider>
           </QueryProvider>
         </ThemeProvider>
-        <Toaster visibleToasts={20} />
         {/* GTM NoScript */}
         <noscript>
           <iframe

@@ -1,24 +1,22 @@
 "use client";
 
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Controller, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import useShowErrors from "@/hooks/useShowErrors";
+import { useRegisterMutation } from "@/components/parts/register/api";
 import {
   RegisterPayload,
   registerValidation,
 } from "@/components/parts/register/validation";
-import { useRegisterMutation } from "@/components/parts/register/api";
-import Swal from "sweetalert2";
-import { useRouter } from "next/navigation";
 import {
   CustomFormInput,
   inputFilters,
 } from "@/components/shared/forms/customFormInput";
+import GoogleSignInButton from "@/components/shared/googleSignInButton";
+import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
+import useShowErrors from "@/hooks/useShowErrors";
+import { zodResolver } from "@hookform/resolvers/zod";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -29,7 +27,7 @@ export default function RegisterPage() {
       email: "",
       password: "",
       name: "",
-      rePassword: "",
+      confirmPassword: "",
     },
   });
   const {
@@ -45,18 +43,8 @@ export default function RegisterPage() {
     console.log("Login data:", data);
     registerMutation.mutate(data, {
       onSuccess: (response) => {
-        Swal.fire({
-          icon: "success",
-          title: "Success!",
-          text: "Berhasil Registrasi",
-          timer: 1500,
-          timerProgressBar: true,
-          showConfirmButton: false,
-        });
         router.push("/login");
       },
-      onError: (error) =>
-        Swal.fire({ icon: "error", title: "Gagal!", text: error.message }),
     });
   };
 
@@ -74,21 +62,6 @@ export default function RegisterPage() {
             <Form {...form}>
               <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="grid gap-4">
-                  <Controller
-                    name="name"
-                    control={control}
-                    render={({ field }) => (
-                      <Label className="grid gap-2">
-                        <span>nama</span>
-                        <Input
-                          placeholder={"nama"}
-                          autoCapitalize="none"
-                          autoCorrect="off"
-                          {...field}
-                        />
-                      </Label>
-                    )}
-                  />
                   <CustomFormInput<RegisterPayload>
                     name="name"
                     label={"nama"}
@@ -110,7 +83,7 @@ export default function RegisterPage() {
                     required
                   />
                   <CustomFormInput<RegisterPayload>
-                    name="rePassword"
+                    name="confirmPassword"
                     label={"tulis ulang password"}
                     placeholder="••••••••"
                     type="password"
@@ -131,12 +104,7 @@ export default function RegisterPage() {
               </div>
             </div>
             <div className="grid gap-2">
-              <Button variant="outline" type="button">
-                Google
-              </Button>
-              <Button variant="outline" type="button">
-                GitHub
-              </Button>
+              <GoogleSignInButton />
             </div>
           </div>
           <p className="px-8 text-center text-sm text-muted-foreground">

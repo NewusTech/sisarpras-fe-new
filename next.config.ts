@@ -1,11 +1,5 @@
 export const isProduction = process.env.NEXT_PUBLIC_MODE === "PRODUCTION";
 
-const withPWA = require("next-pwa")({
-  dest: "public", // build service worker ke /public
-  register: true, // auto register SW
-  skipWaiting: true, // langsung aktifin SW baru
-});
-
 const nextConfig = {
   images: {
     domains: [
@@ -31,4 +25,4 @@ const nextConfig = {
   },
 };
 
-export default withPWA(nextConfig);
+export default nextConfig;

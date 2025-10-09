@@ -20,7 +20,9 @@ export default function WebPushWarper({
   const { subscribe, loading, permission } = useWebPush();
 
   // kontrol modal manual
-  const [open, setOpen] = useState(permission !== "granted");
+  const [open, setOpen] = useState(
+    !!process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY && permission !== "granted"
+  );
 
   // kalau sudah granted, render child biasa
   if (permission === "granted") {

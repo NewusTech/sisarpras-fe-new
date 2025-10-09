@@ -9,20 +9,63 @@ import {
   Village,
 } from "./interface";
 import { REGION_URL } from "@/constants";
+import { dbRegion } from "@/db/dbRegion";
 
-export const fetcherRegion = async (url: string) => {
+/**
+ * 🧠 fetcherRegion — local-first fetcher khusus data wilayah
+ * - Simpan data ke IndexedDB
+ * - TTL default: 30 hari
+ * - Ambil dari cache dulu (biar cepat)
+ * - Kalau cache expired → ambil dari server dan update cache
+ */
+export const fetcherRegion = async (url: string): Promise<any> => {
+  const cacheKey = `region::${url}`;
+  const now = Date.now();
+  const oneMonthMs = 1000 * 60 * 60 * 24 * 30; // 30 hari
+
   try {
+    // 1️⃣ Coba ambil dari cache
+    const cached = await dbRegion.cache.get(cacheKey);
+    if (cached) {
+      const isExpired = new Date(cached.expiresAt).getTime() < now;
+      if (!isExpired) {
+        console.log("📦 [RegionFetcher] Load from IndexedDB cache:", cacheKey);
+        return cached.data;
+      }
+    }
+
+    // 2️⃣ Kalau gak ada / expired, ambil dari API
     const res = await fetch(`${REGION_URL}/${url}`, {
       headers: {
         "Content-Type": "application/json",
       },
     });
-    if (!res.ok) {
-      throw new Error("Failed to fetch");
+
+    if (!res.ok) throw new Error(`Failed to fetch: ${res.status}`);
+
+    const data = await res.json();
+
+    // 3️⃣ Simpan ke IndexedDB
+    await dbRegion.cache.put({
+      key: cacheKey,
+      data,
+      updatedAt: new Date(),
+      expiresAt: new Date(now + oneMonthMs),
+    });
+
+    console.log("🌐 [RegionFetcher] Updated cache:", cacheKey);
+    return data;
+  } catch (err) {
+    console.warn("⚠️ [RegionFetcher] Network error, fallback to cache:", err);
+
+    // 4️⃣ Fallback: kalau gagal fetch tapi cache masih ada
+    const cached = await dbRegion.cache.get(cacheKey);
+    if (cached) {
+      console.log("📦 [RegionFetcher] Return stale cache:", cacheKey);
+      return cached.data;
     }
-    return res.json();
-  } catch (e) {
-    console.log(e);
+
+    throw err;
   }
 };
 

@@ -2,9 +2,16 @@ import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import type { Feature, Polygon as GeoJsonPolygon } from "geojson";
 import xss from "xss";
+import { id as ID } from "date-fns/locale";
+import { format } from "date-fns";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
+}
+
+export function formatDate(date?: string | Date | null) {
+  if (!date) return "-";
+  return format(date, "EEEE, d MMMM yyyy", { locale: ID });
 }
 
 export function formatToMask(format: string): string {
@@ -35,6 +42,26 @@ export function formatErrorMessages(
       return text;
     })
     .join("\n");
+}
+
+/**
+ * Convert Blob/File ke object URL untuk dipakai di <img src=... />
+ * @param blob - File atau Blob valid
+ * @returns string | null
+ */
+export function blobToUrl(blob: Blob | null | undefined): string | null {
+  if (!blob) return null;
+  if (!(blob instanceof Blob)) {
+    console.warn("blobToUrl: input bukan Blob/File =>", blob);
+    return null;
+  }
+  return URL.createObjectURL(blob);
+}
+
+export function revokeUrl(url: string | null | undefined) {
+  if (url) {
+    URL.revokeObjectURL(url);
+  }
 }
 
 /** Helper: base64URL → Uint8Array (untuk VAPID public key) */

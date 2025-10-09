@@ -11,7 +11,7 @@ export const useLoginMutation = () => {
     LoginPayload
   >({
     mutationFn: async (payload: LoginPayload) => {
-      return await sendData("login", payload, "POST");
+      return await sendData("auth/login", payload, "POST");
     },
     successMessage: "Berhasil Login",
   });

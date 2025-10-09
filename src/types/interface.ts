@@ -24,3 +24,15 @@ export type NavItem = {
   items?: SubItem[];
   directLinkRoles?: string[]; // Roles that should access the main URL directly without seeing sub-items
 } & AccessRule;
+
+export class APIError<D> extends Error {
+  status: number;
+  data: D;
+
+  constructor(message: string, status: number, data: D) {
+    super(message);
+    this.status = status;
+    this.data = data;
+    Object.setPrototypeOf(this, APIError.prototype); // penting untuk instanceof
+  }
+}

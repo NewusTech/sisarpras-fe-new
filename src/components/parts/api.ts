@@ -19,10 +19,6 @@ export const useDelete = () => {
 
       return result;
     },
-    confirmMessage: {
-      title: "Yakin ingin menghapus",
-      description: "Data yang dihapus secara permanen tidak dapat dikembalikan",
-    },
     loadingMessage: "Menghapus data...",
     successMessage: "Data berhasil dihapus",
   });

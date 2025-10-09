@@ -9,7 +9,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { cn } from "@/lib/utils";
 
 interface PaginationProps {
   currentPage: number;
@@ -19,6 +20,9 @@ interface PaginationProps {
   displayItems?: boolean;
   displayPageSize?: boolean;
   onChange?: ({ page, limit }: { page: number; limit: number }) => void;
+  variant?: {
+    button: "rounded-md" | "rounded-full";
+  };
 }
 
 const Pagination: React.FC<PaginationProps> = ({
@@ -29,9 +33,49 @@ const Pagination: React.FC<PaginationProps> = ({
   displayItems,
   displayPageSize,
   onChange, // onChange prop to handle page and limit changes
+  variant = {
+    button: "rounded-md",
+  },
 }) => {
   const [localLimit, setLocalLimit] = useState(5);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+
+  const updateQueryParams = (nextParams: URLSearchParams) => {
+    const q = nextParams.toString();
+    const newUrl = `${pathname}${q ? `?${q}` : ""}`;
+    router.replace(newUrl, { scroll: false });
+  };
+
+  // Get initial values from the URL
+  useEffect(() => {
+    const pageFromUrl = searchParams.get("page");
+    const limitFromUrl = searchParams.get("limit");
+
+    if (pageFromUrl) {
+      // Set currentPage from URL, fallback to default if not present
+      const page = parseInt(pageFromUrl, 10);
+      if (!isNaN(page)) {
+        onChange?.({ page, limit: localLimit });
+      }
+    }
+
+    if (limitFromUrl) {
+      // Set itemsPerPage from URL
+      const limit = parseInt(limitFromUrl, 10);
+      if (!isNaN(limit)) {
+        setLocalLimit(limit);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
+
+  // Update URL when page or limit changes
+  // useEffect(() => {
+  //   router.push(`?page=${currentPage}&limit=${localLimit}`);
+  // }, [currentPage, localLimit, router]);
+
   // Generate page numbers to display
   const getPageNumbers = () => {
     const pages = [];
@@ -57,7 +101,10 @@ const Pagination: React.FC<PaginationProps> = ({
     if (onChange) {
       onChange({ page, limit: localLimit });
     } else {
-      router.push(`?page=${page}&limit=${localLimit}`); // Use router.push if onChange is not provided
+      const params = new URLSearchParams(searchParams.toString());
+      params.set("page", String(page));
+      params.set("limit", String(localLimit)); // Set the limit to the local state limit
+      updateQueryParams(params);
     }
   };
 
@@ -67,7 +114,11 @@ const Pagination: React.FC<PaginationProps> = ({
       setLocalLimit(limit);
       onChange({ page: 1, limit });
     } else {
-      router.push(`?page=1&limit=${limit}`);
+      setLocalLimit(parseInt(newLimit, 10));
+      const params = new URLSearchParams(searchParams.toString());
+      params.set("page", "1"); // Set page back to 1
+      params.set("limit", newLimit);
+      updateQueryParams(params);
     }
   };
 
@@ -79,13 +130,13 @@ const Pagination: React.FC<PaginationProps> = ({
     <div className="flex items-center justify-end gap-5 w-full my-6">
       {displayItems && (
         <React.Fragment>
-          <div className="text-text-700 mr-auto">
-            Menampilkan {Math.min(currentPage * itemsPerPage, totalItems)} data
-            dari {totalItems} data
+          <div className="text-primary-500">
+            {Math.min(currentPage * itemsPerPage, totalItems)} data dari{" "}
+            {totalItems} data
           </div>
           {displayPageSize && (
             <Select
-              value={itemsPerPage?.toString() ?? "5"}
+              value={itemsPerPage?.toString() ?? "10"}
               onValueChange={handleLimitChange}
             >
               <SelectTrigger className="w-16 rounded-sm">
@@ -107,7 +158,10 @@ const Pagination: React.FC<PaginationProps> = ({
           variant="ghost"
           onClick={() => currentPage > 1 && handlePageChange(currentPage - 1)}
           disabled={currentPage === 1}
-          className="w-9 h-9 flex items-center justify-center border border-primary text-primary disabled:opacity-50 rounded-md"
+          className={cn(
+            "w-9 h-9 flex items-center justify-center border border-primary text-primary disabled:opacity-50",
+            variant.button
+          )}
           aria-label="Previous page"
         >
           <span className="sr-only">Previous</span>
@@ -140,11 +194,13 @@ const Pagination: React.FC<PaginationProps> = ({
               variant="ghost"
               key={`page-${page}`}
               onClick={() => handlePageChange(page as number)}
-              className={`w-9 h-9 flex items-center justify-center rounded-md border border-primary ${
+              className={cn(
+                `w-9 h-9 flex items-center justify-center border border-primary`,
                 currentPage === page
                   ? "bg-primary hover:bg-primary-800 text-white hover:text-white"
-                  : "text-primary"
-              }`}
+                  : "text-primary",
+                variant.button
+              )}
             >
               {page}
             </Button>
@@ -157,7 +213,10 @@ const Pagination: React.FC<PaginationProps> = ({
             currentPage < totalPages && handlePageChange(currentPage + 1)
           }
           disabled={currentPage === totalPages}
-          className="w-9 h-9 flex items-center justify-center rounded-md border border-primary text-primary disabled:opacity-50"
+          className={cn(
+            "w-9 h-9 flex items-center justify-center border border-primary text-primary disabled:opacity-50",
+            variant.button
+          )}
           aria-label="Next page"
         >
           <span className="sr-only">Next</span>

@@ -26,23 +26,11 @@ interface Links {
 }
 
 interface FormComponent<T> {
-  mode: "create" | "update";
+  mode: "create" | "update" | "view";
   defaultValues?: T;
 }
 
 type HTTPMethod = "POST" | "PUT" | "DELETE" | "PATCH" | "GET";
-
-class APIError<D> extends Error {
-  status: number;
-  data: D;
-
-  constructor(message: string, status: number, data: D) {
-    super(message);
-    this.status = status;
-    this.data = data;
-    Object.setPrototypeOf(this, APIError.prototype); // penting untuk instanceof
-  }
-}
 
 type debounceType = {
   value: object | string | number;

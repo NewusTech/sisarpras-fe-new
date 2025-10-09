@@ -1,8 +1,8 @@
 import { create } from "zustand";
 
 export interface Toast {
-  id: string;
-  type: "success" | "error" | "warning" | "info";
+  id?: string; // ID akan diberikan dari luar
+  type: "success" | "error" | "warning" | "info" | "loading" | "confirm";
   title: string;
   message?: string;
   duration?: number;
@@ -10,11 +10,17 @@ export interface Toast {
     label: string;
     onClick: () => void;
   };
+  confirmAction?: {
+    confirmLabel: string;
+    cancelLabel?: string;
+    onConfirm: () => void;
+    onCancel?: () => void;
+  };
 }
 
 interface ToastStore {
   toasts: Toast[];
-  addToast: (toast: Omit<Toast, "id">) => void;
+  addToast: (toast: Toast) => void; // Tidak perlu lagi generate ID secara acak
   removeToast: (id: string) => void;
   clearAll: () => void;
 }
@@ -28,21 +34,21 @@ export const useToastStore = create<ToastStore>((set, get) => ({
 
   /**
    * Menambahkan notifikasi baru ke dalam store
-   * Otomatis generate ID dan set auto-remove timer jika ada duration
+   * ID akan diterima dari luar
    */
   addToast: (toast) => {
     const id = Math.random().toString(36).substr(2, 9);
-    const newToast = { ...toast, id };
+    const newToast = { ...toast, id: toast.id ?? id }; // Menerima toast dengan ID yang diberikan dari luar
 
     set((state) => ({
-      toasts: [...state.toasts, newToast],
+      toasts: [...state.toasts, newToast], // Menambahkan toast ke dalam state
     }));
 
-    // Auto remove setelah duration (default 5 detik)
+    // Jika durasi tersedia dan bukan tipe "loading", otomatis hapus setelah waktu tertentu
     const duration = toast.duration ?? 5000;
-    if (duration > 0) {
+    if (duration > 0 && toast.type !== "loading") {
       setTimeout(() => {
-        get().removeToast(id);
+        get().removeToast(newToast.id); // Menghapus toast setelah durasi
       }, duration);
     }
   },
@@ -52,7 +58,7 @@ export const useToastStore = create<ToastStore>((set, get) => ({
    */
   removeToast: (id) => {
     set((state) => ({
-      toasts: state.toasts.filter((toast) => toast.id !== id),
+      toasts: state.toasts.filter((toast) => toast.id !== id), // Menghapus toast berdasarkan ID
     }));
   },
 
@@ -60,6 +66,6 @@ export const useToastStore = create<ToastStore>((set, get) => ({
    * Menghapus semua notifikasi
    */
   clearAll: () => {
-    set({ toasts: [] });
+    set({ toasts: [] }); // Menghapus semua notifikasi
   },
 }));

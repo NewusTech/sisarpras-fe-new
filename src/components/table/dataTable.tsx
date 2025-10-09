@@ -24,18 +24,19 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Pagination from "./pagination";
 import { DataTableRef, useOptionalTableProvider } from "./tableProvider";
 import { cn } from "@/lib/utils";
+import SwirlingEffectSpinner from "../shared/swirlingEffectSpinner";
 
 interface DataTableProps<TData, TValue> {
   columns: any[];
   data: TData[];
   currentPage?: number;
   totalItems?: number;
-  itemsPerPage?: number;
   totalPages?: number;
   displayItems?: boolean;
   displayPageSize?: boolean;
   onDoubleClickTo?: string;
   showPagination?: boolean;
+  isLoading?: boolean;
 }
 
 const DataTable = forwardRef<DataTableRef, DataTableProps<any, any>>(
@@ -45,18 +46,19 @@ const DataTable = forwardRef<DataTableRef, DataTableProps<any, any>>(
       data,
       currentPage,
       totalItems,
-      itemsPerPage,
       totalPages,
       displayItems,
       displayPageSize,
       onDoubleClickTo,
       showPagination = true,
+      isLoading,
     },
     ref
   ) => {
     const router = useRouter();
     const searchParams = useSearchParams();
     const searchQuery = searchParams.get("search") ?? "";
+    const itemsPerPage = Number(searchParams.get("limit") ?? 10);
 
     const isClientPaginate =
       !currentPage || !totalItems || !itemsPerPage || !totalPages;
@@ -85,6 +87,11 @@ const DataTable = forwardRef<DataTableRef, DataTableProps<any, any>>(
         columnVisibility,
         rowSelection,
         globalFilter: searchQuery, // ✅ filter global sync ke query
+      },
+      // Menetapkan meta untuk server-side pagination
+      meta: {
+        serverPageIndex: (currentPage ?? 1) - 1,
+        serverPageSize: itemsPerPage ?? 10,
       },
     });
 
@@ -122,7 +129,7 @@ const DataTable = forwardRef<DataTableRef, DataTableProps<any, any>>(
       <div className="w-full">
         <div className="rounded-md border">
           <Table>
-            <TableHeader className="bg-primary-200">
+            <TableHeader className="bg-gray-200/50">
               {table.getHeaderGroups().map((headerGroup) => (
                 <TableRow key={headerGroup.id}>
                   {headerGroup.headers.map((header) => (
@@ -145,7 +152,16 @@ const DataTable = forwardRef<DataTableRef, DataTableProps<any, any>>(
               ))}
             </TableHeader>
             <TableBody>
-              {table.getRowModel().rows?.length ? (
+              {isLoading ? (
+                <TableRow>
+                  <TableCell
+                    colSpan={columns.length}
+                    className="h-24 place-items-center"
+                  >
+                    <SwirlingEffectSpinner />
+                  </TableCell>
+                </TableRow>
+              ) : table.getRowModel().rows?.length ? (
                 table.getRowModel().rows.map((row) => (
                   <TableRow
                     key={row.id}

@@ -10,7 +10,7 @@ type EnsureArgs = {
 
 export async function ensureWebPushSubscription({
   vapidPublicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY || "",
-  subscribePath = "/web-push/subscribe",
+  subscribePath = "web-push/subscribe",
 }: EnsureArgs = {}) {
   if (typeof window === "undefined") return null; // SSR guard
 

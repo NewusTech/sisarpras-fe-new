@@ -5,6 +5,7 @@ import {
   LayoutDashboard,
   Map,
   Table2,
+  Users,
   View,
 } from "lucide-react";
 
@@ -35,6 +36,21 @@ export const getNavData = (): navDateType => {
           {
             title: "Surat",
             url: "/form-input/letter",
+          },
+        ],
+      },
+      {
+        title: "Manajemen Pengguna",
+        url: "",
+        icon: Users,
+        items: [
+          {
+            title: "Users",
+            url: "/users",
+          },
+          {
+            title: "Roles",
+            url: "/roles",
           },
         ],
       },

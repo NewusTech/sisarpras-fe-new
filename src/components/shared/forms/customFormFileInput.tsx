@@ -15,8 +15,8 @@ import { Crop, Eye, File, X } from "lucide-react";
 import Link from "next/link";
 import React, { useRef, useState } from "react";
 import { FieldValues, Path, useFormContext } from "react-hook-form";
-import { toast } from "sonner";
 import ImageCropModal from "../imageCropModal";
+import { toast } from "@/lib/myToast";
 
 type FileAcceptType =
   | "image/*"

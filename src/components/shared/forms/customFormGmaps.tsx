@@ -34,6 +34,7 @@ type CustomFormMapsProps<T extends FieldValues = FieldValues> = {
   className?: string;
   containerClassName?: string;
   geoJson?: FeatureCollection<GeoJsonPolygon, AreaProperties>; // <- geoJson yang diizinkan
+  colorMap?: Record<string, string>;
 };
 
 export default function CustomFormGmaps<T extends FieldValues = FieldValues>({
@@ -43,6 +44,7 @@ export default function CustomFormGmaps<T extends FieldValues = FieldValues>({
   className,
   containerClassName,
   geoJson,
+  colorMap,
 }: CustomFormMapsProps<T>) {
   const { control, setValue, watch } = useFormContext<T>();
   const [position, setPosition] = useState<[number, number]>([
@@ -128,6 +130,7 @@ export default function CustomFormGmaps<T extends FieldValues = FieldValues>({
                     position={position}
                     onPositionChange={handlePositionChange}
                     geoJson={geoJson} // bisa dipakai untuk render polygon juga
+                    colorMap={colorMap}
                   />
                 )}
               </div>
