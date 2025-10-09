@@ -27,6 +27,7 @@ const config = {
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
+        placeholder: "#B8B8D6",
         primary: {
           DEFAULT: "#297BBF",
           foreground: "#FFFFFF",
@@ -62,7 +63,7 @@ const config = {
           500: "#998D8D",
           400: "#98A2B3",
           300: "#EAECF0",
-          200: "#D6CFCF",
+          200: "#EAECF0",
           100: "#F2F4F7",
         },
         info: {
@@ -177,6 +178,9 @@ const config = {
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+      },
+      boxShadow: {
+        main: "0 0 10px 0 rgba(0, 0, 0, 0.04)",
       },
     },
   },

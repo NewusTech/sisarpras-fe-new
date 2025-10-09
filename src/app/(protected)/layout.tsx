@@ -24,7 +24,7 @@ export default function ProtectedLayout({
       <SidebarProvider>
         <AppSidebar />
         <SidebarInset>
-          <header className=" z-10 flex h-16 shrink-0 items-center gap-2 shadow-md px-4 bg-white sticky top-0">
+          <header className=" z-10 flex h-16 shrink-0 items-center gap-2 shadow-main px-4 bg-white sticky top-0">
             <SidebarButtonTrigger />
             <MyBreadcrumb />
             <NavMenu />

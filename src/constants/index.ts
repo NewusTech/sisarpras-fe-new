@@ -36,6 +36,10 @@ export const getNavData = (): navDateType => {
             title: "Permohonan",
             url: "/facilities-infrastructure/submissions",
           },
+          // {
+          //   title: "Distribusi",
+          //   url: "/facilities-infrastructure/distributions",
+          // },
           {
             title: "Pelaporan",
             url: "/facilities-infrastructure/reports",

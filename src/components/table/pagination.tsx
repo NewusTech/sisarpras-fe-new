@@ -127,14 +127,14 @@ const Pagination: React.FC<PaginationProps> = ({
   }, [itemsPerPage]);
 
   return (
-    <div className="flex items-center justify-end gap-5 w-full my-6">
+    <div className="flex items-center justify-between gap-5 w-full my-6">
       {displayItems && (
         <React.Fragment>
           <div className="text-primary-500">
             {Math.min(currentPage * itemsPerPage, totalItems)} data dari{" "}
             {totalItems} data
           </div>
-          {displayPageSize && (
+          {/* {displayPageSize && (
             <Select
               value={itemsPerPage?.toString() ?? "10"}
               onValueChange={handleLimitChange}
@@ -149,7 +149,7 @@ const Pagination: React.FC<PaginationProps> = ({
                 <SelectItem value="50">50</SelectItem>
               </SelectContent>
             </Select>
-          )}
+          )} */}
         </React.Fragment>
       )}
 
@@ -159,8 +159,12 @@ const Pagination: React.FC<PaginationProps> = ({
           onClick={() => currentPage > 1 && handlePageChange(currentPage - 1)}
           disabled={currentPage === 1}
           className={cn(
-            "w-9 h-9 flex items-center justify-center border border-primary text-primary disabled:opacity-50",
-            variant.button
+            "w-9 h-9 !rounded-full flex items-center  justify-center text-primary disabled:opacity-50",
+            variant.button,
+            {
+              "border border-primary text-primary hover:text-primary":
+                currentPage > 1,
+            }
           )}
           aria-label="Previous page"
         >
@@ -195,9 +199,9 @@ const Pagination: React.FC<PaginationProps> = ({
               key={`page-${page}`}
               onClick={() => handlePageChange(page as number)}
               className={cn(
-                `w-9 h-9 flex items-center justify-center border border-primary`,
+                `w-9 h-9 flex items-center justify-center hover:!rounded-full`,
                 currentPage === page
-                  ? "bg-primary hover:bg-primary-800 text-white hover:text-white"
+                  ? "bg-primary hover:bg-primary-800 text-white hover:text-white !rounded-full"
                   : "text-primary",
                 variant.button
               )}
@@ -214,8 +218,12 @@ const Pagination: React.FC<PaginationProps> = ({
           }
           disabled={currentPage === totalPages}
           className={cn(
-            "w-9 h-9 flex items-center justify-center border border-primary text-primary disabled:opacity-50",
-            variant.button
+            "w-9 h-9 flex !rounded-full items-center justify-center  text-primary disabled:opacity-50",
+            variant.button,
+            {
+              "border border-primary text-primary hover:text-primary":
+                currentPage === totalPages - 1,
+            }
           )}
           aria-label="Next page"
         >

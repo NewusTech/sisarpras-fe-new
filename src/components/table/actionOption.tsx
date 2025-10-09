@@ -27,46 +27,61 @@ export default function ActionOption({
 }: actionOptionPops) {
   const onlyView = linkView && !linkUpdate && !linkDelete && !other;
 
-  if (onlyView) {
-    return (
-      <Link href={linkView}>
-        <Button size="icon" variant="ghost">
-          <Eye className="text-info-500 !stroke-[3]" />
-        </Button>
-      </Link>
-    );
-  }
+  // if (onlyView) {
+  //   return (
+  //     <Link href={linkView}>
+  //       <Button size="icon" variant="ghost">
+  //         <Eye className="text-info-500 !stroke-[3]" />
+  //       </Button>
+  //     </Link>
+  //   );
+  // }
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button size="icon" variant="ghost">
-          <MoreHorizontal className="!stroke-[3]" />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        {linkView && (
-          <DropdownMenuItem asChild>
-            <Link
-              href={linkView}
-              className="flex items-center gap-2 text-info-500"
-            >
-              <Eye className="h-4 w-4 text-info-500" /> Lihat
-            </Link>
-          </DropdownMenuItem>
-        )}
-        {linkUpdate && (
-          <DropdownMenuItem asChild>
-            <Link href={linkUpdate} className="flex items-center gap-2">
-              <Edit className="h-4 w-4" /> Edit
-            </Link>
-          </DropdownMenuItem>
-        )}
-        {other}
-        {linkDelete && queryKey && (
-          <ModalDelete endpoint={linkDelete} queryKey={queryKey} asMenuItem />
-        )}
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <nav className="flex items-center gap-2.5">
+      {linkView && (
+        <Link href={linkView} className=" text-info-500">
+          Detail
+        </Link>
+      )}
+      {linkUpdate && (
+        <Link href={linkUpdate} className=" text-warning-500">
+          Edit
+        </Link>
+      )}
+      {linkDelete && queryKey && (
+        <ModalDelete endpoint={linkDelete} queryKey={queryKey} asMenuItem />
+      )}
+      {/* <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button size="icon" variant="ghost">
+            <MoreHorizontal className="!stroke-[3]" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          {linkView && (
+            <DropdownMenuItem asChild>
+              <Link
+                href={linkView}
+                className="flex items-center gap-2 text-info-500"
+              >
+                <Eye className="h-4 w-4 text-info-500" /> Lihat
+              </Link>
+            </DropdownMenuItem>
+          )}
+          {linkUpdate && (
+            <DropdownMenuItem asChild>
+              <Link href={linkUpdate} className="flex items-center gap-2">
+                <Edit className="h-4 w-4" /> Edit
+              </Link>
+            </DropdownMenuItem>
+          )}
+          {other}
+          {linkDelete && queryKey && (
+            <ModalDelete endpoint={linkDelete} queryKey={queryKey} asMenuItem />
+          )}
+        </DropdownMenuContent>
+      </DropdownMenu> */}
+    </nav>
   );
 }

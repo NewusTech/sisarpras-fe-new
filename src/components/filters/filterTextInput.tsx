@@ -69,7 +69,7 @@ export const FilterTextInput = <T extends Record<string, any>>({
       {label && <span className="w-[70%]">{label}</span>}
       <div
         className={cn(
-          "relative flex items-center w-full bg-white",
+          "relative flex items-center w-full bg-white text-placeholder focus-within:text-black",
           containerClassName
         )}
       >
@@ -84,7 +84,7 @@ export const FilterTextInput = <T extends Record<string, any>>({
           max={max}
           step={step}
           type="text"
-          className="pl-10 w-full"
+          className="pl-10 w-full placeholder:font-normal"
           placeholder={placeholder || label}
           value={rawValue ?? ""} // ✅ fix
           onChange={(e) => {

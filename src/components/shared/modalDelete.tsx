@@ -75,7 +75,7 @@ const ModalDelete = ({
 
   return (
     <Button size="icon" variant="ghost" onClick={handleDelete}>
-      <Trash2 className="text-red-500 !stroke-[3]" />
+      Hapus
     </Button>
   );
 };

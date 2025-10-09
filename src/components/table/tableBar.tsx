@@ -29,6 +29,7 @@ import LinkButton from "../shared/button/linkButton";
 import { Badge } from "../ui/badge";
 import { useTableProvider } from "./tableProvider"; // ⬅️ pakai provider terpisah
 import TitleHeader from "../shared/title";
+import FilterIcon from "@/assets/icons/filterIcon";
 
 type FilterItems = "date" | "kolom";
 
@@ -43,6 +44,7 @@ type Props = {
     options: Option[];
     name: string;
   };
+  searchPlaceholder?: string;
 };
 
 type ColumnsVisibility = Record<string, boolean>;
@@ -55,6 +57,7 @@ export default function TableBar({
   children,
   filterItems,
   filterTabs,
+  searchPlaceholder,
 }: Props) {
   const { tableRef } = useTableProvider();
   const { resetValues, applyFilters, activeFilterCount } = useFilterContext();
@@ -88,59 +91,18 @@ export default function TableBar({
   return (
     <div className={cn(className)}>
       <TitleHeader title={title} />
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 justify-between">
-        <div className="flex gap-2 items-center">
+      <div className="flex justify-between items-center mb-6">
+        <div className="">
           {/* Dialog Filter */}
-          {filterKeys.length != 0 && (
-            <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-              <DialogTrigger asChild>
-                <Button variant="outline" className="rounded-full relative">
-                  <ListFilter className="md:mr-2" />
-                  <span className="hidden md:block">Filter</span>
-                  {activeFilterCount !== 0 && (
-                    <Badge className="aspect-square !w-5 !h-5 !p-0 absolute -top-2 -right-2 items-center text-xs justify-center rounded-full animate-pulse">
-                      {activeFilterCount}
-                    </Badge>
-                  )}
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="sm:max-w-xl max-h-[40rem] overflow-y-auto">
-                <DialogTitle className="font-semibold text-xl text-start">
-                  Filter
-                </DialogTitle>
-                <div className="grid grid-cols-1 gap-y-5 mt-4">
-                  {filterKeys.map((k) => (
-                    <FilterSelectItem key={k} keyName={k} />
-                  ))}
+          <FilterTextInput
+            placeholder={searchPlaceholder}
+            name="search"
+            className="md:w-60"
+            prefixIcon={<Search />}
+          />
 
-                  <div className="flex gap-x-4 justify-end items-center">
-                    <Button
-                      className="rounded-full w-40"
-                      type="button"
-                      variant="outline"
-                      onClick={() => {
-                        resetValues();
-                        setDialogOpen(false);
-                      }}
-                    >
-                      Reset
-                    </Button>
-                    <Button
-                      className="rounded-full w-40"
-                      onClick={() => {
-                        setDialogOpen(false);
-                        applyFilters?.();
-                      }}
-                    >
-                      Terapkan
-                    </Button>
-                  </div>
-                </div>
-              </DialogContent>
-            </Dialog>
-          )}
           {/* Toggle kolom */}
-          {filterItems?.includes("kolom") && tableRef.current?.table && (
+          {/* {filterItems?.includes("kolom") && tableRef.current?.table && (
             <DropdownMenu
               open={columnsMenuOpen}
               onOpenChange={setColumnsMenuOpen}
@@ -189,17 +151,67 @@ export default function TableBar({
 
           {filterItems?.includes("date") && (
             <FilterDateRange startKey="startDate" endKey="endDate" />
-          )}
+          )} */}
         </div>
 
-        <div className="flex w-full gap-2 items-center justify-end my-5 md:pl-32">
+        <div className="flex gap-2 items-center">
+          {filterKeys.length != 0 && (
+            <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+              <DialogTrigger asChild>
+                <Button
+                  variant="outline"
+                  className="rounded-full relative text-primary bg-white border-primary hover:bg-primary/90 hover:text-white"
+                >
+                  <FilterIcon />
+                  <span className="hidden md:block">Filter</span>
+                  {/* {activeFilterCount !== 0 && (
+                    <Badge className="aspect-square !w-5 !h-5 !p-0 absolute -top-2 -right-2 items-center text-xs justify-center rounded-full animate-pulse">
+                      {activeFilterCount}
+                    </Badge>
+                  )} */}
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-xl max-h-[40rem] overflow-y-auto">
+                <DialogTitle className="font-semibold text-xl text-start">
+                  Filter
+                </DialogTitle>
+                <div className="grid grid-cols-1 gap-y-5 mt-4">
+                  {filterKeys.map((k) => (
+                    <FilterSelectItem key={k} keyName={k} />
+                  ))}
+
+                  <div className="flex gap-x-4 justify-end items-center">
+                    <Button
+                      className="rounded-full w-40"
+                      type="button"
+                      variant="outline"
+                      onClick={() => {
+                        resetValues();
+                        setDialogOpen(false);
+                      }}
+                    >
+                      Reset
+                    </Button>
+                    <Button
+                      className="rounded-full w-40"
+                      onClick={() => {
+                        setDialogOpen(false);
+                        applyFilters?.();
+                      }}
+                    >
+                      Terapkan
+                    </Button>
+                  </div>
+                </div>
+              </DialogContent>
+            </Dialog>
+          )}
           {buttonAdd && (
             <LinkButton
               title={buttonAdd.label ?? "Tambah"}
               link={buttonAdd.href}
             />
           )}
-          <FilterTextInput name="search" prefixIcon={<Search />} />
         </div>
       </div>
       {filterTabs && (

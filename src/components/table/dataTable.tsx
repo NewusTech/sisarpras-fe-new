@@ -127,9 +127,9 @@ const DataTable = forwardRef<DataTableRef, DataTableProps<any, any>>(
 
     return (
       <div className="w-full">
-        <div className="rounded-md border">
+        <div className="rounded-lg border">
           <Table>
-            <TableHeader className="bg-gray-200/50">
+            <TableHeader className="bg-text-200">
               {table.getHeaderGroups().map((headerGroup) => (
                 <TableRow key={headerGroup.id}>
                   {headerGroup.headers.map((header) => (
