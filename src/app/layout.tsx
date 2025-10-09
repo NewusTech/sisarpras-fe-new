@@ -49,13 +49,13 @@ export default async function RootLayout(
         </Script>
       </head>
       <body className={cn(inter.className, "scroll-smooth")}>
-        <ThemeProvider>
-          <QueryProvider>
-            <FilterRegistryProvider>
-              <ImageProvider>{children}</ImageProvider>
-            </FilterRegistryProvider>
-          </QueryProvider>
-        </ThemeProvider>
+        {/* <ThemeProvider> */}
+        <QueryProvider>
+          <FilterRegistryProvider>
+            <ImageProvider>{children}</ImageProvider>
+          </FilterRegistryProvider>
+        </QueryProvider>
+        {/* </ThemeProvider> */}
         <Toaster visibleToasts={20} />
         {/* GTM NoScript */}
         <noscript>

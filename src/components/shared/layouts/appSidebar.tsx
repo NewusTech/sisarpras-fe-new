@@ -20,11 +20,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { permissions, isLoading } = usePermission();
   const { decode } = useGetToken();
   return (
-    <Sidebar collapsible="icon" {...props}>
-      <SidebarHeader className="p-0 sticky">
+    <Sidebar collapsible="icon" {...props} className="z-20">
+      <SidebarHeader className="p-0 sticky bg-white">
         <AppSidebarHeader />
       </SidebarHeader>
-      <SidebarContent>
+      <SidebarContent className="bg-white">
         {navData && (
           <NavItems
             items={navData.navItems}
