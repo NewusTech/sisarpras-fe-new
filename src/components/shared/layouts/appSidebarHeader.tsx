@@ -7,21 +7,19 @@ import React from "react";
 export default function AppSidebarHeader() {
   const { open } = useSidebar();
   return (
-    <div className="flex items-center gap-3 px-2 py-2">
+    <div className="flex flex-col items-center gap-2 px-2 py-2 pt-6">
       <div className="flex aspect-square size-10 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
         <Image
-          src="/assets/icons/logo.svg?height=62&width=62"
+          src="/assets/images/logo-pali.png"
           alt="Logo"
           width={open ? 70 : 30}
           height={open ? 70 : 30}
         />
       </div>
       {open && (
-        <div className="flex flex-col">
-          <p className="font-semibold text-sidebar-foreground">Maincore</p>
-          <p className="text-xs text-sidebar-foreground/70">
-            Maincore newus project x
-          </p>
+        <div className="flex flex-col items-center">
+          <p className="font-semibold text-lg text-primary">SIMPUPUK</p>
+          <p className="text-xs text-primary">Sistem Informasi Pupuk Tani</p>
         </div>
       )}
     </div>
