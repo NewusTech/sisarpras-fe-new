@@ -15,7 +15,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Cookie from "js-cookie";
 import { jwtDecode } from "jwt-decode";
 import Link from "next/link";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 
 export default function LoginPage() {

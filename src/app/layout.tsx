@@ -12,6 +12,7 @@ import NextTopLoader from "nextjs-toploader";
 import { Suspense } from "react";
 import "./globals.css";
 import QueryProvider from "./QueryProvider";
+import ServiceWorkerWarp from "@/components/shared/serviceWorkerWarp";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -60,9 +61,11 @@ export default async function RootLayout(
             <NextTopLoader showSpinner={false} color="#475D37" />
             <FilterRegistryProvider>
               <Suspense>
-                <Filter>
-                  <ImageProvider>{children}</ImageProvider>
-                </Filter>
+                <ServiceWorkerWarp>
+                  <Filter>
+                    <ImageProvider>{children}</ImageProvider>
+                  </Filter>
+                </ServiceWorkerWarp>
                 <NetInfo />
               </Suspense>
             </FilterRegistryProvider>
