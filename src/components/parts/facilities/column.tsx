@@ -41,8 +41,8 @@ export const facilitiesColumns: ColumnDef<FacilitiesResponse>[] = [
     header: "Aksi",
     cell: ({ row }) => (
       <ActionOption
-        linkView={`/facilities-infrastructure/submission/${row.original.id}/facility`}
-        linkUpdate={`/facilities-infrastructure/submission/${row.original.id}/facility/edit`}
+        linkView={`/facilities-infrastructure/submissions/facility/${row.original.id}`}
+        linkUpdate={`/facilities-infrastructure/submissions/facility/${row.original.id}/edit`}
       />
     ),
   },

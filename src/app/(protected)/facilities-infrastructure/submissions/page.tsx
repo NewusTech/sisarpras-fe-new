@@ -1,6 +1,7 @@
 "use client";
 
 import { facilitiesColumns } from "@/components/parts/facilities/column";
+import { infrastructureColumns } from "@/components/parts/infrastructure/columns";
 import { BreadcrumbSetItem } from "@/components/shared/layouts/myBreadcrumb";
 import TitleHeader from "@/components/shared/title";
 import { TableProvider } from "@/components/table";
@@ -18,7 +19,7 @@ export const access: AccessRule = {
   roles: ["STAFF"],
 };
 
-const data = [
+const facilityData = [
   {
     id: 1,
     academicYear: "2021/2022",
@@ -164,6 +165,22 @@ const data = [
   },
 ];
 
+const infraData = [
+  {
+    id: 1,
+    academicYear: "2021/2022",
+    createdAt: "2021-08-01",
+    room: {
+      name: "Laboratorium",
+      type: "Teknologi",
+    },
+    priority: {
+      name: "Tinggi",
+    },
+    status: "PENDING",
+  },
+];
+
 const Page = () => {
   return (
     <section>
@@ -205,12 +222,12 @@ const Page = () => {
                 filterKeys={["filterName"]}
                 buttonAdd={{
                   label: "Permohonan Sarana",
-                  href: "/tables/admin/create",
+                  href: "/facilities-infrastructure/submissions/facility/create",
                 }}
               >
                 <DataTable
                   columns={facilitiesColumns}
-                  data={data}
+                  data={facilityData}
                   displayItems
                 />
               </TableBar>
@@ -223,12 +240,12 @@ const Page = () => {
                 filterKeys={["filterName"]}
                 buttonAdd={{
                   label: "Permohonan Prasarana",
-                  href: "/tables/admin/create",
+                  href: "/facilities-infrastructure/submissions/infrastructure/create",
                 }}
               >
                 <DataTable
-                  columns={facilitiesColumns}
-                  data={data}
+                  columns={infrastructureColumns}
+                  data={infraData}
                   displayItems
                 />
               </TableBar>

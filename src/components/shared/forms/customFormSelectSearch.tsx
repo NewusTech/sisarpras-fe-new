@@ -109,14 +109,17 @@ export default function CustomFormSelectSearch<
           )}
           <FormControl>
             <Popover open={open} onOpenChange={setOpen}>
-              <PopoverTrigger asChild>
+              <PopoverTrigger
+                asChild
+                className="data-[state=open]:!ring-1 data-[state=open]:!ring-primary"
+              >
                 <Button
                   type="button"
-                  variant="outline"
+                  variant="select"
                   role="combobox"
                   className={cn(
                     "w-full border text-black rounded-full justify-between h-10 text-sm font-normal",
-                    !findLabel() && "text-gray-500"
+                    !findLabel() && "text-placeholder"
                   )}
                   size={"sm"}
                   disabled={disabled}

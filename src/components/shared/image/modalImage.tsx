@@ -21,7 +21,7 @@ const ModalImage = ({
   className,
 }: {
   id?: string | number;
-  src: string;
+  src: string | undefined;
   width?: number;
   height?: number;
   className?: string;
