@@ -131,8 +131,8 @@ const Pagination: React.FC<PaginationProps> = ({
       {displayItems && (
         <React.Fragment>
           <div className="text-primary-500">
-            {Math.min(currentPage * itemsPerPage, totalItems)} data dari{" "}
-            {totalItems} data
+            Menampilkan {Math.min(currentPage * itemsPerPage, totalItems)} data
+            dari {totalItems} data
           </div>
           {/* {displayPageSize && (
             <Select

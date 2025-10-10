@@ -45,6 +45,7 @@ type Props = {
     name: string;
   };
   searchPlaceholder?: string;
+  searchKey?: string | null;
 };
 
 type ColumnsVisibility = Record<string, boolean>;
@@ -58,6 +59,7 @@ export default function TableBar({
   filterItems,
   filterTabs,
   searchPlaceholder,
+  searchKey,
 }: Props) {
   const { tableRef } = useTableProvider();
   const { resetValues, applyFilters, activeFilterCount } = useFilterContext();
@@ -96,7 +98,7 @@ export default function TableBar({
           {/* Dialog Filter */}
           <FilterTextInput
             placeholder={searchPlaceholder}
-            name="search"
+            name={searchKey ?? "search"}
             className="md:w-60"
             prefixIcon={<Search />}
           />

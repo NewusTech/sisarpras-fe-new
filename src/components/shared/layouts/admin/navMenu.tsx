@@ -11,12 +11,14 @@ import {
 import { useProfile } from "@/store/userStore";
 import Link from "next/link";
 import NotificationMenu from "./notificationMenu";
+import { ModeToggle } from "@/components/sections/landing/modeToggle";
 
 export default function NavMenu() {
   const { user } = useProfile();
   return (
     <div className="ml-auto flex items-center gap-x-3 md:gap-x-6">
       <NotificationMenu />
+      <ModeToggle />
       <DropdownMenu>
         <DropdownMenuTrigger className="flex gap-x-4 text-sm md:text-base">
           <div className="font-semibold text-end">

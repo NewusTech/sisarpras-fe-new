@@ -8,6 +8,7 @@ const nextConfig = {
       "newus-bucket.s3.ap-southeast-2.amazonaws.com",
       "loremflickr.com",
       "picsum.photos",
+      "accuware-inc.com",
     ],
   },
   compiler: {

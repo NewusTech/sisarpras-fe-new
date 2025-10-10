@@ -47,17 +47,17 @@ export const getNavData = (): navDateType => {
         ],
       },
       {
-        title: "Penyimpanan",
-        url: "/storage",
+        title: "Aset",
+        url: "/assets",
         icon: Box3DIcon,
         items: [
           {
             title: "Sarana",
-            url: "/storage/facilities",
+            url: "/assets/facilities",
           },
           {
             title: "Prasarana",
-            url: "/storage/infrastructures",
+            url: "/assets/infrastructures",
           },
         ],
       },
