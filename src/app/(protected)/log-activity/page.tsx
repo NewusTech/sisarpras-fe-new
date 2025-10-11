@@ -1,10 +1,11 @@
 "use client";
 
-import { logActivityColumns } from "@/components/parts/log-activity/column";
-import DataTable from "@/components/table/dataTable";
-import { BreadcrumbSetItem } from "@/components/shared/layouts/myBreadcrumb";
-import { Card, CardContent } from "@/components/ui/card";
 import { useGetLogMe } from "@/components/parts/log-activity/api";
+import { logActivityColumns } from "@/components/parts/log-activity/column";
+import CardHeader from "@/components/sections/cardHeader";
+import { BreadcrumbSetItem } from "@/components/shared/layouts/myBreadcrumb";
+import DataTable from "@/components/table/dataTable";
+import { Card } from "@/components/ui/card";
 import { useSearchParams } from "next/navigation";
 
 export default function Page() {
@@ -12,7 +13,7 @@ export default function Page() {
   const { data } = useGetLogMe(params.toString());
   const logData = data?.data;
   return (
-    <main>
+    <div>
       <BreadcrumbSetItem
         items={[
           {
@@ -20,17 +21,18 @@ export default function Page() {
           },
         ]}
       />
-      <Card className="mt-5">
-        <CardContent className="mt-8">
-          <DataTable
-            columns={logActivityColumns}
-            data={logData?.items ?? []}
-            currentPage={logData?.current_page ?? 1}
-            totalItems={logData?.total_items ?? 0}
-            totalPages={logData?.total_pages ?? 1}
-          />
-        </CardContent>
+      <Card className="space-y-6">
+        <CardHeader title="Log Aktivitas" />
+        <DataTable
+          columns={logActivityColumns}
+          data={logData?.items ?? []}
+          currentPage={logData?.current_page ?? 1}
+          totalItems={logData?.total_items ?? 0}
+          totalPages={logData?.total_pages ?? 1}
+          showPagination
+          displayItems
+        />
       </Card>
-    </main>
+    </div>
   );
 }

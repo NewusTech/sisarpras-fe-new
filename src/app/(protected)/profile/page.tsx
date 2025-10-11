@@ -1,15 +1,16 @@
 "use client";
 
+import EditIcon from "@/assets/icons/editIcon";
+import CardHeader from "@/components/sections/cardHeader";
 import FormFotoProfile from "@/components/sections/profile/formFotoProfile";
 import FormProfile from "@/components/sections/profile/formProfile";
-import UpdatePassword from "@/components/sections/profile/updatePassword";
 import { BreadcrumbSetItem } from "@/components/shared/layouts/myBreadcrumb";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { FormProfileStore } from "@/store/formProfileStore";
 import { useProfile } from "@/store/userStore";
-import { Edit, X } from "lucide-react";
 
 export default function Page() {
   const { edit, closeEdit, openEdit } = FormProfileStore();
@@ -27,42 +28,33 @@ export default function Page() {
       <BreadcrumbSetItem
         items={[
           {
-            title: "Profile",
+            title: "Profil",
           },
         ]}
       />
-      <Card className="mt-5">
-        <CardHeader className="flex flex-col md:flex-row gap-6">
-          <div className="flex flex-row gap-x-6">
+      <Card className="space-y-6">
+        <CardHeader title="Profile">
+          <Button
+            variant="outline"
+            className="rounded-full"
+            onClick={handleChangeEdit}
+          >
+            <EditIcon /> Edit
+          </Button>
+        </CardHeader>
+
+        <CardContent className="space-y-6 mt-6">
+          <div className="flex gap-6">
             <FormFotoProfile />
-            <div className="text-start text-sm grid justify-between w-full">
-              <p className="font-semibold text-2xl ">{user?.name}</p>
-              <p className="">{user?.email}</p>
+            <div>
+              <p className="font-semibold text-2xl ">{user?.name ?? "User"}</p>
+              <p className="">{user?.role.name ?? "Pegawai"}</p>
+            </div>
+            <div>
+              <Badge variant="secondary">Petugas</Badge>
             </div>
           </div>
-          <div className="flex items-center gap-x-3 ml-auto">
-            <Button
-              onClick={handleChangeEdit}
-              className="rounded-full min-w-24 gap-x-3"
-            >
-              {edit ? (
-                <>
-                  <X />
-                  Batal Edit
-                </>
-              ) : (
-                <>
-                  <Edit />
-                  Eidt
-                </>
-              )}
-            </Button>
-            <UpdatePassword />
-          </div>
-        </CardHeader>
-        <Separator className="mx-6 w-auto" />
-        <CardContent className="mt-5">
-          <p className="text-xl">Detail Informasi</p>
+          <h1 className="font-normal text-lg">Detail Informasi</h1>
           <FormProfile />
         </CardContent>
       </Card>

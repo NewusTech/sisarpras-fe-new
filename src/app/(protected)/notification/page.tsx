@@ -5,10 +5,10 @@ import {
   useGetNotification,
   useReadNotificationMutation,
 } from "@/components/parts/notification/api";
+import CardHeader from "@/components/sections/cardHeader";
 import { BreadcrumbSetItem } from "@/components/shared/layouts/myBreadcrumb";
 import Pagination from "@/components/table/pagination";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useIsMobile } from "@/hooks/useMobile";
@@ -100,68 +100,68 @@ export default function Page() {
           },
         ]}
       />
-      <Card className="mt-5">
-        <CardHeader className="flex flex-row gap-x-6 mt-4 items-center justify-between overflow-x-scroll">
-          <Filter initialValues={{ readStatus: "" }}>
-            {({ setValue, values }) => (
-              <Tabs
-                defaultValue=""
-                value={values.readStatus}
-                onValueChange={(val) => setValue("readStatus", val)}
-              >
-                <TabsList className="bg-transparent gap-x-3">
-                  {filterTab.map((f, i) => (
-                    <TabsTrigger
-                      key={i}
-                      value={f.value}
-                      className={cn(
-                        "rounded-full !border border-primary text-primary py-2 px-6",
-                        "data-[state=active]:bg-primary data-[state=active]:text-white"
-                      )}
-                    >
-                      {f.title}
-                    </TabsTrigger>
-                  ))}
-                </TabsList>
-              </Tabs>
-            )}
-          </Filter>
+      <Card className="space-y-6">
+        <CardHeader title="Notifikasi" />
+        <Filter initialValues={{ readStatus: "" }}>
+          {({ setValue, values }) => (
+            <Tabs
+              defaultValue=""
+              value={values.readStatus}
+              onValueChange={(val) => setValue("readStatus", val)}
+            >
+              <TabsList className="bg-transparent gap-x-3">
+                {filterTab.map((f, i) => (
+                  <TabsTrigger
+                    key={i}
+                    value={f.value}
+                    className={cn(
+                      "rounded-full !border border-primary text-primary",
+                      "data-[state=active]:bg-primary data-[state=active]:text-white text-sm hover:bg-accent"
+                    )}
+                  >
+                    {f.title}
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+            </Tabs>
+          )}
+        </Filter>
+        {/* <CardHeader className="flex flex-row gap-x-6 mt-4 items-center justify-between overflow-x-scroll">
+          
 
           <Button variant={"link"} onClick={() => handleRead()}>
             Tandai dibaca semua
           </Button>
-        </CardHeader>
-        <Separator className="mx-6 w-auto" />
-        <CardContent>
-          {notificationData?.items.map((item, i) => (
-            <div
-              key={i}
-              className={cn(
-                "min-h-20 border-b flex gap-x-10 items-center cursor-pointer px-6",
-                {
-                  "bg-gray-200/30": !item.readStatus,
-                }
-              )}
-              onClick={() => {
-                handleRead(item.id);
-                handleTo(Number(item.refId), item.type as any);
-              }}
-            >
-              <p className="flex-1">{item.message}</p>
-              <p className="flex-shrink-0">
-                {format(item.deliveredAt, "dd MMMM yyyy hh:mm")}
-              </p>
-            </div>
-          ))}
-          {/*  */}
-          <Pagination
-            currentPage={notificationData?.current_page ?? 1}
-            itemsPerPage={notificationData?.items_per_page ?? 10}
-            totalItems={notificationData?.total_items ?? 0}
-            totalPages={notificationData?.total_pages ?? 1}
-            displayItems={!isMobile}
-          />
-        </CardContent>
+        </CardHeader> */}
+        <Separator className="w-auto" />
+        {notificationData?.items.map((item, i) => (
+          <div
+            key={i}
+            className={cn(
+              "min-h-20 border-b flex gap-x-10 items-center cursor-pointer",
+              {
+                "bg-gray-200/30": !item.readStatus,
+              }
+            )}
+            onClick={() => {
+              handleRead(item.id);
+              handleTo(Number(item.refId), item.type as any);
+            }}
+          >
+            <p className="flex-1">{item.message}</p>
+            <p className="flex-shrink-0">
+              {format(item.deliveredAt, "dd MMMM yyyy hh:mm")}
+            </p>
+          </div>
+        ))}
+        {/*  */}
+        <Pagination
+          currentPage={notificationData?.current_page ?? 1}
+          itemsPerPage={notificationData?.items_per_page ?? 10}
+          totalItems={notificationData?.total_items ?? 0}
+          totalPages={notificationData?.total_pages ?? 1}
+          displayItems={!isMobile}
+        />
       </Card>
     </main>
   );

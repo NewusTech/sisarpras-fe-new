@@ -11,7 +11,7 @@ import {
   inputFilters,
 } from "@/components/shared/forms/customFormInput";
 import { CustomFormSelect } from "@/components/shared/forms/customFormSelect";
-import TextLabel from "@/components/shared/valueLabel";
+import ValueLabel from "@/components/shared/valueLabel";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { FormProfileStore } from "@/store/formProfileStore";
@@ -121,17 +121,16 @@ export default function FormProfile() {
         </form>
       ) : (
         <div className="grid grid-cols-2 gap-8">
-          <TextLabel label="Nama" value={user?.name} />
-          <TextLabel label="NIK" value={user?.nik} />
-          <TextLabel
-            label="Jenis Kelamin"
-            value={user?.gender === "MALE" ? "Laki-laki" : "Perempuan"}
-          />
-          <TextLabel label="Jabatan" value={user?.position} />
-          <TextLabel label="Unit Kerja" value={user?.workUnit} />
-          <TextLabel label="Email" value={user?.email} />
-          <TextLabel label="Nomor Telepon" value={user?.phone} />
-          <TextLabel label="Alamat" value={user?.address} />
+          <ValueLabel label="Email" value={"-"} />
+          <ValueLabel label="NIP" value="-" />
+          <ValueLabel label="Status Kepegawaian" value="-" />
+          <ValueLabel label="Golongan" value="-" />
+          <ValueLabel label="Jabatan" value={"-"} />
+          <ValueLabel label="Pangkat" value="" />
+          <ValueLabel label="Tempat & Tanggal Lahir" value="-" />
+          <ValueLabel label="Jenis Kelamin" value={"-"} />
+          <ValueLabel label="Nomor Telepon" value={"-"} />
+          <ValueLabel label="Alamat" value={"-"} />
         </div>
       )}
     </div>

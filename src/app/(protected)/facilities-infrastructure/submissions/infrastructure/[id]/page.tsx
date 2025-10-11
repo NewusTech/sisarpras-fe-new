@@ -36,7 +36,7 @@ const Page = () => {
       <Card className="space-y-6">
         <CardHeader title={`${id}`} />
         <MessageCard />
-        <h3>Detail Informasi</h3>
+        <h1 className="font-normal text-xl">Detail Informasi</h1>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <ValueLabel label="No Permohonan" value="-" />
           <ValueLabel label="Tanggal Permohonan" value="-" />

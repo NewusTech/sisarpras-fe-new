@@ -16,7 +16,7 @@ const GoogleSignInButton = ({ className = "" }) => {
       onClick={handleGoogle}
     >
       <GoogleIcon />
-      <span className="text-sub font-medium">Masuk dengan Google</span>
+      <span className="text-sub font-medium">Lanjut dengan Google</span>
     </button>
   );
 };

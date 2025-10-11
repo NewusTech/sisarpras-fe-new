@@ -19,7 +19,7 @@ type CustomFormInputProps<T extends FieldValues = FieldValues> = {
   name: Path<T>;
   label?: string;
   placeholder?: string;
-  description?: string;
+  description?: string | React.ReactNode;
   className?: string;
   inputClassName?: string;
   required?: boolean;
@@ -131,7 +131,7 @@ export function CustomFormInput<T extends FieldValues = FieldValues>({
                   onClick={() => setShowPassword(!showPassword)}
                   disabled={disabled}
                 >
-                  {showPassword ? <EyeOff /> : <Eye />}
+                  {showPassword ? <Eye /> : <EyeOff />}
                 </button>
               )}
             </div>

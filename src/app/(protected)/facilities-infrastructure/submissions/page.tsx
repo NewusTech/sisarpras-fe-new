@@ -8,12 +8,9 @@ import TitleHeader from "@/components/shared/title";
 import { TableProvider } from "@/components/table";
 import DataTable from "@/components/table/dataTable";
 import TableBar from "@/components/table/tableBar";
-import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Download, Plus } from "lucide-react";
-import React from "react";
 
 export const access: AccessRule = {
   permissions: [""],

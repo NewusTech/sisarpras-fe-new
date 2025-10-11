@@ -5,8 +5,22 @@ import { Button } from "../ui/button";
 import React from "react";
 import { Separator } from "../ui/separator";
 import { Badge } from "../ui/badge";
+import clsx from "clsx";
 
-const CardHeader = ({ title, route }: { title: string; route?: string }) => {
+interface CardHeaderProps {
+  title: string;
+  route?: string;
+  status?: string;
+  className?: string;
+  children?: React.ReactNode;
+}
+const CardHeader = ({
+  title,
+  route,
+  status,
+  children,
+  className,
+}: CardHeaderProps) => {
   const router = useRouter();
 
   const handleBack = () => {
@@ -18,14 +32,17 @@ const CardHeader = ({ title, route }: { title: string; route?: string }) => {
   };
   return (
     <>
-      <div className="flex gap-2 items-center justify-start">
+      <div
+        className={clsx("flex gap-2 items-center justify-between", className)}
+      >
         <div className="flex gap-2 items-center">
           <Button variant="ghost" onClick={handleBack}>
             <ArrowLeft />
           </Button>
           <TitleHeader title={title} />
+          {status && <Badge variant="secondary">{status ?? "-"}</Badge>}
         </div>
-        <Badge variant="secondary">Detail</Badge>
+        {children}
       </div>
       <Separator />
     </>
