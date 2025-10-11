@@ -2,6 +2,7 @@
 
 import { facilitiesColumns } from "@/components/parts/facilities/column";
 import { infrastructureColumns } from "@/components/parts/infrastructure/columns";
+import DownloadButton from "@/components/shared/button/downloadButton";
 import { BreadcrumbSetItem } from "@/components/shared/layouts/myBreadcrumb";
 import TitleHeader from "@/components/shared/title";
 import { TableProvider } from "@/components/table";
@@ -205,13 +206,7 @@ const Page = () => {
               <TabsTrigger value="facilities">Sarana</TabsTrigger>
               <TabsTrigger value="infrastructures">Prasarana</TabsTrigger>
             </TabsList>
-            <Button
-              variant="outline"
-              className="flex items-center gap-2 rounded-full"
-            >
-              <Download />
-              Unduh Data
-            </Button>
+            <DownloadButton />
           </div>
 
           <Separator className="mt-0.5 mb-6" />

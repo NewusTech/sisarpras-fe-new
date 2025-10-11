@@ -28,7 +28,7 @@ export const facilitiesReportColumns: ColumnDef<FacilitiesReportResponse>[] = [
     header: "Aksi",
     cell: ({ row }) => (
       <ActionOption
-        linkView={`/facilities-infrastructure/submission/${row.original.id}/facility`}
+        linkView={`/facilities-infrastructure/reports/sarana/${row.original.id}`}
       />
     ),
   },
@@ -56,7 +56,7 @@ export const infrastructuresReportColumns: ColumnDef<InfrastructureReportRespons
       header: "Aksi",
       cell: ({ row }) => (
         <ActionOption
-          linkView={`/facilities-infrastructure/submission/${row.original.id}/facility`}
+          linkView={`/facilities-infrastructure/reports/prasarana/${row.original.id}`}
         />
       ),
     },
