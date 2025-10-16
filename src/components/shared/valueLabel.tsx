@@ -74,7 +74,9 @@ export default function ValueLabel({
       )}
 
       {isEmpty ? (
-        <div className={cn("w-full rounded-full bg-slate-200 animate-pulse")} />
+        <div
+          className={cn("w-full rounded-full bg-slate-200 animate-pulse ")}
+        />
       ) : isString ? (
         <p
           aria-disabled={disabled}
@@ -82,7 +84,8 @@ export default function ValueLabel({
           className={cn(
             valueLabelVariants({ variant }),
             isBetween ? "text-end flex-1" : "",
-            valueClassName
+            valueClassName,
+            "text-sm"
           )}
         >
           {value as React.ReactNode}
@@ -91,7 +94,8 @@ export default function ValueLabel({
         React.cloneElement(value as React.ReactElement, {
           className: cn(
             (value as any)?.props?.className,
-            isBetween ? "flex-1 text-end" : ""
+            isBetween ? "flex-1 text-end" : "",
+            "text-sm"
           ),
           "data-disabled": disabled ? "true" : undefined,
           "aria-disabled": disabled || undefined,

@@ -46,6 +46,7 @@ type Props = {
   };
   searchPlaceholder?: string;
   searchKey?: string | null;
+  searchable?: boolean;
 };
 
 type ColumnsVisibility = Record<string, boolean>;
@@ -60,6 +61,7 @@ export default function TableBar({
   filterTabs,
   searchPlaceholder,
   searchKey,
+  searchable = true,
 }: Props) {
   const { tableRef } = useTableProvider();
   const { resetValues, applyFilters, activeFilterCount } = useFilterContext();
@@ -96,12 +98,14 @@ export default function TableBar({
       <div className="flex justify-between items-center mb-6">
         <div className="">
           {/* Dialog Filter */}
-          <FilterTextInput
-            placeholder={searchPlaceholder}
-            name={searchKey ?? "search"}
-            className="md:w-60"
-            prefixIcon={<Search />}
-          />
+          {searchable && (
+            <FilterTextInput
+              placeholder={searchPlaceholder}
+              name={searchKey ?? "search"}
+              className="md:w-60"
+              prefixIcon={<Search />}
+            />
+          )}
 
           {/* Toggle kolom */}
           {/* {filterItems?.includes("kolom") && tableRef.current?.table && (

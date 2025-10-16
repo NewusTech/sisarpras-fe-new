@@ -1,66 +1,77 @@
-import { protectedRoutes } from "@/generated/generatedProtectedRoutes";
 import { jwtDecode } from "jwt-decode";
 import { NextRequest, NextResponse } from "next/server";
-import { match } from "path-to-regexp";
 
 export const config = {
-  matcher: "/((?!_next|.*\\..*|api).*)", // semua halaman, tapi kita filter manual
+  matcher: "/((?!_next|.*\\..*|api).*)",
 };
-
-function isProtected(pathname: string): boolean {
-  return protectedRoutes.some((pattern) =>
-    match(pattern, { decode: decodeURIComponent })(pathname)
-  );
-}
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const mode = process.env.NEXT_PUBLIC_MODE;
   const token = request.cookies.get("accessToken")?.value;
-  const loginUrl = new URL("/login", request.url);
 
-  // ✅ Skip static files, preview, favicon, public routes
+  const loginUrl = new URL("/login", request.url);
+  const dashboardUrl = new URL("/dashboard", request.url);
+
+  // ✅ Skip static files
   if (
-    mode === "UI" ||
     pathname.startsWith("/_next/") ||
     pathname.startsWith("/static/") ||
     pathname.startsWith("/favicon.ico") ||
-    /\.(.*)$/.test(pathname) ||
-    pathname === "/unauthorized"
+    /\.(.*)$/.test(pathname)
   ) {
     return NextResponse.next();
   }
 
-  // 🚫 Sudah login tapi akses /login
-  if (token && pathname === "/login") {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
+  // ✅ Special case: root → redirect tergantung login
+  if (pathname === "/") {
+    if (!token) return NextResponse.redirect(loginUrl);
+    return NextResponse.redirect(dashboardUrl);
   }
 
-  // ✅ Only check protected routes
-  if (!isProtected(pathname)) {
-    return NextResponse.next(); // ⬅️ non-protected route, skip auth
-  }
+  // 🧱 PUBLIC ROUTES
+  const publicRoutes = ["/login", "/register", "/forgot-password"];
+  const isPublic = publicRoutes.includes(pathname);
 
-  // 🔐 Start auth check for protected route
-  if (!token) {
+  // 🔐 Tidak punya token dan bukan halaman public → ke login
+  if (!token && !isPublic) {
     return NextResponse.redirect(loginUrl);
   }
 
-  try {
-    const decoded: decodedProps = jwtDecode(token);
-    const now = Date.now() / 1000;
+  // 🚫 Sudah login tapi buka /login → ke dashboard
+  if (token && pathname === "/login") {
+    try {
+      const decoded: any = jwtDecode(token);
+      const now = Date.now() / 1000;
+      if (decoded.exp > now) {
+        return NextResponse.redirect(dashboardUrl);
+      }
+    } catch {
+      // kalau token invalid, hapus cookie dan biarkan tetap di /login
+      const res = NextResponse.next();
+      res.cookies.delete("accessToken");
+      return res;
+    }
+  }
 
-    if (decoded.exp < now) {
+  // ✅ Validasi token untuk semua halaman selain public
+  if (token && !isPublic) {
+    try {
+      const decoded: any = jwtDecode(token);
+      const now = Date.now() / 1000;
+
+      if (decoded.exp < now) {
+        const res = NextResponse.redirect(loginUrl);
+        res.cookies.delete("accessToken");
+        return res;
+      }
+
+      return NextResponse.next();
+    } catch {
       const res = NextResponse.redirect(loginUrl);
       res.cookies.delete("accessToken");
       return res;
     }
-
-    return NextResponse.next();
-  } catch (err) {
-    console.error("JWT decode error:", err);
-    const res = NextResponse.redirect(loginUrl);
-    res.cookies.delete("accessToken");
-    return res;
   }
+
+  return NextResponse.next();
 }

@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { useId } from "react";
 import { Label } from "../ui/label";
 import { useFilterContext } from "./filterWarper";
+import clsx from "clsx";
 
 type Option = { value: string; label: string };
 
@@ -48,25 +49,37 @@ export default function FilterTabs<T extends Record<string, any>>({
       {label && <span className="w-[70%] font-normal">{label}</span>}
 
       <div className="flex w-full z-0">
-        <div className="relative flex gap-3 rounded-full p-1.5 bg-white border border-[#EFF0F6] shadow-md w-fit">
+        <div className="relative flex gap-3">
           {options.map((tab) => {
             const active = tab.value === selected?.value;
             return (
               <button
                 key={tab.value}
                 onClick={() => setValue(name as string, tab.value, mode)}
-                className="relative px-2 md:px-4 text-sm py-1 md:py-1.5 rounded-full text-[#70707B] font-medium z-10"
-              >
-                {selected?.value === tab.value && (
-                  <motion.div
-                    layoutId={`activeIndicator-${uniqueId}`} // 👈 Unique per Tabs instance
-                    className="absolute inset-0 bg-primary rounded-full z-0"
-                    transition={{ type: "spring", stiffness: 500, damping: 30 }}
-                  />
+                className={clsx(
+                  "text-black font-normal rounded-none border-gray-400 px-5 pt-2 py-1.5 text-base min-w-[12%] relative"
                 )}
-                <span className={`relative z-10 ${active ? "text-white" : ""}`}>
+              >
+                <span
+                  className={clsx(
+                    "relative z-10",
+                    active && "text-primary font-semibold"
+                  )}
+                >
                   {tab.label}
                 </span>
+                {active && (
+                  <motion.div
+                    layoutId={`${uniqueId}-indicator`}
+                    className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary"
+                    initial={false}
+                    transition={{
+                      type: "spring",
+                      stiffness: 500,
+                      damping: 30,
+                    }}
+                  />
+                )}
               </button>
             );
           })}

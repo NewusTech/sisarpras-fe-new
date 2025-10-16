@@ -2,13 +2,14 @@ import ActionOption from "@/components/table/actionOption";
 import { formatDate } from "@/lib/utils";
 import { ColumnDef } from "@tanstack/react-table";
 import { createBaseColumns } from "../baseColumn";
+import { FacilitiesResponse } from "./interface";
 
 export const facilitiesColumns: ColumnDef<FacilitiesResponse>[] = [
   ...createBaseColumns<FacilitiesResponse>(),
   {
     accessorKey: "Tahun Ajaran",
     header: "Tahun Ajaran",
-    cell: ({ row }) => row.original.academicYear,
+    cell: ({ row }) => row.original.academicYearId,
   },
   {
     accessorKey: "Tanggal Permohonan",
@@ -18,17 +19,17 @@ export const facilitiesColumns: ColumnDef<FacilitiesResponse>[] = [
   {
     accessorKey: "Fasilitas",
     header: "Fasilitas",
-    cell: ({ row }) => row.original.facility.name,
+    cell: ({ row }) => row.original.name,
   },
   {
     accessorKey: "Jenis Sarana",
     header: "Jenis Sarana",
-    cell: ({ row }) => row.original.facility.type,
+    cell: ({ row }) => row.original.category.name,
   },
   {
     accessorKey: "Prioritas",
     header: "Prioritas",
-    cell: ({ row }) => row.original.priority.name,
+    cell: ({ row }) => row.original.priority,
   },
   {
     accessorKey: "Status",

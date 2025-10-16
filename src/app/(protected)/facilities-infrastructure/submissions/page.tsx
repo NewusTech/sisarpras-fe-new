@@ -1,6 +1,10 @@
 "use client";
 
+import { useFilterContext } from "@/components/filters";
+import FilterTabs from "@/components/filters/filterTabs";
+import { useGetFacilities } from "@/components/parts/facilities/api";
 import { facilitiesColumns } from "@/components/parts/facilities/column";
+import { useGetInfrastructuresRequest } from "@/components/parts/infrastructure/api";
 import { infrastructureColumns } from "@/components/parts/infrastructure/columns";
 import DownloadButton from "@/components/shared/button/downloadButton";
 import { BreadcrumbSetItem } from "@/components/shared/layouts/myBreadcrumb";
@@ -10,158 +14,13 @@ import DataTable from "@/components/table/dataTable";
 import TableBar from "@/components/table/tableBar";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
+import { useSearchParams } from "next/navigation";
 
 export const access: AccessRule = {
   permissions: [""],
   roles: ["STAFF"],
 };
-
-const facilityData = [
-  {
-    id: 1,
-    academicYear: "2021/2022",
-    createdAt: "2021-08-01",
-    facility: {
-      name: "Laboratorium Komputer",
-      type: "Teknologi",
-    },
-    priority: {
-      name: "Tinggi",
-    },
-    status: "PENDING",
-  },
-  {
-    id: 2,
-    academicYear: "2021/2022",
-    createdAt: "2021-08-01",
-    facility: {
-      name: "Laboratorium Komputer",
-      type: "Teknologi",
-    },
-    priority: {
-      name: "Tinggi",
-    },
-    status: "PENDING",
-  },
-  {
-    id: 3,
-    academicYear: "2021/2022",
-    createdAt: "2021-08-01",
-    facility: {
-      name: "Laboratorium Komputer",
-      type: "Teknologi",
-    },
-    priority: {
-      name: "Tinggi",
-    },
-    status: "PENDING",
-  },
-  {
-    id: 4,
-    academicYear: "2021/2022",
-    createdAt: "2021-08-01",
-    facility: {
-      name: "Laboratorium Komputer",
-      type: "Teknologi",
-    },
-    priority: {
-      name: "Tinggi",
-    },
-    status: "PENDING",
-  },
-  {
-    id: 5,
-    academicYear: "2021/2022",
-    createdAt: "2021-08-01",
-    facility: {
-      name: "Laboratorium Komputer",
-      type: "Teknologi",
-    },
-    priority: {
-      name: "Tinggi",
-    },
-    status: "PENDING",
-  },
-  {
-    id: 6,
-    academicYear: "2021/2022",
-    createdAt: "2021-08-01",
-    facility: {
-      name: "Laboratorium Komputer",
-      type: "Teknologi",
-    },
-    priority: {
-      name: "Tinggi",
-    },
-    status: "PENDING",
-  },
-  {
-    id: 7,
-    academicYear: "2021/2022",
-    createdAt: "2021-08-01",
-    facility: {
-      name: "Laboratorium Komputer",
-      type: "Teknologi",
-    },
-    priority: {
-      name: "Tinggi",
-    },
-    status: "PENDING",
-  },
-  {
-    id: 8,
-    academicYear: "2021/2022",
-    createdAt: "2021-08-01",
-    facility: {
-      name: "Laboratorium Komputer",
-      type: "Teknologi",
-    },
-    priority: {
-      name: "Tinggi",
-    },
-    status: "PENDING",
-  },
-  {
-    id: 9,
-    academicYear: "2021/2022",
-    createdAt: "2021-08-01",
-    facility: {
-      name: "Laboratorium Komputer",
-      type: "Teknologi",
-    },
-    priority: {
-      name: "Tinggi",
-    },
-    status: "PENDING",
-  },
-  {
-    id: 10,
-    academicYear: "2021/2022",
-    createdAt: "2021-08-01",
-    facility: {
-      name: "Laboratorium Komputer",
-      type: "Teknologi",
-    },
-    priority: {
-      name: "Tinggi",
-    },
-    status: "PENDING",
-  },
-  {
-    id: 11,
-    academicYear: "2021/2022",
-    createdAt: "2021-08-01",
-    facility: {
-      name: "Laboratorium Komputer",
-      type: "Teknologi",
-    },
-    priority: {
-      name: "Tinggi",
-    },
-    status: "PENDING",
-  },
-];
 
 const infraData = [
   {
@@ -180,6 +39,27 @@ const infraData = [
 ];
 
 const Page = () => {
+  const searchParams = useSearchParams();
+  const { values } = useFilterContext({
+    defaultValues: { tabs: "facilities" },
+  });
+  const tabs = values.tabs;
+  const isInfrastructures = tabs === "infrastructures";
+  const isFacilities = tabs === "facilities";
+
+  const { data: _facilityData } = useGetFacilities(
+    searchParams.toString(),
+    isFacilities
+  );
+  const facilityData = _facilityData?.data.items || [];
+  const facilityPagination = _facilityData?.data;
+
+  const { data: _infrastructureData } = useGetInfrastructuresRequest(
+    searchParams.toString(),
+    isInfrastructures
+  );
+  const infrastructureData = _infrastructureData?.data.items || [];
+  const infrastructurePagination = _infrastructureData?.data;
   return (
     <section>
       <BreadcrumbSetItem
@@ -197,18 +77,28 @@ const Page = () => {
       />
       <Card className="space-y-6">
         <TitleHeader title="Data Permohonan" />
-        <Tabs defaultValue="facilities">
-          <div className="flex items-center justify-between">
-            <TabsList>
-              <TabsTrigger value="facilities">Sarana</TabsTrigger>
-              <TabsTrigger value="infrastructures">Prasarana</TabsTrigger>
-            </TabsList>
-            <DownloadButton />
-          </div>
+        <TableProvider>
+          <Tabs value={tabs}>
+            <div className="flex items-center justify-between">
+              <FilterTabs
+                name={"tabs"}
+                options={[
+                  {
+                    label: "Sarana",
+                    value: "facilities",
+                  },
+                  {
+                    label: "Prasarana",
+                    value: "infrastructures",
+                  },
+                ]}
+              />
 
-          <Separator className="mt-0.5 mb-6" />
-          <TabsContent value="facilities">
-            <TableProvider>
+              <DownloadButton />
+            </div>
+
+            <Separator className="mt-0.5 mb-6" />
+            <TabsContent value="facilities">
               <TableBar
                 searchPlaceholder="Cari permohonan sarana"
                 filterKeys={["filterName"]}
@@ -220,13 +110,14 @@ const Page = () => {
                 <DataTable
                   columns={facilitiesColumns}
                   data={facilityData}
+                  totalItems={facilityPagination?.total_items}
+                  currentPage={facilityPagination?.page}
+                  totalPages={facilityPagination?.total_pages}
                   displayItems
                 />
               </TableBar>
-            </TableProvider>
-          </TabsContent>
-          <TabsContent value="infrastructures">
-            <TableProvider>
+            </TabsContent>
+            <TabsContent value="infrastructures">
               <TableBar
                 searchPlaceholder="Cari permohonan prasarana"
                 filterKeys={["filterName"]}
@@ -237,13 +128,16 @@ const Page = () => {
               >
                 <DataTable
                   columns={infrastructureColumns}
-                  data={infraData}
+                  data={infrastructureData}
+                  totalItems={infrastructurePagination?.total_items}
+                  currentPage={infrastructurePagination?.page}
+                  totalPages={infrastructurePagination?.total_pages}
                   displayItems
                 />
               </TableBar>
-            </TableProvider>
-          </TabsContent>
-        </Tabs>
+            </TabsContent>
+          </Tabs>
+        </TableProvider>
       </Card>
     </section>
   );

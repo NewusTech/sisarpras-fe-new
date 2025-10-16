@@ -60,7 +60,7 @@ export function CustomFormDragAndDrop<T extends FieldValues = FieldValues>({
   description,
   maxSize = 5,
   maxFiles = 1,
-  acceptedFileTypes = ["image/jpeg", "image/png"],
+  acceptedFileTypes = ["image/jpeg", "image/png", "image/jpg"],
   className,
   required = false,
   handleDeleteFile,
@@ -361,7 +361,10 @@ const FileUploadControl: React.FC<FileUploadControlProps> = ({
       validFiles.push(file);
     }
 
-    if (validFiles.length === 0) return;
+    if (validFiles.length === 0) {
+      if (fileInputRef.current) fileInputRef.current.value = "";
+      return;
+    }
 
     const totalFiles = files.length + validFiles.length;
     if (totalFiles > maxFiles) {
@@ -406,6 +409,9 @@ const FileUploadControl: React.FC<FileUploadControlProps> = ({
   };
 
   const handleRemoveFile = (index: number) => {
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
     const newFiles = files.filter((_, i) => i !== index);
     setFiles(newFiles);
     onChange(newFiles);

@@ -1,4 +1,9 @@
 "use client";
+import { useFacilityMutation } from "@/components/parts/facilities/api";
+import {
+  FacilitySubmissionPayload,
+  facilitySubmissionSchema,
+} from "@/components/parts/facilities/validation";
 import CardHeader from "@/components/sections/cardHeader";
 import { CustomFormDragAndDrop } from "@/components/shared/forms/customFormDragAndDrop";
 import { CustomFormInput } from "@/components/shared/forms/customFormInput";
@@ -9,6 +14,14 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
 import { Separator } from "@/components/ui/separator";
+import {
+  useFacilitiesCategoryOptions,
+  useInfrastructureOptions,
+  usePriorityOptions,
+} from "@/hooks/useSelect";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 
 export const access: AccessRule = {
@@ -17,10 +30,23 @@ export const access: AccessRule = {
 };
 
 const Page = () => {
-  const form = useForm({});
+  const router = useRouter();
+  const qc = useQueryClient();
+  const categoryOptions = useFacilitiesCategoryOptions();
+  const infrastructureOptions = useInfrastructureOptions();
+  const form = useForm<FacilitySubmissionPayload>({
+    resolver: zodResolver(facilitySubmissionSchema),
+  });
 
-  const onSubmit = (data: any) => {
-    console.log(data);
+  const { mutate } = useFacilityMutation();
+
+  const onSubmit = (data: FacilitySubmissionPayload) => {
+    mutate(data, {
+      onSuccess: () => {
+        qc.invalidateQueries({ queryKey: ["useGetFacilities"] });
+        router.push("/facilities-infrastructure/submissions?tabs=facilities");
+      },
+    });
   };
   return (
     <section>
@@ -42,71 +68,72 @@ const Page = () => {
         ]}
       />
       <Card className="space-y-6">
-        <CardHeader title="Tambah Permohonan Sarana" />
+        <CardHeader
+          title="Tambah Permohonan Sarana"
+          route="/facilities-infrastructure/submissions?tabs=facilities"
+        />
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <div className="grid gap-4 md:grid-cols-2">
-              <CustomFormSelectSearch
-                name="facilityId"
+              <CustomFormInput<FacilitySubmissionPayload>
+                name="name"
                 label="Nama Sarana"
-                options={[{ label: "1", value: "Proyektor" }]}
-                placeholder="Pilih Nama Sarana"
+                placeholder="Masukkan nama sarana"
                 required
               />
-              <CustomFormSelectSearch
-                name="facilityTypeId"
+              <CustomFormSelectSearch<FacilitySubmissionPayload>
+                name="categoryId"
                 label="Jenis Sarana"
-                options={[{ label: "1", value: "Teknologi" }]}
+                options={categoryOptions}
                 placeholder="Pilih Jenis Sarana"
                 required
               />
-              <CustomFormSelectSearch
-                name="priorityId"
+              <CustomFormSelectSearch<FacilitySubmissionPayload>
+                name="priority"
                 label="Prioritas"
-                options={[{ label: "1", value: "Mendesak" }]}
+                options={usePriorityOptions}
                 placeholder="Pilih Prioritas"
                 required
               />
-              <CustomFormSelectSearch
-                name="locationId"
-                options={[{ label: "1", value: "Lab 1" }]}
+              <CustomFormSelectSearch<FacilitySubmissionPayload>
+                name="infrastructureId"
+                options={infrastructureOptions}
                 placeholder="Pilih Lokasi"
                 label="Lokasi (Ruang Kelas)"
                 required
               />
-              <CustomFormInput
+              <CustomFormInput<FacilitySubmissionPayload>
                 name="quantity"
                 label="Jumlah"
                 placeholder="Masukkan Jumlah"
                 required
               />
-              <CustomFormInput
-                name="budgetEstimate"
+              <CustomFormInput<FacilitySubmissionPayload>
+                name="estimateBudget"
                 label="Estimasi Anggaran"
                 placeholder="Masukkan Estimasi Anggaran"
                 required
               />
-              <CustomFormTextArea
+              <CustomFormTextArea<FacilitySubmissionPayload>
                 name="reason"
                 label="Alasan Pengajuan"
                 placeholder="Masukkan Alasan Pengajuan"
                 className="col-span-2"
                 required
               />
-              <CustomFormDragAndDrop
+              <CustomFormDragAndDrop<FacilitySubmissionPayload>
                 label="Dokumen Pendukung"
-                name="supportingDocuments"
+                name="supportingDocument"
                 maxFiles={5}
                 maxSize={5}
                 acceptedFileTypes={["application/pdf"]}
                 className="col-span-2"
               />
-              <CustomFormDragAndDrop
+              <CustomFormDragAndDrop<FacilitySubmissionPayload>
                 label="Unggah Dokumentasi"
                 name="documentation"
                 maxFiles={5}
                 maxSize={5}
-                acceptedFileTypes={["image/*"]}
                 required
                 className="col-span-2"
               />

@@ -14,7 +14,6 @@ import useShowErrors from "@/hooks/useShowErrors";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Cookie from "js-cookie";
 import { jwtDecode } from "jwt-decode";
-import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -23,26 +22,21 @@ export default function LoginPage() {
   const router = useRouter();
   const form = useForm<LoginPayload>({
     resolver: zodResolver(loginValidation),
-    defaultValues: {
-      email: "",
-      password: "",
-    },
   });
   const {
     handleSubmit,
     control,
     formState: { errors, isSubmitting },
   } = form;
+
   useShowErrors(errors);
 
   const loginMutation = useLoginMutation();
 
   const onSubmit = (data: LoginPayload) => {
-    console.log("Login data:", data);
     loginMutation.mutate(data, {
       onSuccess: async (response) => {
         Cookie.set("accessToken", response.data.token);
-        // Decode JWT token
         const decoded: decodedProps = jwtDecode(response.data.token);
         if (decoded.role.toLowerCase() === "user") {
           router.push("/profile");
@@ -67,9 +61,9 @@ export default function LoginPage() {
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="grid gap-4">
               <CustomFormInput<LoginPayload>
-                name="email"
-                label="Email/ NIK"
-                placeholder="Login menggunakan NIK/Email"
+                name="identifier"
+                label="Email"
+                placeholder="Login menggunakan Email"
                 required
               />
               <CustomFormInput<LoginPayload>

@@ -151,29 +151,21 @@ export const convertToFormData = <D extends object>(data: D): FormData => {
   Object.entries(data).forEach(([key, value]) => {
     if (value === null || typeof value === "undefined") return;
 
-    // Kalau array, periksa setiap elemen dalam array
     if (Array.isArray(value)) {
-      value.forEach((item, index) => {
-        // Kalau item adalah file atau blob, tambahkan langsung sebagai file
+      value.forEach((item) => {
         if (item instanceof File || item instanceof Blob) {
-          formData.append(`${key}[${index}]`, item);
-        }
-        // Kalau item bukan file, stringify dan append
-        else {
-          formData.append(key, JSON.stringify(value));
+          formData.append(key, item);
+        } else if (typeof item === "object") {
+          formData.append(key, JSON.stringify(item));
+        } else {
+          formData.append(key, String(item));
         }
       });
-    }
-    // Kalau file/blob, tambahkan langsung
-    else if (value instanceof File || value instanceof Blob) {
+    } else if (value instanceof File || value instanceof Blob) {
       formData.append(key, value);
-    }
-    // Kalau object biasa (bukan null, file, dsb) → stringify
-    else if (typeof value === "object") {
+    } else if (typeof value === "object") {
       formData.append(key, JSON.stringify(value));
-    }
-    // Selain itu (string, number, boolean) → toString
-    else {
+    } else {
       formData.append(key, String(value));
     }
   });

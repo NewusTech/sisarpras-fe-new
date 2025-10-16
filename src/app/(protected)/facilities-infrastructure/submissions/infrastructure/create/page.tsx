@@ -1,4 +1,9 @@
 "use client";
+import { useInfastructureMutation } from "@/components/parts/infrastructure/api";
+import {
+  InfrastructurePayload,
+  infrastructureSchema,
+} from "@/components/parts/infrastructure/validation";
 import CardHeader from "@/components/sections/cardHeader";
 import { CustomFormDragAndDrop } from "@/components/shared/forms/customFormDragAndDrop";
 import { CustomFormInput } from "@/components/shared/forms/customFormInput";
@@ -9,6 +14,13 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
 import { Separator } from "@/components/ui/separator";
+import {
+  useInfrastructuresCategoryOptions,
+  usePriorityOptions,
+} from "@/hooks/useSelect";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 
 export const access: AccessRule = {
@@ -17,10 +29,25 @@ export const access: AccessRule = {
 };
 
 const Page = () => {
-  const form = useForm({});
+  const router = useRouter();
+  const qc = useQueryClient();
+  const form = useForm<InfrastructurePayload>({
+    resolver: zodResolver(infrastructureSchema),
+  });
 
-  const onSubmit = (data: any) => {
-    console.log(data);
+  const infrastructureOptions = useInfrastructuresCategoryOptions();
+
+  const { mutate } = useInfastructureMutation();
+
+  const onSubmit = (data: InfrastructurePayload) => {
+    mutate(data, {
+      onSuccess: () => {
+        qc.invalidateQueries({ queryKey: ["useGetInfrastructures"] });
+        router.push(
+          "/facilities-infrastructure/submissions?tabs=infrastructures"
+        );
+      },
+    });
   };
   return (
     <section>
@@ -46,80 +73,71 @@ const Page = () => {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <div className="grid gap-4 md:grid-cols-2">
-              <CustomFormSelectSearch
-                name="roomId"
+              <CustomFormInput<InfrastructurePayload>
+                name="name"
                 label="Nama Ruangan"
-                options={[{ value: "1", label: "UKS" }]}
-                placeholder="Pilih Nama Ruangan"
-                required
-              />
-              <CustomFormSelectSearch
-                name="conditionId"
-                label="Kondisi"
-                options={[{ value: "1", label: "Tidak ada" }]}
-                placeholder="Pilih Kondisi"
+                placeholder="Masukkan Nama Ruangan"
                 required
               />
 
-              <CustomFormSelectSearch
-                name="infrastructureTypeId"
+              <CustomFormSelectSearch<InfrastructurePayload>
+                name="categoryId"
                 label="Jenis Prasarana"
-                options={[{ value: "1", label: "Kelas" }]}
+                options={infrastructureOptions}
                 placeholder="Pilih Jenis Prasarana"
                 required
               />
-              <CustomFormInput
+              <CustomFormInput<InfrastructurePayload>
                 name="quantity"
                 label="Jumlah"
                 placeholder="Masukkan Jumlah"
                 required
               />
-              <CustomFormInput
-                name="volumePlan"
+              <CustomFormInput<InfrastructurePayload>
+                name="totalArea"
                 label="Rencana Total Luas"
                 placeholder="Masukkan Rencana Total Luas"
                 required
               />
-              <CustomFormSelectSearch
-                name="priorityId"
+              <CustomFormSelectSearch<InfrastructurePayload>
+                name="priority"
                 label="Prioritas"
-                options={[{ value: "1", label: "Mendesak" }]}
+                options={usePriorityOptions}
                 placeholder="Pilih Prioritas"
                 required
               />
 
-              <CustomFormInput
-                name="budgetEstimate"
+              <CustomFormInput<InfrastructurePayload>
+                name="estimateBudget"
                 label="Estimasi Anggaran"
                 placeholder="Masukkan Estimasi Anggaran"
                 required
               />
-              <CustomFormTextArea
-                name="desctiption"
+              <CustomFormTextArea<InfrastructurePayload>
+                name="description"
                 label="Keterangan"
                 placeholder="Masukkan Keterangan"
               />
-              <CustomFormTextArea
+              <CustomFormTextArea<InfrastructurePayload>
                 name="reason"
                 label="Alasan Pengajuan"
                 placeholder="Masukkan Alasan Pengajuan"
                 className="col-span-2"
                 required
               />
-              <CustomFormDragAndDrop
+              <CustomFormDragAndDrop<InfrastructurePayload>
                 label="Dokumen Pendukung"
-                name="supportingDocuments"
+                name="supportingDocument"
                 maxFiles={5}
                 maxSize={5}
                 acceptedFileTypes={["application/pdf"]}
                 className="col-span-2"
               />
-              <CustomFormDragAndDrop
+              <CustomFormDragAndDrop<InfrastructurePayload>
                 label="Unggah Dokumentasi"
                 name="documentation"
                 maxFiles={5}
                 maxSize={5}
-                acceptedFileTypes={["image/*"]}
                 required
                 className="col-span-2"
               />
