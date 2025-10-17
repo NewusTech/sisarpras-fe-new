@@ -1,11 +1,9 @@
+import { useGetInfrastructuresAssets } from "@/components/parts/assets/infrastructures/api";
 import { useGetFacilitiesCategory } from "@/components/parts/facilities/api";
-import {
-  useGetInfrastructures,
-  useGetInfrastructuresCategory,
-} from "@/components/parts/infrastructure/api";
+import { useGetInfrastructuresByCategory } from "@/components/parts/infrastructure/api";
 
 export const useInfrastructureOptions = () => {
-  const { data } = useGetInfrastructures();
+  const { data } = useGetInfrastructuresAssets();
 
   const options =
     data?.data.paginateData?.items?.map((item) => ({
@@ -29,7 +27,7 @@ export const useFacilitiesCategoryOptions = () => {
 };
 
 export const useInfrastructuresCategoryOptions = () => {
-  const { data } = useGetInfrastructuresCategory();
+  const { data } = useGetInfrastructuresByCategory();
 
   const options =
     data?.data?.items?.map((item) => ({
@@ -43,4 +41,27 @@ export const useInfrastructuresCategoryOptions = () => {
 export const usePriorityOptions = [
   { label: "Tidak Mendesak", value: "NOT_URGENT" },
   { label: "Mendesak", value: "URGENT" },
+];
+
+export const useConditionOptions = [
+  {
+    label: "Semua",
+    value: "",
+  },
+  {
+    label: "Baik",
+    value: "GOOD",
+  },
+  {
+    label: "Rusak Ringan",
+    value: "MINOR_DAMAGED",
+  },
+  {
+    label: "Rusak Berat",
+    value: "MAJOR_DAMAGED",
+  },
+  {
+    label: "Rusak Sedang",
+    value: "MODERATE_DAMAGED",
+  },
 ];

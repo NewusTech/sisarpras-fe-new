@@ -1,6 +1,7 @@
 "use client";
 
 import { Filter, FilterSelect } from "@/components/filters";
+import { useGetInfrastructuresAssets } from "@/components/parts/assets/infrastructures/api";
 import { listItemByInfrastructureColumns } from "@/components/parts/assets/infrastructures/columns";
 import ReviewDetailModal from "@/components/sections/infrastructure/reviewDetailModal";
 import { BreadcrumbSetItem } from "@/components/shared/layouts/myBreadcrumb";
@@ -8,32 +9,28 @@ import TitleHeader from "@/components/shared/title";
 import DataTable from "@/components/table/dataTable";
 import Pagination from "@/components/table/pagination";
 import { Card } from "@/components/ui/card";
+import { useConditionOptions } from "@/hooks/useSelect";
 import { Dot } from "lucide-react";
-import { useParams } from "next/navigation";
-
-const data = [
-  {
-    id: 1,
-    roomName: "Lab",
-    volume: "10 m2",
-    itemCode: "A001",
-    condition: {
-      id: 1,
-      name: "Baik",
-    },
-    labelUrl:
-      "https://images.unsplash.com/photo-1519865885898-a54a6f2c7eea?q=80&w=1358&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  },
-];
+import { useSearchParams } from "next/navigation";
 
 const Page = () => {
-  const { ifs } = useParams();
+  const searchParams = useSearchParams();
+  const id = searchParams.get("modal")?.split(":")[1];
+  const { data } = useGetInfrastructuresAssets(searchParams.toString());
+  const infrastructureData = data?.data.paginateData.items || [];
+  const infrastructurePagination = data?.data.paginateData;
+  const infrastructureCount = data?.data.countByCondition;
+  const categoryName = infrastructureData[0]?.category?.name;
+
+  const infrastructureDataById = infrastructureData.find(
+    (item) => item.id === Number(id)
+  );
   return (
     <section>
       <BreadcrumbSetItem
         items={[
           {
-            title: `${ifs}`,
+            title: `${categoryName}`,
           },
           {
             title: "Aset",
@@ -43,61 +40,65 @@ const Page = () => {
             href: "/assets/infrastructures",
           },
           {
-            title: `${ifs}`,
+            title: `${categoryName}`,
           },
         ]}
       />
 
       <Card className="space-y-6">
-        <TitleHeader title={`Data ${ifs}`} />
+        <TitleHeader title={`Data ${categoryName}`} />
         <Filter mode="auto">
           {() => (
             <>
               <FilterSelect
                 label="Kondisi"
-                name="conditionId"
+                name="condition"
                 placeholder="Kondisi"
-                options={[
-                  { label: "Semua", value: "" },
-                  { label: "Baik", value: "1" },
-                ]}
+                options={useConditionOptions}
               />
               <DataTable
                 columns={listItemByInfrastructureColumns}
-                data={data}
+                data={infrastructureData}
                 displayItems
                 showPagination={false}
               />
               <section className="flex items-center gap-10">
                 <div className="flex items-center gap-1">
                   <Dot strokeWidth={18} className="text-primary" />
-                  <span>Baik = 12</span>
+                  <span>Baik = {infrastructureCount?.GOOD}</span>
                 </div>
                 <div className="flex items-center gap-1">
                   <Dot strokeWidth={18} className="text-error" />
-                  <span>Rusak Berat = 14</span>
+                  <span>
+                    Rusak Berat = 14 {infrastructureCount?.MAJOR_DAMAGE}
+                  </span>
                 </div>
                 <div className="flex items-center gap-1">
                   <Dot strokeWidth={18} className="text-warning" />
-                  <span>Rusak Sedang = 14</span>
+                  <span>
+                    Rusak Sedang = {infrastructureCount?.MINOR_DAMAGE}
+                  </span>
                 </div>
                 <div className="flex items-center gap-1">
                   <Dot strokeWidth={18} className="text-warning-800" />
-                  <span>Rusak Ringan = 14</span>
+                  <span>
+                    Rusak Ringan = {infrastructureCount?.MODERATE_DAMAGE}
+                  </span>
                 </div>
               </section>
+
               <Pagination
                 displayItems
-                totalItems={data.length}
-                currentPage={1}
+                totalItems={infrastructurePagination?.total_items ?? 0}
+                currentPage={infrastructurePagination?.current_page ?? 1}
                 itemsPerPage={10}
-                totalPages={Math.ceil(data.length / 10)}
+                totalPages={infrastructurePagination?.total_pages ?? 1}
               />
             </>
           )}
         </Filter>
 
-        <ReviewDetailModal />
+        <ReviewDetailModal data={infrastructureDataById} />
       </Card>
     </section>
   );

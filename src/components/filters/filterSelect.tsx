@@ -77,10 +77,13 @@ export const FilterSelect = <T extends Record<string, any>>({
       {label && <span className="w-[70%] font-normal">{label}</span>}
 
       <Popover>
-        <PopoverTrigger asChild>
+        <PopoverTrigger
+          asChild
+          className="data-[state=open]:!ring-1 data-[state=open]:!ring-primary"
+        >
           <Button
-            variant="outline"
             role="combobox"
+            variant="select"
             aria-expanded="false"
             aria-busy={loading}
             disabled={disabled || loading}

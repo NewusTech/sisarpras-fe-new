@@ -21,8 +21,10 @@ export interface FacilitiesResponse {
   updatedAt: string;
   category: Category;
   infrastructure: Infrastructure;
+  academicYear: AcademicYear;
   school: School;
   creator: Creator;
+  approvedByUser: any;
 }
 
 export interface Category {
@@ -47,18 +49,23 @@ export interface Infrastructure {
   deletedAt: any;
 }
 
+export interface AcademicYear {
+  id: number;
+  name: string;
+  startDate: string;
+  endDate: string;
+  isActive: boolean;
+  semester: string;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: any;
+}
+
 export interface School {
   id: number;
   name: string;
   npsn: string;
-  academicYear: AcademicYear;
   address: string;
-  isActive: boolean;
-}
-
-export interface AcademicYear {
-  id: number;
-  name: string;
   isActive: boolean;
 }
 

@@ -69,7 +69,10 @@ const Page = () => {
         ]}
       />
       <Card className="space-y-6">
-        <CardHeader title="Tambah Permohonan Prasarana" />
+        <CardHeader
+          title="Tambah Permohonan Prasarana"
+          route="/facilities-infrastructure/submissions?tabs=infrastructures"
+        />
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <div className="grid gap-4 md:grid-cols-2">

@@ -62,7 +62,7 @@ export default function ValueLabel({
       {label && (
         <Label
           className={cn(
-            "text-muted-foreground",
+            "text-muted-foreground text-base",
             isHorizontal ? "shrink-0 w-32" : "",
             isBetween ? "flex-1" : "",
             labelClassName
@@ -84,8 +84,7 @@ export default function ValueLabel({
           className={cn(
             valueLabelVariants({ variant }),
             isBetween ? "text-end flex-1" : "",
-            valueClassName,
-            "text-sm"
+            valueClassName
           )}
         >
           {value as React.ReactNode}
@@ -94,8 +93,7 @@ export default function ValueLabel({
         React.cloneElement(value as React.ReactElement, {
           className: cn(
             (value as any)?.props?.className,
-            isBetween ? "flex-1 text-end" : "",
-            "text-sm"
+            isBetween ? "flex-1 text-end" : ""
           ),
           "data-disabled": disabled ? "true" : undefined,
           "aria-disabled": disabled || undefined,

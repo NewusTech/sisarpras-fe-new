@@ -9,7 +9,7 @@ export const facilitiesColumns: ColumnDef<FacilitiesResponse>[] = [
   {
     accessorKey: "Tahun Ajaran",
     header: "Tahun Ajaran",
-    cell: ({ row }) => row.original.academicYearId,
+    cell: ({ row }) => row.original.academicYear.name,
   },
   {
     accessorKey: "Tanggal Permohonan",
@@ -43,7 +43,7 @@ export const facilitiesColumns: ColumnDef<FacilitiesResponse>[] = [
     cell: ({ row }) => (
       <ActionOption
         linkView={`/facilities-infrastructure/submissions/facility/${row.original.id}`}
-        linkUpdate={`/facilities-infrastructure/submissions/facility/${row.original.id}/edit`}
+        // linkUpdate={`/facilities-infrastructure/submissions/facility/${row.original.id}/edit`}
       />
     ),
   },

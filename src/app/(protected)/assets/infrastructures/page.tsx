@@ -1,5 +1,6 @@
 "use client";
 
+import { useGetInfrastructuresCountByCategory } from "@/components/parts/assets/infrastructures/api";
 import { infrastructureAssetsColumns } from "@/components/parts/assets/infrastructures/columns";
 import { BreadcrumbSetItem } from "@/components/shared/layouts/myBreadcrumb";
 import TitleHeader from "@/components/shared/title";
@@ -7,17 +8,7 @@ import { TableProvider } from "@/components/table";
 import DataTable from "@/components/table/dataTable";
 import TableBar from "@/components/table/tableBar";
 import { Card } from "@/components/ui/card";
-
-const data = [
-  {
-    id: 1,
-    category: {
-      id: 1,
-      name: "Ruang Kelas",
-    },
-    quantity: 10,
-  },
-];
+import { useSearchParams } from "next/navigation";
 
 export const access: AccessRule = {
   permissions: [""],
@@ -25,6 +16,11 @@ export const access: AccessRule = {
 };
 
 const Page = () => {
+  const searchParams = useSearchParams();
+  const { data } = useGetInfrastructuresCountByCategory(
+    searchParams.toString()
+  );
+  const infrastructureData = data?.data.items || [];
   return (
     <section>
       <BreadcrumbSetItem
@@ -49,7 +45,7 @@ const Page = () => {
           >
             <DataTable
               columns={infrastructureAssetsColumns}
-              data={data}
+              data={infrastructureData}
               displayItems
             />
           </TableBar>

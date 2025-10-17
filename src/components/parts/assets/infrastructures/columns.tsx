@@ -2,22 +2,23 @@ import ActionOption from "@/components/table/actionOption";
 import { ColumnDef } from "@tanstack/react-table";
 import { createBaseColumns } from "../../baseColumn";
 import {
-  InfrastructureAssetsResponse,
-  ListItemByInfrastructureResponse,
+  InfrastructureAssetsByCategoryResponse,
+  ListInfrastructureAssetsPaginateResponse,
+  ListInfrastructureAssetsResponse,
 } from "./interface";
 import ModalImage from "@/components/shared/image/modalImage";
 import ActionModalOption from "@/components/table/actionModalOption";
 
-export const infrastructureAssetsColumns: ColumnDef<InfrastructureAssetsResponse>[] =
+export const infrastructureAssetsColumns: ColumnDef<InfrastructureAssetsByCategoryResponse>[] =
   [
-    ...createBaseColumns<InfrastructureAssetsResponse>(),
+    ...createBaseColumns<InfrastructureAssetsByCategoryResponse>(),
     {
       header: "Kategori",
-      cell: ({ row }) => row.original.category.name,
+      cell: ({ row }) => row.original.name,
     },
     {
       header: "Jumlah",
-      cell: ({ row }) => row.original.quantity,
+      cell: ({ row }) => row.original.total,
     },
 
     {
@@ -29,9 +30,9 @@ export const infrastructureAssetsColumns: ColumnDef<InfrastructureAssetsResponse
     },
   ];
 
-export const listItemByInfrastructureColumns: ColumnDef<ListItemByInfrastructureResponse>[] =
+export const listItemByInfrastructureColumns: ColumnDef<ListInfrastructureAssetsPaginateResponse>[] =
   [
-    ...createBaseColumns<ListItemByInfrastructureResponse>(),
+    ...createBaseColumns<ListInfrastructureAssetsPaginateResponse>(),
 
     {
       header: "ID",
@@ -39,32 +40,32 @@ export const listItemByInfrastructureColumns: ColumnDef<ListItemByInfrastructure
     },
     {
       header: "Kode",
-      cell: ({ row }) => row.original.itemCode,
+      cell: ({ row }) => row.original.code,
     },
     {
       header: "Nama Ruang",
-      cell: ({ row }) => row.original.roomName,
+      cell: ({ row }) => row.original.name,
     },
     {
       header: "Luas",
-      cell: ({ row }) => row.original.volume,
+      cell: ({ row }) => row.original.area,
     },
     {
       header: "Kondisi",
-      cell: ({ row }) => row.original.condition.name,
+      cell: ({ row }) => row.original.condition,
     },
-    {
-      header: "Gambar Label",
-      cell: ({ row }) => (
-        <ModalImage
-          id={row.original.itemCode}
-          src={row.original?.labelUrl}
-          width={100}
-          height={100}
-          className="md:!w-20 w-12 rounded-md"
-        />
-      ),
-    },
+    // {
+    //   header: "Gambar Label",
+    //   cell: ({ row }) => (
+    //     <ModalImage
+    //       id={row.original.code}
+    //       src={row.original?.labelUrl}
+    //       width={100}
+    //       height={100}
+    //       className="md:!w-20 w-12 rounded-md"
+    //     />
+    //   ),
+    // },
     {
       accessorKey: "action",
       header: "Aksi",

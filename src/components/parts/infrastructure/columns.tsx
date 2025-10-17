@@ -40,7 +40,7 @@ export const infrastructureColumns: ColumnDef<InfrastructuresRequestResponse>[] 
       cell: ({ row }) => (
         <ActionOption
           linkView={`/facilities-infrastructure/submissions/infrastructure/${row.original.id}`}
-          linkUpdate={`/facilities-infrastructure/submissions/infrastructure/${row.original.id}/edit`}
+          // linkUpdate={`/facilities-infrastructure/submissions/infrastructure/${row.original.id}/edit`}
         />
       ),
     },

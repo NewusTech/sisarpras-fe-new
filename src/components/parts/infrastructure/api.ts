@@ -2,22 +2,11 @@ import { fetcher, sendData } from "@/services/api/fetcher";
 import { useQuery } from "@tanstack/react-query";
 import {
   DetailInfrastructureResponse,
-  InfrastructureResponse,
   InfrastructuresCategoryResponse,
   InfrastructuresRequestResponse,
 } from "./interface";
 import { useFormMutation } from "@/hooks/useFormMutation";
 import { InfrastructurePayload } from "./validation";
-
-export const useGetInfrastructures = () => {
-  return useQuery<ApiResponse<DataObject<InfrastructureResponse>>, Error>({
-    queryKey: ["useGetInfrastructures"],
-    queryFn: async () => {
-      const response = await fetcher(`sarpras/infrastructure`);
-      return response;
-    },
-  });
-};
 
 export const useGetInfrastructuresRequest = (
   query?: string,
@@ -52,12 +41,12 @@ export const useGetInfrastructureById = (id: string) => {
   );
 };
 
-export const useGetInfrastructuresCategory = () => {
+export const useGetInfrastructuresByCategory = () => {
   return useQuery<
     ApiResponse<DataPaginate<InfrastructuresCategoryResponse>>,
     Error
   >({
-    queryKey: ["useGetInfrastructuresCategory"],
+    queryKey: ["useGetInfrastructuresByCategory"],
     queryFn: async () => {
       const response = await fetcher(`master/infrastructure-categories`);
       return response;
@@ -67,7 +56,7 @@ export const useGetInfrastructuresCategory = () => {
 
 export const useInfastructureMutation = () => {
   return useFormMutation<
-    ApiResponse<DataObject<InfrastructureResponse>>,
+    ApiResponse<DataObject<any>>,
     Error,
     InfrastructurePayload
   >({

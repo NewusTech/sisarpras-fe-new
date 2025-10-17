@@ -4,10 +4,10 @@ import CardHeader from "@/components/sections/cardHeader";
 import MessageCard from "@/components/sections/messageCard";
 import ModalImage from "@/components/shared/image/modalImage";
 import { BreadcrumbSetItem } from "@/components/shared/layouts/myBreadcrumb";
+import ReviewFile from "@/components/shared/reviewFile";
 import ValueLabel from "@/components/shared/valueLabel";
 import { Card } from "@/components/ui/card";
 import { formatDate } from "@/lib/utils";
-import Link from "next/link";
 import { useParams } from "next/navigation";
 
 export const access: AccessRule = {
@@ -39,9 +39,13 @@ const Page = () => {
         ]}
       />
       <Card className="space-y-6">
-        <CardHeader title={`${detail?.name}`} />
-        <MessageCard />
-        <h1 className="font-normal text-xl">Detail Informasi</h1>
+        <CardHeader
+          title={`${detail?.name}`}
+          status={detail?.status}
+          route="/facilities-infrastructure/submissions?tabs=infrastructures"
+        />
+        {detail?.status !== "ONPROSESS" && <MessageCard />}
+        <h1 className="font-normal text-lg">Detail Informasi</h1>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <ValueLabel label="No Permohonan" value={detail?.id} />
           <ValueLabel
@@ -51,9 +55,9 @@ const Page = () => {
           <ValueLabel label="Nama Ruangan" value={detail?.name} />
           <ValueLabel label="Jenis Prasarana" value={detail?.category.name} />
           <ValueLabel label="Jumlah" value={detail?.quantity} />
-          <ValueLabel label="Rencanan Total Luas" value={"-"} />
+          <ValueLabel label="Rencanan Total Luas" value={detail?.totalArea} />
           <ValueLabel label="Prioritas" value={detail?.priority} />
-          <ValueLabel label="Keterangan" value={"-"} />
+          <ValueLabel label="Keterangan" value={detail?.description} />
           <ValueLabel label="Alasan Permohonan" value={detail?.reason} />
           <ValueLabel
             label="Estimasi Anggaran"
@@ -64,10 +68,8 @@ const Page = () => {
             label="Dokumen Pendukung"
             value={
               <div>
-                {detail?.supportingDocument?.map((item, index) => (
-                  <Link href={item} key={index}>
-                    Open
-                  </Link>
+                {detail?.supportingDocument.map((doc, index) => (
+                  <ReviewFile src={doc} key={index} />
                 ))}
               </div>
             }
