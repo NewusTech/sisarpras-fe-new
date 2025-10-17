@@ -23,7 +23,7 @@ const ReviewDetailModal = ({
         </DialogHeader>
 
         <section className="flex items-center justify-between gap-4">
-          <div>
+          <div className="space-y-3">
             <ValueLabel label="ID" value={data?.id} />
             <ValueLabel label="Kode" value={data?.code} />
             <ValueLabel label="Nama Ruangan" value={data?.name} />

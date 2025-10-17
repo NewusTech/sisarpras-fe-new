@@ -1,6 +1,7 @@
 import { useGetInfrastructuresAssets } from "@/components/parts/assets/infrastructures/api";
 import { useGetFacilitiesCategory } from "@/components/parts/facilities/api";
 import { useGetInfrastructuresByCategory } from "@/components/parts/infrastructure/api";
+import { useGetAcademicYear } from "@/components/parts/master/api";
 
 export const useInfrastructureOptions = () => {
   const { data } = useGetInfrastructuresAssets();
@@ -34,6 +35,22 @@ export const useInfrastructuresCategoryOptions = () => {
       label: item.name.trim(),
       value: item.id.toString(),
     })) || [];
+
+  return options;
+};
+
+export const useGetAcademicYearOptions = () => {
+  const { data } = useGetAcademicYear();
+
+  const items = data?.data?.items ?? [];
+
+  const options = [
+    { label: "Semua", value: "" },
+    ...items.map((item) => ({
+      label: item.name.trim(),
+      value: item.id.toString(),
+    })),
+  ];
 
   return options;
 };

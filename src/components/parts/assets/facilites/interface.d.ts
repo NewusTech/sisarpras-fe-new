@@ -1,42 +1,80 @@
-export interface FacilityAssetsResponse {
-  id: string;
-  roomName: string;
-  category: {
-    id: number;
-    name: string;
-  };
+export interface ListFacilitiesAssetsResponse {
+  paginateData: PaginateData;
+  countByCondition: CountByCondition;
 }
 
-export interface FacilitiesByRoomResponse {
-  id: string;
-  roomId: string;
-  facilityName: string;
-  category: {
-    id: number;
-    name: string;
-  };
-  quantity: number;
+export interface PaginateData {
+  total_items: number;
+  total_pages: number;
+  current_page: number;
+  per_page: number;
+  items: ListFacilitiesAssetsPaginateResponse[];
+  links: Links;
 }
 
-export interface ListItemByFacilitiesResponse {
-  id: string;
-  acceptedDate: string;
-  itemCode: string;
-  facilityName: string;
-  category: {
-    id: number;
-    name: string;
-  };
-  condition: {
-    id: number;
-    name: string;
-  };
-  imageUrl: string;
-  status: {
-    good: number;
-    good: number;
-    lightDamage: number;
-    moderateDamage: number;
-    heavyDamage: number;
-  };
+export interface ListFacilitiesAssetsPaginateResponse {
+  id: number;
+  facilityNameId?: number;
+  code: string;
+  infrastructureId: any;
+  condition: string;
+  photo: any;
+  categoryId: number;
+  schoolId: number;
+  periodeId: any;
+  academicYearId: any;
+  createdAt: string;
+  updatedAt: string;
+  facilityName: Facility;
+  deletedAt: any;
+  category: Category;
+  academicYear: any;
+  periode: any;
+  school: School;
+}
+
+export interface Category {
+  id: number;
+  name: string;
+  prefixCode: any;
+  description: string;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: any;
+}
+
+export interface Facility {
+  id: number;
+  name: string;
+}
+
+export interface School {
+  id: number;
+  name: string;
+  npsn: string;
+}
+
+export interface Links {
+  prev: any;
+  next: any;
+}
+
+export interface CountByCondition {
+  GOOD: number;
+  MINOR_DAMAGE: number;
+  MODERATE_DAMAGE: number;
+  MAJOR_DAMAGE: number;
+}
+
+export interface FacilitiesAssetsByCategoryResponse {
+  id: number;
+  name: string;
+  categoryId: number;
+  category: Category;
+  total: number;
+}
+
+export interface Category {
+  id: number;
+  name: string;
 }

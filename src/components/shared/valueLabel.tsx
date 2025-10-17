@@ -53,7 +53,7 @@ export default function ValueLabel({
     <div
       className={cn(
         "w-full",
-        orientation === "vertical" && "flex flex-col gap-y-2",
+        orientation === "vertical" && "flex flex-col gap-y-1",
         isHorizontal && "flex flex-row items-center gap-x-4",
         isBetween && "flex flex-row justify-between items-center gap-x-4",
         className

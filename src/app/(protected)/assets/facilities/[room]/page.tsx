@@ -1,5 +1,6 @@
 "use client";
 
+import { useGetFacilitiesCountByCategory } from "@/components/parts/assets/facilites/api";
 import { facilitiesByRoomColumns } from "@/components/parts/assets/facilites/columns";
 import { BreadcrumbSetItem } from "@/components/shared/layouts/myBreadcrumb";
 import TitleHeader from "@/components/shared/title";
@@ -10,21 +11,11 @@ import { Card } from "@/components/ui/card";
 import { useParams } from "next/navigation";
 import React from "react";
 
-const data = [
-  {
-    id: 1,
-    roomId: 1,
-    facilityName: "Proyektor",
-    category: {
-      id: 1,
-      name: "Elektronik",
-    },
-    quantity: 5,
-  },
-];
-
 const Page = () => {
   const { room } = useParams();
+  const { data } = useGetFacilitiesCountByCategory();
+  const facilitiesData = data?.data.items || [];
+  const facilitiesPagination = data?.data;
   return (
     <section>
       <BreadcrumbSetItem
@@ -55,7 +46,10 @@ const Page = () => {
           >
             <DataTable
               columns={facilitiesByRoomColumns}
-              data={data}
+              data={facilitiesData}
+              totalItems={facilitiesPagination?.total_items}
+              totalPages={facilitiesPagination?.total_pages}
+              currentPage={facilitiesPagination?.current_page}
               displayItems
             />
           </TableBar>

@@ -46,7 +46,7 @@ export function LineChartSubmission() {
   return (
     <Card>
       <CardHeader className="items-center">
-        <CardTitle className="text-lg mb-3">Pengajuan</CardTitle>
+        <CardTitle className="text-lg mb-3">Permohonan</CardTitle>
         <CardDescription className="text-black">
           January - Juni 2024
         </CardDescription>

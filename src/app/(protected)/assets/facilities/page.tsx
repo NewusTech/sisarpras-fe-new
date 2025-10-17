@@ -1,6 +1,7 @@
 "use client";
 
 import { facilityAssetsColumns } from "@/components/parts/assets/facilites/columns";
+import { useGetInfrastructuresAssets } from "@/components/parts/assets/infrastructures/api";
 import { BreadcrumbSetItem } from "@/components/shared/layouts/myBreadcrumb";
 import TitleHeader from "@/components/shared/title";
 import { TableProvider } from "@/components/table";
@@ -26,6 +27,9 @@ export const access: AccessRule = {
 };
 
 const Page = () => {
+  const { data } = useGetInfrastructuresAssets();
+  const infrastructureData = data?.data.paginateData.items || [];
+  const infrastructurePagination = data?.data.paginateData;
   return (
     <section>
       <BreadcrumbSetItem
@@ -47,7 +51,10 @@ const Page = () => {
           <TableBar searchPlaceholder="Cari Sarana" filterKeys={["filterName"]}>
             <DataTable
               columns={facilityAssetsColumns}
-              data={data}
+              data={infrastructureData}
+              totalItems={infrastructurePagination?.total_items}
+              totalPages={infrastructurePagination?.total_pages}
+              currentPage={infrastructurePagination?.current_page}
               displayItems
             />
           </TableBar>
