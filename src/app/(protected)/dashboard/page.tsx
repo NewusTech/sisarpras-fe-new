@@ -1,11 +1,14 @@
 "use client";
 
+import CountCard from "@/components/sections/dashboard/countCard";
+import { LineChartSubmission } from "@/components/sections/dashboard/lineChartSubmission";
+import { PieChartFacility } from "@/components/sections/dashboard/pieChartFacility";
 import { BreadcrumbSetItem } from "@/components/shared/layouts/myBreadcrumb";
 import React from "react";
 
 export default function Page() {
   return (
-    <div>
+    <div className="space-y-6">
       <BreadcrumbSetItem
         items={[
           {
@@ -13,10 +16,16 @@ export default function Page() {
           },
         ]}
       />
-      pageeeee Lorem ipsum dolor sit amet consectetur adipisicing elit.
-      Consectetur aliquid quas, nulla quam dolores at? Unde, voluptates
-      asperiores. Eaque rerum accusamus ea aspernatur ipsam ipsum sapiente. Quod
-      est enim excepturi!
+      <div className="flex gap-6 items-center">
+        <CountCard title="Total Sarana" numOf={2} />
+        <CountCard title="Total Prasarana" numOf={100} />
+        <CountCard title="Total Permohonan" numOf={100} />
+      </div>
+      <div className="flex gap-6">
+        <PieChartFacility />
+        <PieChartFacility />
+      </div>
+      <LineChartSubmission />
     </div>
   );
 }
