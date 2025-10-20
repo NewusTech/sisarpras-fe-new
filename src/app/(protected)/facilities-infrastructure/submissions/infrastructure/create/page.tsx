@@ -15,6 +15,8 @@ import { Card } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
 import { Separator } from "@/components/ui/separator";
 import {
+  useGetGradeOptions,
+  useGetGroupOptions,
   useInfrastructuresCategoryOptions,
   usePriorityOptions,
 } from "@/hooks/useSelect";
@@ -35,7 +37,13 @@ const Page = () => {
     resolver: zodResolver(infrastructureSchema),
   });
 
+  const { watch, handleSubmit } = form;
+
+  const isRoom = String(watch("categoryId")) === "1";
+
   const infrastructureOptions = useInfrastructuresCategoryOptions();
+  const gradeOptions = useGetGradeOptions();
+  const groupOptions = useGetGroupOptions();
 
   const { mutate } = useInfastructureMutation();
 
@@ -74,7 +82,7 @@ const Page = () => {
           route="/facilities-infrastructure/submissions?tabs=infrastructures"
         />
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
+          <form onSubmit={handleSubmit(onSubmit)}>
             <div className="grid gap-4 md:grid-cols-2">
               <CustomFormInput<InfrastructurePayload>
                 name="name"
@@ -90,6 +98,27 @@ const Page = () => {
                 placeholder="Pilih Jenis Prasarana"
                 required
               />
+
+              {isRoom && (
+                <>
+                  <CustomFormSelectSearch<InfrastructurePayload>
+                    name="gradeId"
+                    label="Jenis Tingkat"
+                    options={gradeOptions}
+                    placeholder="Pilih Jenis Tingkat"
+                    required
+                  />
+
+                  <CustomFormSelectSearch<InfrastructurePayload>
+                    name="groupId"
+                    label="Jenis Golongan"
+                    options={groupOptions}
+                    placeholder="Pilih Jenis Golongan"
+                    required
+                  />
+                </>
+              )}
+
               <CustomFormInput<InfrastructurePayload>
                 name="quantity"
                 label="Jumlah"

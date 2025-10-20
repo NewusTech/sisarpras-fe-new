@@ -1,7 +1,11 @@
 import { useGetInfrastructuresAssets } from "@/components/parts/assets/infrastructures/api";
 import { useGetFacilitiesCategory } from "@/components/parts/facilities/api";
 import { useGetInfrastructuresByCategory } from "@/components/parts/infrastructure/api";
-import { useGetAcademicYear } from "@/components/parts/master/api";
+import {
+  useGetAcademicYear,
+  useGetGrade,
+  useGetGroup,
+} from "@/components/parts/master/api";
 
 export const useInfrastructureOptions = () => {
   const { data } = useGetInfrastructuresAssets();
@@ -51,6 +55,34 @@ export const useGetAcademicYearOptions = () => {
       value: item.id.toString(),
     })),
   ];
+
+  return options;
+};
+
+export const useGetGroupOptions = () => {
+  const { data } = useGetGroup();
+
+  const items = data?.data?.items ?? [];
+
+  const options =
+    data?.data?.items?.map((item) => ({
+      label: item.name.trim(),
+      value: item.id.toString(),
+    })) || [];
+
+  return options;
+};
+
+export const useGetGradeOptions = () => {
+  const { data } = useGetGrade();
+
+  const items = data?.data?.items ?? [];
+
+  const options =
+    data?.data?.items?.map((item) => ({
+      label: item.name.trim(),
+      value: item.id.toString(),
+    })) || [];
 
   return options;
 };

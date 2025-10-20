@@ -1,69 +1,97 @@
 import { z } from "zod";
 
-export const infrastructureSchema = z.object({
-  categoryId: z
-    .union([
-      z.number().min(1, "Kategori tidak valid"),
-      z
-        .string()
-        .min(1, "Kategori wajib diisi")
-        .transform((val) => Number(val)),
-    ])
-    .refine((val) => !isNaN(Number(val)) && Number(val) > 0, {
-      message: "Kategori harus berupa angka valid",
+export const infrastructureSchema = z
+  .object({
+    categoryId: z
+      .union([
+        z.number().min(1, "Kategori tidak valid"),
+        z
+          .string()
+          .min(1, "Kategori wajib diisi")
+          .transform((val) => Number(val)),
+      ])
+      .refine((val) => !isNaN(Number(val)) && Number(val) > 0, {
+        message: "Kategori harus berupa angka valid",
+      }),
+
+    name: z
+      .string({
+        required_error: "Nama wajib diisi",
+      })
+      .min(1, "Nama tidak boleh kosong"),
+
+    quantity: z
+      .union([
+        z.number().min(1, "Jumlah minimal 1"),
+        z
+          .string()
+          .min(1, "Jumlah wajib diisi")
+          .transform((val) => Number(val)),
+      ])
+      .refine((val) => !isNaN(Number(val)) && Number(val) > 0, {
+        message: "Jumlah harus berupa angka valid",
+      }),
+
+    priority: z.enum(["URGENT", "NOT_URGENT"], {
+      required_error: "Prioritas wajib diisi",
+      invalid_type_error: "Prioritas harus URGENT atau NOT_URGENT",
     }),
 
-  name: z
-    .string({
-      required_error: "Nama wajib diisi",
-    })
-    .min(1, "Nama tidak boleh kosong"),
+    reason: z
+      .string({
+        required_error: "Alasan wajib diisi",
+      })
+      .min(1, "Alasan tidak boleh kosong"),
 
-  quantity: z
-    .union([
-      z.number().min(1, "Jumlah minimal 1"),
-      z
-        .string()
-        .min(1, "Jumlah wajib diisi")
-        .transform((val) => Number(val)),
-    ])
-    .refine((val) => !isNaN(Number(val)) && Number(val) > 0, {
-      message: "Jumlah harus berupa angka valid",
-    }),
+    estimateBudget: z
+      .union([
+        z.number().min(1, "Estimasi anggaran minimal 1"),
+        z
+          .string()
+          .min(1, "Estimasi anggaran wajib diisi")
+          .transform((val) => Number(val)),
+      ])
+      .refine((val) => !isNaN(Number(val)) && Number(val) > 0, {
+        message: "Estimasi anggaran harus berupa angka valid",
+      }),
 
-  priority: z.enum(["URGENT", "NOT_URGENT"], {
-    required_error: "Prioritas wajib diisi",
-    invalid_type_error: "Prioritas harus URGENT atau NOT_URGENT",
-  }),
+    totalArea: z.string().min(1, "Luas total wajib diisi"),
 
-  reason: z
-    .string({
-      required_error: "Alasan wajib diisi",
-    })
-    .min(1, "Alasan tidak boleh kosong"),
+    description: z
+      .string({
+        required_error: "Deskripsi wajib diisi",
+      })
+      .min(1, "Deskripsi tidak boleh kosong"),
 
-  estimateBudget: z
-    .union([
-      z.number().min(1, "Estimasi anggaran minimal 1"),
-      z
-        .string()
-        .min(1, "Estimasi anggaran wajib diisi")
-        .transform((val) => Number(val)),
-    ])
-    .refine((val) => !isNaN(Number(val)) && Number(val) > 0, {
-      message: "Estimasi anggaran harus berupa angka valid",
-    }),
+    gradeId: z.union([z.number(), z.string()]).optional(),
+    groupId: z.union([z.number(), z.string()]).optional(),
 
-  totalArea: z.string().min(1, "Luas total wajib diisi"),
-
-  description: z
-    .string({
-      required_error: "Deskripsi wajib diisi",
-    })
-    .min(1, "Deskripsi tidak boleh kosong"),
-
-  supportingDocument: z.any().optional(),
-  documentation: z.any().optional(),
-});
+    supportingDocument: z.any().optional(),
+    documentation: z.any().optional(),
+  })
+  .refine(
+    (data) => {
+      if (Number(data.categoryId) === 1) {
+        return data.gradeId != null;
+      }
+      return true;
+    },
+    {
+      message: "Grade ID dan Group ID wajib diisi untuk kategori ini",
+      path: ["gradeId"],
+    }
+  )
+  .refine(
+    (data) => {
+      if (Number(data.categoryId) === 1) {
+        return data.groupId != null;
+      }
+      return true;
+    },
+    {
+      message: "Group ID wajib diisi untuk kategori ini",
+      path: ["groupId"],
+    }
+  );
 
 export type InfrastructurePayload = z.infer<typeof infrastructureSchema>;

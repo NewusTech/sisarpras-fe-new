@@ -9,3 +9,19 @@ export interface AcademicYearResponse {
   updatedAt: string;
   deletedAt: any;
 }
+
+export interface GradeResponse {
+  id: number;
+  name: string;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: any;
+}
+
+export interface GroupResponse {
+  id: number;
+  name: string;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: any;
+}

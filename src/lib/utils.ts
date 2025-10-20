@@ -116,3 +116,21 @@ export function getPolygonCenter(coords: google.maps.LatLngLiteral[]) {
     lng: (minLng + maxLng) / 2,
   };
 }
+
+export function formatCurrency(
+  amount: number | string | null | undefined
+): string {
+  if (!amount && amount !== 0) return "Rp 0";
+
+  const numericAmount =
+    typeof amount === "string" ? parseFloat(amount) : amount;
+
+  if (isNaN(numericAmount)) return "Rp 0";
+
+  return new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(numericAmount);
+}

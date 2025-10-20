@@ -22,22 +22,6 @@ export const access: AccessRule = {
   roles: ["STAFF"],
 };
 
-const infraData = [
-  {
-    id: 1,
-    academicYear: "2021/2022",
-    createdAt: "2021-08-01",
-    room: {
-      name: "Laboratorium",
-      type: "Teknologi",
-    },
-    priority: {
-      name: "Tinggi",
-    },
-    status: "PENDING",
-  },
-];
-
 const Page = () => {
   const searchParams = useSearchParams();
   const { values } = useFilterContext({

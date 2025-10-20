@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Berita Acara</title>
+  <style>
+    body {
+      max-width: 210mm;
+      margin: 0 auto;
+      padding: 20mm;
+      font-family: Arial, sans-serif;
+    }
+
+    /* Header Styles */
+    header {
+      border-bottom: 4px solid #000;
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    figure {
+      text-align: center;
+      display: flex;
+      align-items: center;
+      gap: 50px;
+    }
+
+    .header-caption {
+      margin: 0;
+      line-height: 1.15;
+    }
+
+    /* Main Content Styles */
+
+    .title-container {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .heading-title,
+    .letter-number {
+      font-weight: normal;
+      line-height: 1.2;
+      margin: 0
+    }
+
+    .first-party>dl,
+    .second-party>dl {
+      margin-left: 10px;
+    }
+
+    .fp-field-value-container {
+      display: flex;
+    }
+
+    .fp-field-value-label {
+      width: 100px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .address-line {
+      text-align: justify;
+      width: 80%;
+    }
+
+    .details-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-family: "Arial", sans-serif;
+      font-size: 12px;
+    }
+
+    .details-table thead tr {
+      background-color: #f2f2f2;
+    }
+
+    .details-table th,
+    .details-table td {
+      border: 1px solid #333;
+      padding: 6px 8px;
+    }
+
+    .details-table th {
+      text-align: center;
+      font-weight: bold;
+      color: #000;
+    }
+
+    .details-table td {
+      vertical-align: middle;
+    }
+
+    /* Styling titik isian agar tampak rapi di PDF */
+    .details-table td span.dotted {
+      display: inline-block;
+      border-bottom: 1px dotted #000;
+      width: 100%;
+      color: transparent;
+      /* supaya hanya titik yang terlihat */
+    }
+
+    /* Efek zebra untuk readability */
+    .details-table tbody tr:nth-child(even) {
+      background-color: #fafafa;
+    }
+
+    /* Footer Styles */
+    footer {
+      margin-top: 30px;
+      clear: both;
+    }
+    footer p {
+      line-height: 1.2;
+      margin: 0;
+    }
+
+    .footer-date {
+      text-align: right;
+     float: right;
+      margin-right: 22%;
+      width: 88%;
+    }
+  
+    .first-party-signature {
+      float: left;
+      width: 45%;
+    }
+
+    .second-party-signature {
+      float: right;
+      width: 45%;
+    }
+
+    .second-third-signature {
+      padding-top: 180px;
+      text-align: center;
+    }
+
+  </style>
+</head>
+
+<body>
+  <header>
+    <figure>
+      <img src="./assets/images/logo.webp" alt="Logo Dinas Pendidikan" width="100" />
+      <figcaption>
+        <h2 class="header-caption">PEMERINTAH PROVINSI SUMATERA SELATAN</h2>
+        <h2 class="header-caption">DINAS PENDIDIKAN</h2>
+        <p class="header-caption">Jln Karimun Jawa, Sukarame, Bandar Lampung, Indonesia</p>
+        <p class="header-caption">Telepon ☏ (0711) 354137, Kode Pos 35113</p>
+        <p class="header-caption">Email <a href="mailto:disdik@pali.com">disdik@pali.com</a> Website <a
+            href="https://disdik.newus.id">disdik.newus.id</a> </p>
+      </figcaption>
+    </figure>
+  </header>
+  <main>
+    <section class="title-container">
+      <h3 class="heading-title">BERITA ACARA SERAH TERIMA BARANG</h3>
+      <h3 class="heading-title">DARI BENDAHARA BOS KEPADA PENGURUS BARANG (WAKA SARANA)</h3>
+      <p class="letter-number">Nomor ..................</p>
+    </section>
+
+    <section class="first-section">
+      <p>Pada hari ini <strong>Senin</strong> tanggal <strong>dua puluh</strong> bulan
+        <strong>Oktober</strong> tahun
+        <strong>dua ribu dua puluh lima</strong> (20 - Oktober - 2025) kami yang bertanda tangan di bawah ini :
+      </p>
+
+      <div class="first-party">
+        <dl>
+          <span class="fp-field-value-container">
+            <dt class="fp-field-value-label">
+              <span>Nama</span>
+              <span>:</span>
+            </dt>
+            <dd>.......................................................</dd>
+          </span>
+          <span class="fp-field-value-container">
+            <dt class="fp-field-value-label">
+              <span>NIP</span>
+              <span>:</span>
+            </dt>
+            <dd>.......................................................</dd>
+          </span>
+          <span class="fp-field-value-container">
+            <dt class="fp-field-value-label">
+              <span>Jabatan</span>
+              <span>:</span>
+            </dt>
+            <dd>.......................................................</dd>
+          </span>
+          <span class="fp-field-value-container">
+            <dt class="fp-field-value-label">
+              <span>Alamat</span>
+              <span>:</span>
+            </dt>
+            <dd class="address-line">...................................</dd>
+          </span>
+        </dl>
+        <p>Dalam hal ini disebut sebagai <strong>PIHAK PERTAMA</strong></p>
+      </div>
+
+      <div class="second-party">
+        <dl>
+          <span class="fp-field-value-container">
+            <dt class="fp-field-value-label">
+              <span>Nama</span>
+              <span>:</span>
+            </dt>
+            <dd>.......................................................</dd>
+          </span>
+          <span class="fp-field-value-container">
+            <dt class="fp-field-value-label">
+              <span>NIP</span>
+              <span>:</span>
+            </dt>
+            <dd>.......................................................</dd>
+          </span>
+          <span class="fp-field-value-container">
+            <dt class="fp-field-value-label">
+              <span>Jabatan</span>
+              <span>:</span>
+            </dt>
+            <dd>.......................................................</dd>
+          </span>
+          <span class="fp-field-value-container">
+            <dt class="fp-field-value-label">
+              <span>Alamat</span>
+              <span>:</span>
+            </dt>
+            <dd class="address-line">...................................</dd>
+          </span>
+        </dl>
+        <p>Dalam hal ini disebut sebagai <strong>PIHAK KEDUA</strong></p>
+      </div>
+    </section>
+
+    <section class="second-section">
+      <p>
+        <strong>PIHAK PERTAMA</strong> menyerahkan barang kepada <strong>PIHAK KEDUA</strong> berupa :
+      </p>
+      <table class="details-table">
+        <thead>
+          <tr>
+            <th>No</th>
+            <th>Nama Barang</th>
+            <th>Kategori</th>
+            <th>Jumlah</th>
+            <th>Lokasi</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="text-align: center;">1</td>
+            <td><span class="dotted">.......................................................</span></td>
+            <td><span class="dotted">.......................................................</span></td>
+            <td style="text-align: center;"><span class="dotted">.......</span></td>
+            <td><span class="dotted">.......................................................</span></td>
+          </tr>
+          <tr>
+            <td style="text-align: center;">2</td>
+            <td><span class="dotted">.......................................................</span></td>
+            <td><span class="dotted">.......................................................</span></td>
+            <td style="text-align: center;"><span class="dotted">.......</span></td>
+            <td><span class="dotted">.......................................................</span></td>
+          </tr>
+          <tr>
+            <td style="text-align: center;">3</td>
+            <td><span class="dotted">.......................................................</span></td>
+            <td><span class="dotted">.......................................................</span></td>
+            <td style="text-align: center;"><span class="dotted">.......</span></td>
+            <td><span class="dotted">.......................................................</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="third-section">
+      <p>
+        Barang tersebut diserahkan oleh <strong>PIHAK PERTAMA</strong> dan diterima oleh <strong>PIHAK KEDUA</strong>
+        dalam keadaan <strong>BAIK (Orisinil)</strong> dan <strong>LAYAK PAKAI</strong> serta sesuai dengan daftar
+        barang di atas.
+      </p>
+      <p>Demikianlah Berita Acara Serah Terima Barang ini dibuat untuk dapat dipergunakan sebagaimana mestinya.</p>
+    </section>
+  </main>
+  <footer>
+    <section class="signatures-section">
+      <p class="footer-date">Air Itam, 20 Oktober 2025</p>
+
+      <div class="first-party-signature">
+        <p>Yang Menerima,</p>
+        <br /><br /><br />
+        <p>.......................................................</p>
+        <p>NIP : .............................................</p>
+      </div>
+
+      <div class="second-party-signature" >
+        <p>Yang Menyatakan,</p>
+        <br /><br /><br />
+        <p>Bendry Lakburlawal</p>
+        <p>NIP : .............................................</p>
+      </div>
+
+      <div class="second-third-signature" >
+        <p>Mengetahui,</p>
+        <br /><br /><br />
+        <p>Bendry Lakburlawal</p>
+        <p>NIP : .............................................</p>
+      </div>
+    </section>
+  </footer>
+</body>
+
+</html>
