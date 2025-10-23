@@ -8,12 +8,20 @@ import { TableProvider } from "@/components/table";
 import DataTable from "@/components/table/dataTable";
 import TableBar from "@/components/table/tableBar";
 import { Card } from "@/components/ui/card";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import React from "react";
 
 const Page = () => {
   const { room } = useParams();
-  const { data } = useGetFacilitiesCountByCategory();
+  const searchParams = useSearchParams();
+  const params = searchParams.toString();
+  const segment = typeof room === "string" ? room.split("-") : [];
+  const _titleSegment = segment.length > 0 ? segment.slice(1).join("-") : "-";
+  const titleSegment = decodeURI(_titleSegment);
+  const segmentId = segment.length > 0 ? segment[0] : "0";
+  const { data } = useGetFacilitiesCountByCategory(
+    `infrastructureId=${segmentId}${params ? `&${params}` : ""}`
+  );
   const facilitiesData = data?.data.items || [];
   const facilitiesPagination = data?.data;
   return (
@@ -21,7 +29,7 @@ const Page = () => {
       <BreadcrumbSetItem
         items={[
           {
-            title: `${room}`,
+            title: `${titleSegment}`,
           },
           {
             title: "Aset",
@@ -32,20 +40,17 @@ const Page = () => {
           },
 
           {
-            title: `${room}`,
+            title: `${titleSegment}`,
           },
         ]}
       />
 
       <Card className="space-y-6">
-        <TitleHeader title={`Data ${room}`} />
+        <TitleHeader title={`Data ${titleSegment}`} />
         <TableProvider>
-          <TableBar
-            searchPlaceholder="Cari Fasilitas"
-            filterKeys={["filterName"]}
-          >
+          <TableBar searchPlaceholder="Cari Fasilitas" filterKeys={["search"]}>
             <DataTable
-              columns={facilitiesByRoomColumns}
+              columns={facilitiesByRoomColumns(segmentId)}
               data={facilitiesData}
               totalItems={facilitiesPagination?.total_items}
               totalPages={facilitiesPagination?.total_pages}

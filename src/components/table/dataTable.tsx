@@ -190,7 +190,7 @@ const DataTable = forwardRef<DataTableRef, DataTableProps<any, any>>(
                     colSpan={columns.length}
                     className="h-24 text-center"
                   >
-                    No results.
+                    Data tidak ditemukan.
                   </TableCell>
                 </TableRow>
               )}

@@ -6,6 +6,7 @@ import React from "react";
 import { Separator } from "../ui/separator";
 import { Badge } from "../ui/badge";
 import clsx from "clsx";
+import CustomBadge from "../shared/customBadge";
 
 interface CardHeaderProps {
   title: string;
@@ -40,7 +41,7 @@ const CardHeader = ({
             <ArrowLeft />
           </Button>
           <TitleHeader title={title} />
-          {status && <Badge variant="secondary">{status ?? "-"}</Badge>}
+          {status && <CustomBadge status={status} />}
         </div>
         {children}
       </div>

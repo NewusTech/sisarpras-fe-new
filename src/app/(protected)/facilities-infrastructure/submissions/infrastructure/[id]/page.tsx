@@ -7,7 +7,8 @@ import { BreadcrumbSetItem } from "@/components/shared/layouts/myBreadcrumb";
 import ReviewFile from "@/components/shared/reviewFile";
 import ValueLabel from "@/components/shared/valueLabel";
 import { Card } from "@/components/ui/card";
-import { formatDate } from "@/lib/utils";
+import { priorityMapping } from "@/constants";
+import { formatCurrency, formatDate } from "@/lib/utils";
 import { useParams } from "next/navigation";
 
 export const access: AccessRule = {
@@ -44,7 +45,13 @@ const Page = () => {
           status={detail?.status}
           route="/facilities-infrastructure/submissions?tabs=infrastructures"
         />
-        {detail?.status !== "ONPROSESS" && <MessageCard />}
+        {detail?.status !== "ONPROSESS" && (
+          <MessageCard
+            message={detail?.notes}
+            verifiedBy={detail?.approvedByUser.name}
+            date={detail?.approvedAt}
+          />
+        )}
         <h1 className="font-normal text-lg">Detail Informasi</h1>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <ValueLabel label="No Permohonan" value={detail?.id} />
@@ -56,12 +63,15 @@ const Page = () => {
           <ValueLabel label="Jenis Prasarana" value={detail?.category.name} />
           <ValueLabel label="Jumlah" value={detail?.quantity} />
           <ValueLabel label="Rencanan Total Luas" value={detail?.totalArea} />
-          <ValueLabel label="Prioritas" value={detail?.priority} />
+          <ValueLabel
+            label="Prioritas"
+            value={priorityMapping[detail?.priority || ""]}
+          />
           <ValueLabel label="Keterangan" value={detail?.description} />
           <ValueLabel label="Alasan Permohonan" value={detail?.reason} />
           <ValueLabel
             label="Estimasi Anggaran"
-            value={detail?.estimateBudget}
+            value={formatCurrency(detail?.estimateBudget)}
             className="col-span-2"
           />
           <ValueLabel

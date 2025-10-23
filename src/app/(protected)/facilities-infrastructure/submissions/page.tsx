@@ -85,7 +85,7 @@ const Page = () => {
             <TabsContent value="facilities">
               <TableBar
                 searchPlaceholder="Cari permohonan sarana"
-                filterKeys={["filterName"]}
+                filterKeys={["search"]}
                 buttonAdd={{
                   label: "Permohonan Sarana",
                   href: "/facilities-infrastructure/submissions/facility/create",
@@ -104,7 +104,7 @@ const Page = () => {
             <TabsContent value="infrastructures">
               <TableBar
                 searchPlaceholder="Cari permohonan prasarana"
-                filterKeys={["filterName"]}
+                filterKeys={["search"]}
                 buttonAdd={{
                   label: "Permohonan Prasarana",
                   href: "/facilities-infrastructure/submissions/infrastructure/create",

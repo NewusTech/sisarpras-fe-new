@@ -11,12 +11,16 @@ import Pagination from "@/components/table/pagination";
 import { Card } from "@/components/ui/card";
 import { useConditionOptions } from "@/hooks/useSelect";
 import { Dot } from "lucide-react";
-import { useSearchParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 
 const Page = () => {
   const searchParams = useSearchParams();
   const id = searchParams.get("modal")?.split(":")[1];
-  const { data } = useGetInfrastructuresAssets(searchParams.toString());
+  const { ifs } = useParams();
+  const params = searchParams.toString();
+  const { data } = useGetInfrastructuresAssets(
+    `categoryId=${ifs}${params ? `&${params}` : ""}`
+  );
   const infrastructureData = data?.data.paginateData.items || [];
   const infrastructurePagination = data?.data.paginateData;
   const infrastructureCount = data?.data.countByCondition;
@@ -68,22 +72,21 @@ const Page = () => {
                   <span>Baik = {infrastructureCount?.GOOD}</span>
                 </div>
                 <div className="flex items-center gap-1">
-                  <Dot strokeWidth={18} className="text-error" />
+                  <Dot strokeWidth={18} className="text-warning-800" />
                   <span>
-                    Rusak Berat = 14 {infrastructureCount?.MAJOR_DAMAGE}
+                    Rusak Ringan = {infrastructureCount?.MINOR_DAMAGE}
                   </span>
                 </div>
                 <div className="flex items-center gap-1">
                   <Dot strokeWidth={18} className="text-warning" />
                   <span>
-                    Rusak Sedang = {infrastructureCount?.MINOR_DAMAGE}
+                    Rusak Sedang = {infrastructureCount?.MODERATE_DAMAGE}
                   </span>
                 </div>
+
                 <div className="flex items-center gap-1">
-                  <Dot strokeWidth={18} className="text-warning-800" />
-                  <span>
-                    Rusak Ringan = {infrastructureCount?.MODERATE_DAMAGE}
-                  </span>
+                  <Dot strokeWidth={18} className="text-error" />
+                  <span>Rusak Berat = {infrastructureCount?.MAJOR_DAMAGE}</span>
                 </div>
               </section>
 

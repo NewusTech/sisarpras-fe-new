@@ -7,8 +7,8 @@ import { BreadcrumbSetItem } from "@/components/shared/layouts/myBreadcrumb";
 import ReviewFile from "@/components/shared/reviewFile";
 import ValueLabel from "@/components/shared/valueLabel";
 import { Card } from "@/components/ui/card";
-import { formatDate } from "@/lib/utils";
-import Link from "next/link";
+import { priorityMapping } from "@/constants";
+import { formatCurrency, formatDate } from "@/lib/utils";
 import { useParams } from "next/navigation";
 
 export const access: AccessRule = {
@@ -45,7 +45,13 @@ const Page = () => {
           status={detail?.status}
           route="/facilities-infrastructure/submissions?tabs=facilities"
         />
-        {detail?.status !== "ONPROSESS" && <MessageCard />}
+        {detail?.status !== "ONPROSESS" && (
+          <MessageCard
+            message={detail?.notes}
+            verifiedBy={detail?.approvedByUser.name}
+            date={detail?.approvedAt}
+          />
+        )}
         <h1 className="font-normal text-lg">Detail Informasi</h1>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <ValueLabel label="No Permohonan" value={detail?.id} />
@@ -55,7 +61,10 @@ const Page = () => {
           />
           <ValueLabel label="Nama Sarana" value={detail?.name} />
           <ValueLabel label="Jenis Sarana" value={detail?.category.name} />
-          <ValueLabel label="Prioritas" value={detail?.priority} />
+          <ValueLabel
+            label="Prioritas"
+            value={priorityMapping[detail?.priority || ""]}
+          />
           <ValueLabel
             label="Lokasi (Ruang Kelas)"
             value={detail?.infrastructure.name}
@@ -64,7 +73,7 @@ const Page = () => {
           <ValueLabel label="Alasan Permohonan" value={detail?.reason} />
           <ValueLabel
             label="Estimasi Anggaran"
-            value={detail?.estimateBudget}
+            value={formatCurrency(detail?.estimateBudget)}
             className="col-span-2"
           />
           <ValueLabel
@@ -82,12 +91,12 @@ const Page = () => {
             label="Dokumentasi"
             className="col-span-2"
             value={
-              <div>
+              <div className="flex gap-4">
                 {detail?.documentation.map((doc, index) => (
                   <ModalImage
                     key={index}
                     src={doc}
-                    className="w-32 h-32 object-cover rounded"
+                    className="w-32 h-32 object-cover rounded-full"
                   />
                 ))}
               </div>

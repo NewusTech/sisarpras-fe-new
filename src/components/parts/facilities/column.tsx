@@ -3,6 +3,7 @@ import { formatDate } from "@/lib/utils";
 import { ColumnDef } from "@tanstack/react-table";
 import { createBaseColumns } from "../baseColumn";
 import { FacilitiesResponse } from "./interface";
+import CustomBadge from "@/components/shared/customBadge";
 
 export const facilitiesColumns: ColumnDef<FacilitiesResponse>[] = [
   ...createBaseColumns<FacilitiesResponse>(),
@@ -29,12 +30,12 @@ export const facilitiesColumns: ColumnDef<FacilitiesResponse>[] = [
   {
     accessorKey: "Prioritas",
     header: "Prioritas",
-    cell: ({ row }) => row.original.priority,
+    cell: ({ row }) => <CustomBadge status={row.original.priority} />,
   },
   {
     accessorKey: "Status",
     header: "Status",
-    cell: ({ row }) => row.original.status,
+    cell: ({ row }) => <CustomBadge status={row.original.status} />,
   },
 
   {

@@ -8,18 +8,8 @@ import { TableProvider } from "@/components/table";
 import DataTable from "@/components/table/dataTable";
 import TableBar from "@/components/table/tableBar";
 import { Card } from "@/components/ui/card";
+import { useSearchParams } from "next/navigation";
 import React from "react";
-
-const data = [
-  {
-    id: 1,
-    roomName: "Ruang Kelas 1",
-    category: {
-      id: 1,
-      name: "Elektronik",
-    },
-  },
-];
 
 export const access: AccessRule = {
   permissions: [""],
@@ -27,7 +17,8 @@ export const access: AccessRule = {
 };
 
 const Page = () => {
-  const { data } = useGetInfrastructuresAssets();
+  const searchParams = useSearchParams();
+  const { data } = useGetInfrastructuresAssets(searchParams.toString());
   const infrastructureData = data?.data.paginateData.items || [];
   const infrastructurePagination = data?.data.paginateData;
   return (
@@ -48,7 +39,7 @@ const Page = () => {
       <Card className="space-y-6">
         <TitleHeader title="Data Aset Sarana" />
         <TableProvider>
-          <TableBar searchPlaceholder="Cari Sarana" filterKeys={["filterName"]}>
+          <TableBar searchPlaceholder="Cari Sarana" filterKeys={["search"]}>
             <DataTable
               columns={facilityAssetsColumns}
               data={infrastructureData}

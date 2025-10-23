@@ -3,6 +3,7 @@ import { formatDate } from "@/lib/utils";
 import { ColumnDef } from "@tanstack/react-table";
 import { createBaseColumns } from "../baseColumn";
 import { InfrastructuresRequestResponse } from "./interface";
+import CustomBadge from "@/components/shared/customBadge";
 
 export const infrastructureColumns: ColumnDef<InfrastructuresRequestResponse>[] =
   [
@@ -26,12 +27,12 @@ export const infrastructureColumns: ColumnDef<InfrastructuresRequestResponse>[] 
     {
       accessorKey: "Prioritas",
       header: "Prioritas",
-      cell: ({ row }) => row.original.priority,
+      cell: ({ row }) => <CustomBadge status={row.original.priority} />,
     },
     {
       accessorKey: "Status",
       header: "Status",
-      cell: ({ row }) => row.original.status,
+      cell: ({ row }) => <CustomBadge status={row.original.status} />,
     },
 
     {

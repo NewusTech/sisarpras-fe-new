@@ -55,3 +55,15 @@ export const getNavData = (): navDateType => {
     ],
   };
 };
+
+export const priorityMapping: Record<string, string> = {
+  URGENT: "Mendesak",
+  NOT_URGENT: "Tidak Mendesak",
+};
+
+export const conditionMapping: Record<string, string> = {
+  GOOD: "Baik",
+  MINOR_DEMAGE: "Rusak Ringan",
+  MODERATE_DEMAGE: "Rusak Sedang",
+  MAJOR_DEMAGE: "Rusak Berat",
+};

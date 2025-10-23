@@ -97,10 +97,7 @@ const Page = () => {
             <Separator className="mt-0.5 mb-6" />
             <TabsContent value="facilities">
               <TableProvider>
-                <TableBar
-                  searchPlaceholder="Cari ..."
-                  filterKeys={["filterName"]}
-                >
+                <TableBar searchPlaceholder="Cari ..." filterKeys={["search"]}>
                   <DataTable
                     columns={facilitiesReportColumns}
                     data={facilityData}
@@ -114,10 +111,7 @@ const Page = () => {
             </TabsContent>
             <TabsContent value="infrastructures">
               <TableProvider>
-                <TableBar
-                  searchPlaceholder="Cari ..."
-                  filterKeys={["filterName"]}
-                >
+                <TableBar searchPlaceholder="Cari ..." filterKeys={["search"]}>
                   <DataTable
                     columns={infrastructuresReportColumns}
                     data={infrastructureData}

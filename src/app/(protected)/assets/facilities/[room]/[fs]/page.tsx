@@ -20,20 +20,26 @@ import { useParams, useSearchParams } from "next/navigation";
 const Page = () => {
   const searchParams = useSearchParams();
   const id = searchParams.get("modal")?.split(":")[1];
-  const { fs } = useParams();
-  const { data } = useGetFacilitiesAssets();
+  const { room, fs } = useParams();
+  const defaultsearchParams = `facilityNameId=${fs}&categoryId=${room}`;
+  const { data } = useGetFacilitiesAssets(defaultsearchParams);
   const facilitiesData = data?.data.paginateData.items || [];
   const facilitiesPagination = data?.data.paginateData;
   const facilitiesCount = data?.data.countByCondition;
   const facilityById = facilitiesData.find((item) => item.id === Number(id));
   const academicYearOptions = useGetAcademicYearOptions();
 
+  const facilityName =
+    facilitiesData[0]?.facilityName?.name ?? "(Tidak Diketahui)";
+  const roomName =
+    facilitiesData[0]?.infrastructure?.name ?? "(Tidak Diketahui)";
+
   return (
     <section>
       <BreadcrumbSetItem
         items={[
           {
-            title: `${fs}`,
+            title: `${facilityName}`,
           },
           {
             title: "Aset",
@@ -43,17 +49,17 @@ const Page = () => {
             href: "/assets/facilities",
           },
           {
-            title: `${fs}`,
+            title: `${roomName}`,
             href: `/assets/facilities/${fs}`,
           },
           {
-            title: `${fs}`,
+            title: `${facilityName}`,
           },
         ]}
       />
 
       <Card className="space-y-6">
-        <TitleHeader title={`Data ${fs}`} />
+        <TitleHeader title={`Data ${facilityName}`} className="capitalize" />
         <Filter mode="auto">
           {({ resetValues }) => (
             <>
@@ -91,16 +97,16 @@ const Page = () => {
                   <span>Baik = {facilitiesCount?.GOOD}</span>
                 </div>
                 <div className="flex items-center gap-1">
-                  <Dot strokeWidth={18} className="text-error" />
-                  <span>Rusak Berat = {facilitiesCount?.MAJOR_DAMAGE}</span>
+                  <Dot strokeWidth={18} className="text-warning-800" />
+                  <span>Rusak Ringan = {facilitiesCount?.MINOR_DAMAGE}</span>
                 </div>
                 <div className="flex items-center gap-1">
                   <Dot strokeWidth={18} className="text-warning" />
                   <span>Rusak Sedang = {facilitiesCount?.MODERATE_DAMAGE}</span>
                 </div>
                 <div className="flex items-center gap-1">
-                  <Dot strokeWidth={18} className="text-warning-800" />
-                  <span>Rusak Ringan = {facilitiesCount?.MINOR_DAMAGE}</span>
+                  <Dot strokeWidth={18} className="text-error" />
+                  <span>Rusak Berat = {facilitiesCount?.MAJOR_DAMAGE}</span>
                 </div>
               </section>
               <Pagination

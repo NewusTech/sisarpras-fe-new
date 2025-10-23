@@ -110,7 +110,13 @@ export interface DetailFacilityResponse {
   academicYear: AcademicYear;
   school: School;
   creator: Creator;
-  approvedByUser: any;
+  approvedByUser: ApproverByUser;
+}
+
+export interface ApproverByUser {
+  id: number;
+  name: string;
+  email: string;
 }
 
 export interface Category {

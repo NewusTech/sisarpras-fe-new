@@ -6,6 +6,7 @@ import {
   InfrastructureReportResponse,
 } from "./interface";
 import { createBaseColumns } from "../baseColumn";
+import CustomBadge from "@/components/shared/customBadge";
 
 export const facilitiesReportColumns: ColumnDef<FacilitiesReportResponse>[] = [
   ...createBaseColumns<FacilitiesReportResponse>(),
@@ -28,7 +29,7 @@ export const facilitiesReportColumns: ColumnDef<FacilitiesReportResponse>[] = [
 
   {
     header: "Prioritas",
-    cell: ({ row }) => row.original.priority,
+    cell: ({ row }) => <CustomBadge status={row.original.priority} />,
   },
 
   {
@@ -43,7 +44,7 @@ export const facilitiesReportColumns: ColumnDef<FacilitiesReportResponse>[] = [
 
   {
     header: "Status",
-    cell: ({ row }) => row.original.status,
+    cell: ({ row }) => <CustomBadge status={row.original.status} />,
   },
 ];
 
@@ -68,7 +69,7 @@ export const infrastructuresReportColumns: ColumnDef<InfrastructureReportRespons
     },
     {
       header: "Prioritas",
-      cell: ({ row }) => row.original.priority,
+      cell: ({ row }) => <CustomBadge status={row.original.priority} />,
     },
     {
       header: "Total Luas",

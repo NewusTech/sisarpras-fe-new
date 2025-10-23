@@ -1,5 +1,5 @@
 export const filterMapping = {
-  filterName: "search",
+  search: "search",
   kategoriSurat: "kategoriSurat",
 } as const;
 

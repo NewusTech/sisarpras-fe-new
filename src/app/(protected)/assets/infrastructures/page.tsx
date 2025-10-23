@@ -41,14 +41,13 @@ const Page = () => {
         <TableProvider>
           <TableBar
             searchPlaceholder="Cari Prasarana"
-            filterKeys={["filterName"]}
-          >
-            <DataTable
-              columns={infrastructureAssetsColumns}
-              data={infrastructureData}
-              displayItems
-            />
-          </TableBar>
+            filterKeys={["search"]}
+          />
+          <DataTable
+            columns={infrastructureAssetsColumns}
+            data={infrastructureData}
+            displayItems
+          />
         </TableProvider>
       </Card>
     </section>

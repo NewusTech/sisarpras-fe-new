@@ -1,17 +1,13 @@
+import CustomBadge from "@/components/shared/customBadge";
+import ActionModalOption from "@/components/table/actionModalOption";
 import ActionOption from "@/components/table/actionOption";
+import { formatDate } from "@/lib/utils";
 import { ColumnDef } from "@tanstack/react-table";
 import { createBaseColumns } from "../../baseColumn";
-import { formatDate } from "@/lib/utils";
-import ActionModalOption from "@/components/table/actionModalOption";
-import ModalImage from "@/components/shared/image/modalImage";
-import {
-  InfrastructureAssetsByCategoryResponse,
-  ListInfrastructureAssetsPaginateResponse,
-} from "../infrastructures/interface";
+import { ListInfrastructureAssetsPaginateResponse } from "../infrastructures/interface";
 import {
   FacilitiesAssetsByCategoryResponse,
   ListFacilitiesAssetsPaginateResponse,
-  ListFacilitiesAssetsResponse,
 } from "./interface";
 
 export const facilityAssetsColumns: ColumnDef<ListInfrastructureAssetsPaginateResponse>[] =
@@ -22,7 +18,6 @@ export const facilityAssetsColumns: ColumnDef<ListInfrastructureAssetsPaginateRe
       header: "Nama Ruang Kelas",
       cell: ({ row }) => row.original.name,
     },
-
     {
       header: "Kategori",
       cell: ({ row }) => row.original.category.name,
@@ -31,30 +26,33 @@ export const facilityAssetsColumns: ColumnDef<ListInfrastructureAssetsPaginateRe
       accessorKey: "action",
       header: "Aksi",
       cell: ({ row }) => (
-        <ActionOption linkView={`/assets/facilities/${row.original.id}`} />
-      ),
-    },
-  ];
-
-export const facilitiesByRoomColumns: ColumnDef<FacilitiesAssetsByCategoryResponse>[] =
-  [
-    ...createBaseColumns<FacilitiesAssetsByCategoryResponse>(),
-    {
-      header: "Fasilitas",
-      cell: ({ row }) => row.original.name,
-    },
-    { header: "Kategori", cell: ({ row }) => row.original.category.name },
-    { header: "Jumlah", cell: ({ row }) => row.original.total },
-    {
-      accessorKey: "action",
-      header: "Aksi",
-      cell: ({ row }) => (
         <ActionOption
-          linkView={`/assets/facilities/${row.original.id}/${row.original.id}`}
+          linkView={`/assets/facilities/${`${row.original.id}-${row.original.name}`}`}
         />
       ),
     },
   ];
+
+export const facilitiesByRoomColumns = (
+  roomId?: string
+): ColumnDef<FacilitiesAssetsByCategoryResponse>[] => [
+  ...createBaseColumns<FacilitiesAssetsByCategoryResponse>(),
+  {
+    header: "Fasilitas",
+    cell: ({ row }) => row.original.name,
+  },
+  { header: "Kategori", cell: ({ row }) => row.original.category.name },
+  { header: "Jumlah", cell: ({ row }) => row.original.total },
+  {
+    accessorKey: "action",
+    header: "Aksi",
+    cell: ({ row }) => (
+      <ActionOption
+        linkView={`/assets/facilities/${roomId}/${row.original.id}`}
+      />
+    ),
+  },
+];
 
 export const listItemByFacilitiesColumns: ColumnDef<ListFacilitiesAssetsPaginateResponse>[] =
   [
@@ -77,7 +75,7 @@ export const listItemByFacilitiesColumns: ColumnDef<ListFacilitiesAssetsPaginate
     },
     {
       header: "Kondisi",
-      cell: ({ row }) => row.original.condition,
+      cell: ({ row }) => <CustomBadge status={row.original.condition} />,
     },
     // {
     //   header: "Gambar Label",

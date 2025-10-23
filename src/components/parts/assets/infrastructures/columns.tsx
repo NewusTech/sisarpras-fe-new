@@ -1,13 +1,12 @@
+import CustomBadge from "@/components/shared/customBadge";
+import ActionModalOption from "@/components/table/actionModalOption";
 import ActionOption from "@/components/table/actionOption";
 import { ColumnDef } from "@tanstack/react-table";
 import { createBaseColumns } from "../../baseColumn";
 import {
   InfrastructureAssetsByCategoryResponse,
   ListInfrastructureAssetsPaginateResponse,
-  ListInfrastructureAssetsResponse,
 } from "./interface";
-import ModalImage from "@/components/shared/image/modalImage";
-import ActionModalOption from "@/components/table/actionModalOption";
 
 export const infrastructureAssetsColumns: ColumnDef<InfrastructureAssetsByCategoryResponse>[] =
   [
@@ -20,7 +19,6 @@ export const infrastructureAssetsColumns: ColumnDef<InfrastructureAssetsByCatego
       header: "Jumlah",
       cell: ({ row }) => row.original.total,
     },
-
     {
       accessorKey: "action",
       header: "Aksi",
@@ -52,7 +50,7 @@ export const listItemByInfrastructureColumns: ColumnDef<ListInfrastructureAssets
     },
     {
       header: "Kondisi",
-      cell: ({ row }) => row.original.condition,
+      cell: ({ row }) => <CustomBadge status={row.original.condition} />,
     },
     // {
     //   header: "Gambar Label",

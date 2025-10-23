@@ -1,3 +1,5 @@
+import { Infrastructure } from "../../facilities/interface";
+
 export interface ListFacilitiesAssetsResponse {
   paginateData: PaginateData;
   countByCondition: CountByCondition;
@@ -17,6 +19,7 @@ export interface ListFacilitiesAssetsPaginateResponse {
   facilityNameId?: number;
   code: string;
   infrastructureId: any;
+  infrastructure: Infrastructure;
   condition: string;
   photo: any;
   categoryId: number;
@@ -31,6 +34,10 @@ export interface ListFacilitiesAssetsPaginateResponse {
   academicYear: any;
   periode: any;
   school: School;
+}
+
+export interface Infrastructure {
+  name: string;
 }
 
 export interface Category {

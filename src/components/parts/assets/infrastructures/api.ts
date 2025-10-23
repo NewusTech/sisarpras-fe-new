@@ -13,7 +13,7 @@ export const useGetInfrastructuresAssets = (query?: string) => {
     ApiResponse<DataObject<ListInfrastructureAssetsResponse>>,
     Error
   >({
-    queryKey: ["useGetInfrastructuresAssets"],
+    queryKey: ["useGetInfrastructuresAssets", query],
     queryFn: async () => {
       const response = await fetcher(endpoint);
       return response;
@@ -29,7 +29,7 @@ export const useGetInfrastructuresCountByCategory = (query?: string) => {
     ApiResponse<DataPaginate<InfrastructureAssetsByCategoryResponse>>,
     Error
   >({
-    queryKey: ["useGetInfrastructuresCountByCategory"],
+    queryKey: ["useGetInfrastructuresCountByCategory", query],
     queryFn: async () => {
       const response = await fetcher(endpoint);
       return response;
