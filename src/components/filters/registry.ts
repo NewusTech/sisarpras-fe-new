@@ -12,12 +12,9 @@ export type SourceKind =
 export type FilterRegistry = Record<FilterKey, SourceKind>;
 
 export const defaultFilterRegistry: FilterRegistry = {
-  filterName: {
+  search: {
     type: "static",
-    data: [
-      { label: "tes 1", value: "tes 1" },
-      { label: "tes 2", value: "tes 2" },
-    ],
+    data: [],
   },
   kategoriSurat: {
     type: "endpoint",

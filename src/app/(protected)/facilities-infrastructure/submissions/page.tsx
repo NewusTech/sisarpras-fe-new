@@ -86,6 +86,7 @@ const Page = () => {
               <TableBar
                 searchPlaceholder="Cari permohonan sarana"
                 filterKeys={["search"]}
+                mobileOrientation="vertical"
                 buttonAdd={{
                   label: "Permohonan Sarana",
                   href: "/facilities-infrastructure/submissions/facility/create",
@@ -105,6 +106,7 @@ const Page = () => {
               <TableBar
                 searchPlaceholder="Cari permohonan prasarana"
                 filterKeys={["search"]}
+                mobileOrientation="vertical"
                 buttonAdd={{
                   label: "Permohonan Prasarana",
                   href: "/facilities-infrastructure/submissions/infrastructure/create",

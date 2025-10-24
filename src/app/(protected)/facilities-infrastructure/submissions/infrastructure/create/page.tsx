@@ -76,7 +76,7 @@ const Page = () => {
           },
         ]}
       />
-      <Card className="space-y-6">
+      <Card className="space-y-3 sm:space-y-6">
         <CardHeader
           title="Tambah Permohonan Prasarana"
           route="/facilities-infrastructure/submissions?tabs=infrastructures"
@@ -150,11 +150,12 @@ const Page = () => {
                 label="Keterangan"
                 placeholder="Masukkan Keterangan"
               />
+            </div>
+            <div className="grid grid-cols-1 gap-4 mt-4">
               <CustomFormTextArea<InfrastructurePayload>
                 name="reason"
                 label="Alasan Pengajuan"
                 placeholder="Masukkan Alasan Pengajuan"
-                className="col-span-2"
                 required
               />
               <CustomFormDragAndDrop<InfrastructurePayload>
@@ -163,7 +164,6 @@ const Page = () => {
                 maxFiles={5}
                 maxSize={5}
                 acceptedFileTypes={["application/pdf"]}
-                className="col-span-2"
               />
               <CustomFormDragAndDrop<InfrastructurePayload>
                 label="Unggah Dokumentasi"
@@ -171,11 +171,10 @@ const Page = () => {
                 maxFiles={5}
                 maxSize={5}
                 required
-                className="col-span-2"
               />
             </div>
             <Separator className="my-6" />
-            <div className=" flex justify-end gap-2">
+            <div className="flex justify-center sm:justify-end gap-2">
               <Button className="rounded-full">Ajukan Permohonan</Button>
             </div>
           </form>

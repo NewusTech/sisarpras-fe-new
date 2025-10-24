@@ -1,5 +1,6 @@
 "use client";
 
+import FilterIcon from "@/assets/icons/filterIcon";
 import FilterSelectItem from "@/components/filters/filterSelectItem";
 import { FilterKey, Option } from "@/components/filters/keys";
 import { Button } from "@/components/ui/button";
@@ -9,27 +10,15 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
-  Filter,
-  FilterDateRange,
-  FilterTextInput,
-  useFilterContext,
-} from "@/filter";
+import { FilterTextInput, useFilterContext } from "@/filter";
 import { cn } from "@/lib/utils";
-import { EllipsisVertical, ListFilter, Search } from "lucide-react";
+import { Search } from "lucide-react";
 import { useEffect, useState } from "react";
 import FilterTabs from "../filters/filterTabs";
 import LinkButton from "../shared/button/linkButton";
-import { Badge } from "../ui/badge";
-import { useTableProvider } from "./tableProvider"; // ⬅️ pakai provider terpisah
 import TitleHeader from "../shared/title";
-import FilterIcon from "@/assets/icons/filterIcon";
+import { useTableProvider } from "./tableProvider"; // ⬅️ pakai provider terpisah
+import clsx from "clsx";
 
 type FilterItems = "date" | "kolom";
 
@@ -47,6 +36,7 @@ type Props = {
   searchPlaceholder?: string;
   searchKey?: string | null;
   searchable?: boolean;
+  mobileOrientation?: "vertical" | "horizontal";
 };
 
 type ColumnsVisibility = Record<string, boolean>;
@@ -62,6 +52,7 @@ export default function TableBar({
   searchPlaceholder,
   searchKey,
   searchable = true,
+  mobileOrientation = "horizontal",
 }: Props) {
   const { tableRef } = useTableProvider();
   const { resetValues, applyFilters, activeFilterCount } = useFilterContext();
@@ -95,8 +86,15 @@ export default function TableBar({
   return (
     <div className={cn(className)}>
       <TitleHeader title={title} />
-      <div className="flex justify-between items-center mb-6">
-        <div className="">
+      <div
+        className={cn("gap-5 mb-6", {
+          "flex items-center justify-between":
+            mobileOrientation === "horizontal",
+          "flex sm:flex-row flex-col justify-between sm:items-center":
+            mobileOrientation === "vertical",
+        })}
+      >
+        <div>
           {/* Dialog Filter */}
           {searchable && (
             <FilterTextInput
@@ -160,64 +158,68 @@ export default function TableBar({
           )} */}
         </div>
 
-        <div className="flex gap-2 items-center">
-          {filterKeys.length != 0 && (
-            <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-              <DialogTrigger asChild>
-                <Button
-                  variant="outline"
-                  className="rounded-full relative text-primary bg-white border-primary hover:bg-primary/90 hover:text-white"
-                >
-                  <FilterIcon />
-                  <span className="hidden md:block">Filter</span>
-                  {/* {activeFilterCount !== 0 && (
+        <div className="flex gap-2 justify-between items-center">
+          <div>
+            {filterKeys.length != 0 && (
+              <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className="rounded-full relative text-primary bg-white border-primary hover:bg-primary/90 hover:text-white"
+                  >
+                    <FilterIcon />
+                    <span className="hidden md:block">Filter</span>
+                    {/* {activeFilterCount !== 0 && (
                     <Badge className="aspect-square !w-5 !h-5 !p-0 absolute -top-2 -right-2 items-center text-xs justify-center rounded-full animate-pulse">
                       {activeFilterCount}
                     </Badge>
                   )} */}
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="sm:max-w-xl max-h-[40rem] overflow-y-auto">
-                <DialogTitle className="font-semibold text-xl text-start">
-                  Filter
-                </DialogTitle>
-                <div className="grid grid-cols-1 gap-y-5 mt-4">
-                  {filterKeys.map((k) => (
-                    <FilterSelectItem key={k} keyName={k} />
-                  ))}
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-xl max-h-[40rem] overflow-y-auto">
+                  <DialogTitle className="font-semibold text-xl text-start">
+                    Filter
+                  </DialogTitle>
+                  <div className="grid grid-cols-1 gap-y-5 mt-4">
+                    {filterKeys.map((k) => (
+                      <FilterSelectItem key={k} keyName={k} />
+                    ))}
 
-                  <div className="flex gap-x-4 justify-end items-center">
-                    <Button
-                      className="rounded-full w-40"
-                      type="button"
-                      variant="outline"
-                      onClick={() => {
-                        resetValues();
-                        setDialogOpen(false);
-                      }}
-                    >
-                      Reset
-                    </Button>
-                    <Button
-                      className="rounded-full w-40"
-                      onClick={() => {
-                        setDialogOpen(false);
-                        applyFilters?.();
-                      }}
-                    >
-                      Terapkan
-                    </Button>
+                    <div className="flex gap-x-4 justify-end items-center">
+                      <Button
+                        className="rounded-full w-40"
+                        type="button"
+                        variant="outline"
+                        onClick={() => {
+                          resetValues();
+                          setDialogOpen(false);
+                        }}
+                      >
+                        Reset
+                      </Button>
+                      <Button
+                        className="rounded-full w-40"
+                        onClick={() => {
+                          setDialogOpen(false);
+                          applyFilters?.();
+                        }}
+                      >
+                        Terapkan
+                      </Button>
+                    </div>
                   </div>
-                </div>
-              </DialogContent>
-            </Dialog>
-          )}
-          {buttonAdd && (
-            <LinkButton
-              title={buttonAdd.label ?? "Tambah"}
-              link={buttonAdd.href}
-            />
-          )}
+                </DialogContent>
+              </Dialog>
+            )}
+          </div>
+          <div>
+            {buttonAdd && (
+              <LinkButton
+                title={buttonAdd.label ?? "Tambah"}
+                link={buttonAdd.href}
+              />
+            )}
+          </div>
         </div>
       </div>
       {filterTabs && (

@@ -16,12 +16,12 @@ export default function Page() {
           },
         ]}
       />
-      <div className="flex gap-6 items-center">
+      <div className="flex sm:flex-row flex-col gap-6 items-center">
         <CountCard title="Total Sarana" numOf={2} />
         <CountCard title="Total Prasarana" numOf={100} />
         <CountCard title="Total Permohonan" numOf={100} />
       </div>
-      <div className="flex gap-6">
+      <div className="flex sm:flex-row flex-col gap-6">
         <PieChartFacility />
         <PieChartFacility />
       </div>

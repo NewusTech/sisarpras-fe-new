@@ -80,7 +80,7 @@ export const MyBreadcrumb = () => {
           {items[0].title}
         </p>
       )}
-      <Breadcrumb>
+      <Breadcrumb className="sm:block hidden">
         <BreadcrumbList className="!gap-y-0">
           {items.length === 0 ? (
             <>

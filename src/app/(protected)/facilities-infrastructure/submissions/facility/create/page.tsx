@@ -67,14 +67,14 @@ const Page = () => {
           },
         ]}
       />
-      <Card className="space-y-6">
+      <Card className="space-y-3 sm:space-y-6">
         <CardHeader
           title="Tambah Permohonan Sarana"
           route="/facilities-infrastructure/submissions?tabs=facilities"
         />
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
-            <div className="grid gap-4 md:grid-cols-2">
+            <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
               <CustomFormInput<FacilitySubmissionPayload>
                 name="name"
                 label="Nama Sarana"
@@ -114,11 +114,12 @@ const Page = () => {
                 placeholder="Masukkan Estimasi Anggaran"
                 required
               />
+            </div>
+            <div className="grid gap-4 grid-cols-1 mt-4">
               <CustomFormTextArea<FacilitySubmissionPayload>
                 name="reason"
                 label="Alasan Pengajuan"
                 placeholder="Masukkan Alasan Pengajuan"
-                className="col-span-2"
                 required
               />
               <CustomFormDragAndDrop<FacilitySubmissionPayload>
@@ -127,7 +128,6 @@ const Page = () => {
                 maxFiles={5}
                 maxSize={5}
                 acceptedFileTypes={["application/pdf"]}
-                className="col-span-2"
               />
               <CustomFormDragAndDrop<FacilitySubmissionPayload>
                 label="Unggah Dokumentasi"
@@ -135,11 +135,10 @@ const Page = () => {
                 maxFiles={5}
                 maxSize={5}
                 required
-                className="col-span-2"
               />
             </div>
             <Separator className="my-6" />
-            <div className=" flex justify-end gap-2">
+            <div className="flex justify-center sm:justify-end gap-2">
               <Button className="rounded-full">Ajukan Permohonan</Button>
             </div>
           </form>

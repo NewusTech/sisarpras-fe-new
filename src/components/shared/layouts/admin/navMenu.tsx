@@ -18,10 +18,10 @@ export default function NavMenu() {
   return (
     <div className="ml-auto flex items-center gap-x-3 md:gap-x-6">
       <NotificationMenu />
-      <ModeToggle />
+      {/* <ModeToggle /> */}
       <DropdownMenu>
         <DropdownMenuTrigger className="flex gap-x-4 text-sm md:text-base">
-          <div className="font-semibold text-end">
+          <div className="font-semibold text-end hidden sm:block">
             <p className="line-clamp-1">{user?.name ?? "User"}</p>
             <p className="font-normal text-sm line-clamp-1">
               {user?.role?.name ?? "Villager"}

@@ -35,10 +35,7 @@ const ModalImage = ({
           height={height}
           alt={name}
           src={src ?? "/assets/images/default-image.webp"}
-          className={clsx(
-            "md:w-60 h-full object-contain rounded-md",
-            className
-          )}
+          className={clsx("md:w-60 object-contain rounded-md", className)}
         />
       </DialogTrigger>
       <DialogContent className="max-w-lg">

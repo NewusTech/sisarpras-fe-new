@@ -44,9 +44,9 @@ const chartConfig = {
 
 export function LineChartSubmission() {
   return (
-    <Card>
+    <Card className="sm:p-6 p-0">
       <CardHeader className="items-center">
-        <CardTitle className="text-lg mb-3">Permohonan</CardTitle>
+        <CardTitle className="text-lg sm:mb-3">Permohonan</CardTitle>
         <CardDescription className="text-black">
           January - Juni 2024
         </CardDescription>
@@ -57,7 +57,7 @@ export function LineChartSubmission() {
             accessibilityLayer
             data={chartData}
             margin={{
-              left: 12,
+              left: -20,
               right: 12,
             }}
           >
@@ -86,7 +86,7 @@ export function LineChartSubmission() {
             />
             <ChartLegend
               content={<ChartLegendContent />}
-              className="-translate-y-2 gap-10 text-nowrap w-fit mt-6"
+              className="-translate-y-2 gap-10 text-nowrap w-fit mt-6 ml-6"
             />
           </LineChart>
         </ChartContainer>

@@ -100,7 +100,10 @@ export function CustomFormInput<T extends FieldValues = FieldValues>({
                 <Input
                   type={showPassword ? "text" : type}
                   placeholder={placeholder}
-                  className={cn("bg-card", isSecureInput && inputClassName)}
+                  className={cn(
+                    "bg-card placeholder:text-sm",
+                    isSecureInput && inputClassName
+                  )}
                   disabled={disabled}
                   readOnly={readOnly}
                   maxLength={maxLength}

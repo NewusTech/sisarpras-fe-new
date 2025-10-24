@@ -40,8 +40,10 @@ const CardHeader = ({
           <Button variant="ghost" onClick={handleBack}>
             <ArrowLeft />
           </Button>
-          <TitleHeader title={title} />
-          {status && <CustomBadge status={status} />}
+          <div className="flex sm:flex-row flex-col sm:gap-4 sm:items-center">
+            <TitleHeader title={title} />
+            {status && <CustomBadge status={status} />}
+          </div>
         </div>
         {children}
       </div>

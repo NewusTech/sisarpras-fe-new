@@ -50,10 +50,12 @@ const chartConfig = {
 
 export function PieChartFacility() {
   return (
-    <Card className="flex flex-col w-full">
-      <CardHeader className="items-start pb-0 flex justify-between flex-row gap-5 space-y-0">
-        <div>
-          <CardTitle className="text-lg leading-3 mb-3">Total Sarana</CardTitle>
+    <Card className="flex flex-col w-full p-0 sm:p-6">
+      <CardHeader className="items-start pb-0 flex justify-between flex-col sm:flex-row gap-5 space-y-0">
+        <div className="w-full text-center sm:w-fit sm:text-left">
+          <CardTitle className="text-lg leading-3 sm:mb-3">
+            Total Sarana
+          </CardTitle>
           <CardDescription className="text-nowrap text-black">
             Januari - Juni 2024
           </CardDescription>
@@ -67,14 +69,14 @@ export function PieChartFacility() {
       <CardContent className="flex-1 pb-0">
         <ChartContainer
           config={chartConfig}
-          className="mx-auto aspect-square w-[30rem] max-h-[300px] "
+          className="mx-auto aspect-square sm:w-[30rem] max-h-[300px] "
         >
           <PieChart>
             <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
             <Pie data={chartData} dataKey="value" stroke="0" />
             <ChartLegend
               content={<ChartLegendContent nameKey="condition" />}
-              className="-translate-y-2  gap-2 *:basis-1/4 *:justify-center text-nowrap"
+              className="-translate-y-2 flex-wrap sm:flex-nowrap gap-2 *:basis-1/4 *:justify-center text-nowrap"
             />
           </PieChart>
         </ChartContainer>

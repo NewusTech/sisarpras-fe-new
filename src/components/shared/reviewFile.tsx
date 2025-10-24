@@ -6,7 +6,7 @@ const ReviewFile = ({ src }: { src: string }) => {
   const fileName = src.split("/").pop();
   return (
     <div className="border shadow-sm flex justify-between items-center p-3 rounded-lg">
-      <p>{fileName ?? "-"}</p>
+      <p className="line-clamp-1">{fileName ?? "-"}</p>
       <div className="flex gap-4 items-center">
         <Link href={src} target="_blank" className="hover:text-primary">
           <Eye />

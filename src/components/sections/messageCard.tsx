@@ -1,5 +1,4 @@
 import WarningIcon from "@/assets/icons/warningIcon";
-import ValueLabel from "../shared/valueLabel";
 import { formatDate } from "@/lib/utils";
 
 interface MessageCardProps {
@@ -9,17 +8,15 @@ interface MessageCardProps {
 }
 const MessageCard = ({ message, date, verifiedBy }: MessageCardProps) => {
   return (
-    <div className="p-4 bg-warning-100 text-warning-500 rounded-md flex gap-2">
-      <WarningIcon />
+    <div className="sm:p-4 p-2 sm:text-base text-sm bg-warning-100 text-warning-500 rounded-md flex gap-2">
+      <div>
+        <WarningIcon />
+      </div>
       <div className="-mt-1">
         <h3 className="font-semibold">Pesan Admin Sekolah</h3>
         <p>{message ?? "-"}</p>
-        <ValueLabel
-          orientation="horizontal"
-          labelClassName="text-warning-500 w-5"
-          label="Oleh"
-          value={`: ${verifiedBy ?? "Admin Sekolah"} | ${formatDate(date)}`}
-        />
+        <br />
+        <p>Oleh {`: ${verifiedBy ?? "Admin Sekolah"} | ${formatDate(date)}`}</p>
       </div>
     </div>
   );

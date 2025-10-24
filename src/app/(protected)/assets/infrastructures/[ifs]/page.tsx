@@ -3,6 +3,7 @@
 import { Filter, FilterSelect } from "@/components/filters";
 import { useGetInfrastructuresAssets } from "@/components/parts/assets/infrastructures/api";
 import { listItemByInfrastructureColumns } from "@/components/parts/assets/infrastructures/columns";
+import ConditionLegend from "@/components/sections/conditionLegend";
 import ReviewDetailModal from "@/components/sections/infrastructure/reviewDetailModal";
 import { BreadcrumbSetItem } from "@/components/shared/layouts/myBreadcrumb";
 import TitleHeader from "@/components/shared/title";
@@ -66,30 +67,28 @@ const Page = () => {
                 displayItems
                 showPagination={false}
               />
-              <section className="flex items-center gap-10">
-                <div className="flex items-center gap-1">
-                  <Dot strokeWidth={18} className="text-primary" />
-                  <span>Baik = {infrastructureCount?.GOOD}</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <Dot strokeWidth={18} className="text-warning-800" />
-                  <span>
-                    Rusak Ringan = {infrastructureCount?.MINOR_DAMAGE}
-                  </span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <Dot strokeWidth={18} className="text-warning" />
-                  <span>
-                    Rusak Sedang = {infrastructureCount?.MODERATE_DAMAGE}
-                  </span>
-                </div>
-
-                <div className="flex items-center gap-1">
-                  <Dot strokeWidth={18} className="text-error" />
-                  <span>Rusak Berat = {infrastructureCount?.MAJOR_DAMAGE}</span>
-                </div>
+              <section className="flex lg:flex-row flex-col lg:items-center lg:gap-10 gap-2">
+                <ConditionLegend
+                  label="Baik"
+                  color="text-primary"
+                  value={infrastructureCount?.GOOD}
+                />
+                <ConditionLegend
+                  label="Rusak Ringan"
+                  color="text-warning-800"
+                  value={infrastructureCount?.MINOR_DAMAGE}
+                />
+                <ConditionLegend
+                  label="Rusak Sedang"
+                  color="text-warning"
+                  value={infrastructureCount?.MODERATE_DAMAGE}
+                />
+                <ConditionLegend
+                  label="Rusak Berat"
+                  color="text-error"
+                  value={infrastructureCount?.MAJOR_DAMAGE}
+                />
               </section>
-
               <Pagination
                 displayItems
                 totalItems={infrastructurePagination?.total_items ?? 0}

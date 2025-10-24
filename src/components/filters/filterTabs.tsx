@@ -57,7 +57,7 @@ export default function FilterTabs<T extends Record<string, any>>({
                 key={tab.value}
                 onClick={() => setValue(name as string, tab.value, mode)}
                 className={clsx(
-                  "text-black font-normal rounded-none border-gray-400 px-5 pt-2 py-1.5 text-base min-w-[12%] relative"
+                  "text-black font-normal rounded-none border-gray-400 sm:px-5 px-2 pt-2 py-1.5 text-sm sm:text-base min-w-[12%] relative"
                 )}
               >
                 <span

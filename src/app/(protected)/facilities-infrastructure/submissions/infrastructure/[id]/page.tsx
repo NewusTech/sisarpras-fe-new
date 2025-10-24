@@ -39,7 +39,7 @@ const Page = () => {
           },
         ]}
       />
-      <Card className="space-y-6">
+      <Card className="sm:space-y-6 space-y-3">
         <CardHeader
           title={`${detail?.name}`}
           status={detail?.status}
@@ -52,7 +52,7 @@ const Page = () => {
             date={detail?.approvedAt}
           />
         )}
-        <h1 className="font-normal text-lg">Detail Informasi</h1>
+        <h1 className="font-normal sm:text-lg">Detail Informasi</h1>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <ValueLabel label="No Permohonan" value={detail?.id} />
           <ValueLabel
@@ -69,10 +69,11 @@ const Page = () => {
           />
           <ValueLabel label="Keterangan" value={detail?.description} />
           <ValueLabel label="Alasan Permohonan" value={detail?.reason} />
+        </div>
+        <div className="grid grid-cols-1 gap-4">
           <ValueLabel
             label="Estimasi Anggaran"
             value={formatCurrency(detail?.estimateBudget)}
-            className="col-span-2"
           />
           <ValueLabel
             label="Dokumen Pendukung"
@@ -83,19 +84,17 @@ const Page = () => {
                 ))}
               </div>
             }
-            className="col-span-2"
           />
 
           <ValueLabel
             label="Dokumentasi"
             value={
-              <div>
+              <div className="flex flex-wrap gap-3">
                 {detail?.documentation?.map((item, index) => (
-                  <ModalImage key={index} src={item} />
+                  <ModalImage key={index} src={item} className="w-32" />
                 ))}
               </div>
             }
-            className="col-span-2"
           />
         </div>
       </Card>

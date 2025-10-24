@@ -1,7 +1,7 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import Link from "next/link";
-import React from "react";
 
 interface Props {
   title: string;
@@ -12,7 +12,8 @@ const LinkButton = (props: Props) => {
     <Link href={props.link ?? "/-"} className="flex-grow">
       <Button className="rounded-full w-fit">
         <Plus />
-        {props.title ?? "Tambah"}
+        <span className="hidden sm:inline-flex">{props.title ?? "Tambah"}</span>
+        <span className="inline-flex sm:hidden">Tambah</span>
       </Button>
     </Link>
   );

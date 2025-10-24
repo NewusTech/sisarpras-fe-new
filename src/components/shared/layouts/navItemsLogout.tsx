@@ -14,7 +14,7 @@ export default function NavItemsLogout() {
 
   const logout = () => {
     myAlert
-      .confirm("Logout", "Yakin ingin keluar", "Logoout")
+      .confirm("Log Out", "Yakin ingin keluar", "Log Out")
       .then(async (res) => {
         if (res) {
           logoutMutation.mutate(undefined, {

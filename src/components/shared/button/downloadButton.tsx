@@ -20,7 +20,7 @@ const DownloadButton = (props: UnduhProps) => {
       variant="outline"
       onClick={handleDownload}
       disabled={isLoading}
-      className="flex gap-2 items-center rounded-full sm:w-40 w-20"
+      className="flex gap-2 items-center rounded-full sm:w-40 w-12 h-8 sm:h-10"
     >
       {isLoading ? (
         <span className="animate-spin">

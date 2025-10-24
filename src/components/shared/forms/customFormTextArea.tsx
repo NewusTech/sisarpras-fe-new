@@ -68,7 +68,7 @@ export function CustomFormTextArea<T extends FieldValues = FieldValues>({
             <Textarea
               placeholder={placeholder}
               className={cn(
-                "bg-card rounded-xl",
+                "bg-card rounded-xl placeholder:text-sm",
                 textareaClassName,
                 isOverLimit &&
                   "border-destructive focus-visible:ring-destructive"
