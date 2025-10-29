@@ -19,8 +19,8 @@ export const access: AccessRule = {
 const Page = () => {
   const searchParams = useSearchParams();
   const { data } = useGetInfrastructuresAssets(searchParams.toString());
-  const infrastructureData = data?.data.paginateData.items || [];
-  const infrastructurePagination = data?.data.paginateData;
+  const infrastructureData = data?.data.items || [];
+  const infrastructurePagination = data?.data;
   return (
     <section>
       <BreadcrumbSetItem

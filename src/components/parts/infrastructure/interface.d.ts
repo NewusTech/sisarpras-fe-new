@@ -106,6 +106,8 @@ export interface DetailInfrastructureResponse {
   supportingDocument: string[];
   documentation: string[];
   infrastructureId: number;
+  gradeName: string;
+  groupName: string;
   status: string;
   creatorId: number;
   approvedBy: any;

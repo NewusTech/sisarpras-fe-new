@@ -5,7 +5,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { createBaseColumns } from "../../baseColumn";
 import {
   InfrastructureAssetsByCategoryResponse,
-  ListInfrastructureAssetsPaginateResponse,
+  ListInfrastructureAssetsResponse,
 } from "./interface";
 
 export const infrastructureAssetsColumns: ColumnDef<InfrastructureAssetsByCategoryResponse>[] =
@@ -28,9 +28,9 @@ export const infrastructureAssetsColumns: ColumnDef<InfrastructureAssetsByCatego
     },
   ];
 
-export const listItemByInfrastructureColumns: ColumnDef<ListInfrastructureAssetsPaginateResponse>[] =
+export const listItemByInfrastructureColumns: ColumnDef<ListInfrastructureAssetsResponse>[] =
   [
-    ...createBaseColumns<ListInfrastructureAssetsPaginateResponse>(),
+    ...createBaseColumns<ListInfrastructureAssetsResponse>(),
 
     {
       header: "ID",

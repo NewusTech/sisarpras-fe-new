@@ -1,7 +1,10 @@
 "use client";
 
 import { Filter, FilterSelect } from "@/components/filters";
-import { useGetInfrastructuresAssets } from "@/components/parts/assets/infrastructures/api";
+import {
+  useGetCountInfrastructuresByCondition,
+  useGetInfrastructuresAssets,
+} from "@/components/parts/assets/infrastructures/api";
 import { listItemByInfrastructureColumns } from "@/components/parts/assets/infrastructures/columns";
 import ConditionLegend from "@/components/sections/conditionLegend";
 import ReviewDetailModal from "@/components/sections/infrastructure/reviewDetailModal";
@@ -11,7 +14,6 @@ import DataTable from "@/components/table/dataTable";
 import Pagination from "@/components/table/pagination";
 import { Card } from "@/components/ui/card";
 import { useConditionOptions } from "@/hooks/useSelect";
-import { Dot } from "lucide-react";
 import { useParams, useSearchParams } from "next/navigation";
 
 const Page = () => {
@@ -22,9 +24,13 @@ const Page = () => {
   const { data } = useGetInfrastructuresAssets(
     `categoryId=${ifs}${params ? `&${params}` : ""}`
   );
-  const infrastructureData = data?.data.paginateData.items || [];
-  const infrastructurePagination = data?.data.paginateData;
-  const infrastructureCount = data?.data.countByCondition;
+  const { data: infrastructureCoditionCount } =
+    useGetCountInfrastructuresByCondition(
+      `categoryId=${ifs}${params ? `&${params}` : ""}`
+    );
+  const infrastructureData = data?.data.items || [];
+  const infrastructurePagination = data?.data;
+  const infrastructureCount = infrastructureCoditionCount?.data;
   const categoryName = infrastructureData[0]?.category?.name;
 
   const infrastructureDataById = infrastructureData.find(

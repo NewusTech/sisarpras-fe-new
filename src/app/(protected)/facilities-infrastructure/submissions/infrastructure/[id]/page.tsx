@@ -61,6 +61,12 @@ const Page = () => {
           />
           <ValueLabel label="Nama Ruangan" value={detail?.name} />
           <ValueLabel label="Jenis Prasarana" value={detail?.category.name} />
+          {detail?.category.id === 1 && (
+            <>
+              <ValueLabel label="Jenis Tingkat" value={detail?.gradeName} />
+              <ValueLabel label="Jenis Golongan" value={detail?.groupName} />
+            </>
+          )}
           <ValueLabel label="Jumlah" value={detail?.quantity} />
           <ValueLabel label="Rencanan Total Luas" value={detail?.totalArea} />
           <ValueLabel

@@ -1,4 +1,4 @@
-import { ListInfrastructureAssetsPaginateResponse } from "@/components/parts/assets/infrastructures/interface";
+import { ListInfrastructureAssetsResponse } from "@/components/parts/assets/infrastructures/interface";
 import ModalImage from "@/components/shared/image/modalImage";
 import ValueLabel from "@/components/shared/valueLabel";
 import {
@@ -12,7 +12,7 @@ import { useModalQuery } from "@/hooks/useModalQuery";
 const ReviewDetailModal = ({
   data,
 }: {
-  data: ListInfrastructureAssetsPaginateResponse | undefined;
+  data: ListInfrastructureAssetsResponse | undefined;
 }) => {
   const { isOpen, closeModal } = useModalQuery("detail-item");
   return (

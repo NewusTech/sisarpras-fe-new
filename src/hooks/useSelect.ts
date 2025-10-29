@@ -11,7 +11,7 @@ export const useInfrastructureOptions = () => {
   const { data } = useGetInfrastructuresAssets();
 
   const options =
-    data?.data.paginateData?.items?.map((item) => ({
+    data?.data?.items?.map((item) => ({
       label: item.name.trim(),
       value: item.id.toString(),
     })) || [];

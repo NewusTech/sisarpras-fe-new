@@ -1,36 +1,51 @@
 export interface ListInfrastructureAssetsResponse {
-  paginateData: PaginateData;
-  countByCondition: CountByCondition;
-}
-
-export interface PaginateData {
-  total_items: number;
-  total_pages: number;
-  current_page: number;
-  per_page: number;
-  items: ListInfrastructureAssetsPaginateResponse[];
-  links: Links;
-}
-
-export interface ListInfrastructureAssetsPaginateResponse {
   id: number;
   name: string;
   code: string;
-  area: any;
+  area: string;
   condition: string;
+  photo: any;
   categoryId: number;
   schoolId: number;
+  periodeId: number;
+  academicYearId: number;
   createdAt: string;
   updatedAt: string;
   deletedAt: any;
   category: Category;
+  academicYear: AcademicYear;
+  periode: Periode;
   school: School;
 }
 
 export interface Category {
   id: number;
   name: string;
+  prefixCode: string;
+  isClassRoom: boolean;
   description: string;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: any;
+}
+
+export interface AcademicYear {
+  id: number;
+  name: string;
+  startDate: string;
+  endDate: string;
+  isActive: boolean;
+  semester: string;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: any;
+}
+
+export interface Periode {
+  id: number;
+  name: string;
+  startDate: string;
+  endDate: string;
   createdAt: string;
   updatedAt: string;
   deletedAt: any;
@@ -40,11 +55,6 @@ export interface School {
   id: number;
   name: string;
   npsn: string;
-}
-
-export interface Links {
-  prev: any;
-  next: any;
 }
 
 export interface CountByCondition {

@@ -4,15 +4,15 @@ import ActionOption from "@/components/table/actionOption";
 import { formatDate } from "@/lib/utils";
 import { ColumnDef } from "@tanstack/react-table";
 import { createBaseColumns } from "../../baseColumn";
-import { ListInfrastructureAssetsPaginateResponse } from "../infrastructures/interface";
+import { ListInfrastructureAssetsResponse } from "../infrastructures/interface";
 import {
   FacilitiesAssetsByCategoryResponse,
-  ListFacilitiesAssetsPaginateResponse,
+  ListFacilitiesAssetsResponse,
 } from "./interface";
 
-export const facilityAssetsColumns: ColumnDef<ListInfrastructureAssetsPaginateResponse>[] =
+export const facilityAssetsColumns: ColumnDef<ListInfrastructureAssetsResponse>[] =
   [
-    ...createBaseColumns<ListInfrastructureAssetsPaginateResponse>(),
+    ...createBaseColumns<ListInfrastructureAssetsResponse>(),
 
     {
       header: "Nama Ruang Kelas",
@@ -54,9 +54,9 @@ export const facilitiesByRoomColumns = (
   },
 ];
 
-export const listItemByFacilitiesColumns: ColumnDef<ListFacilitiesAssetsPaginateResponse>[] =
+export const listItemByFacilitiesColumns: ColumnDef<ListFacilitiesAssetsResponse>[] =
   [
-    ...createBaseColumns<ListFacilitiesAssetsPaginateResponse>(),
+    ...createBaseColumns<ListFacilitiesAssetsResponse>(),
     {
       header: "Tanggal Penerimaan",
       cell: ({ row }) => <div>{formatDate(row.original.createdAt)}</div>,

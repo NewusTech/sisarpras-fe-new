@@ -1,57 +1,63 @@
-import { Infrastructure } from "../../facilities/interface";
-
 export interface ListFacilitiesAssetsResponse {
-  paginateData: PaginateData;
-  countByCondition: CountByCondition;
-}
-
-export interface PaginateData {
-  total_items: number;
-  total_pages: number;
-  current_page: number;
-  per_page: number;
-  items: ListFacilitiesAssetsPaginateResponse[];
-  links: Links;
-}
-
-export interface ListFacilitiesAssetsPaginateResponse {
   id: number;
-  facilityNameId?: number;
+  facilityNameId: number;
   code: string;
-  infrastructureId: any;
-  infrastructure: Infrastructure;
+  infrastructureId: number;
   condition: string;
   photo: any;
   categoryId: number;
   schoolId: number;
-  periodeId: any;
-  academicYearId: any;
+  periodeId: number;
+  academicYearId: number;
   createdAt: string;
   updatedAt: string;
-  facilityName: Facility;
   deletedAt: any;
   category: Category;
-  academicYear: any;
-  periode: any;
+  facilityName: FacilityName;
+  academicYear: AcademicYear;
+  periode: Periode;
+  infrastructure: Infrastructure;
   school: School;
-}
-
-export interface Infrastructure {
-  name: string;
 }
 
 export interface Category {
   id: number;
   name: string;
-  prefixCode: any;
+  prefixCode: string;
   description: string;
   createdAt: string;
   updatedAt: string;
   deletedAt: any;
 }
 
-export interface Facility {
+export interface FacilityName {
   id: number;
+  name: string;
+}
+
+export interface AcademicYear {
+  id: number;
+  name: string;
+  startDate: string;
+  endDate: string;
+  isActive: boolean;
+  semester: string;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: any;
+}
+
+export interface Periode {
+  id: number;
+  name: string;
+  startDate: string;
+  endDate: string;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: any;
+}
+
+export interface Infrastructure {
   name: string;
 }
 
@@ -59,11 +65,6 @@ export interface School {
   id: number;
   name: string;
   npsn: string;
-}
-
-export interface Links {
-  prev: any;
-  next: any;
 }
 
 export interface CountByCondition {

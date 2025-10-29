@@ -1,7 +1,10 @@
 "use client";
 
 import { Filter, FilterSelect } from "@/components/filters";
-import { useGetFacilitiesAssets } from "@/components/parts/assets/facilites/api";
+import {
+  useGetCountFacilitiesByCondition,
+  useGetFacilitiesAssets,
+} from "@/components/parts/assets/facilites/api";
 import { listItemByFacilitiesColumns } from "@/components/parts/assets/facilites/columns";
 import ConditionLegend from "@/components/sections/conditionLegend";
 import ReviewDetailModal from "@/components/sections/facility/reviewDetailModal";
@@ -15,7 +18,6 @@ import {
   useConditionOptions,
   useGetAcademicYearOptions,
 } from "@/hooks/useSelect";
-import { Dot } from "lucide-react";
 import { useParams, useSearchParams } from "next/navigation";
 
 const Page = () => {
@@ -24,9 +26,11 @@ const Page = () => {
   const { room, fs } = useParams();
   const defaultsearchParams = `facilityNameId=${fs}&categoryId=${room}`;
   const { data } = useGetFacilitiesAssets(defaultsearchParams);
-  const facilitiesData = data?.data.paginateData.items || [];
-  const facilitiesPagination = data?.data.paginateData;
-  const facilitiesCount = data?.data.countByCondition;
+  const { data: facilityConditionCount } =
+    useGetCountFacilitiesByCondition(defaultsearchParams);
+  const facilitiesData = data?.data.items || [];
+  const facilitiesPagination = data?.data;
+  const facilitiesCount = facilityConditionCount?.data;
   const facilityById = facilitiesData.find((item) => item.id === Number(id));
   const academicYearOptions = useGetAcademicYearOptions();
 
