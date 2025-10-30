@@ -16,6 +16,11 @@ import { Card } from "@/components/ui/card";
 import { useConditionOptions } from "@/hooks/useSelect";
 import { useParams, useSearchParams } from "next/navigation";
 
+export const access: AccessRule = {
+  permissions: [""],
+  roles: ["Teknisi Sistem"],
+};
+
 const Page = () => {
   const searchParams = useSearchParams();
   const id = searchParams.get("modal")?.split(":")[1];

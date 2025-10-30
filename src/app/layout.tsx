@@ -56,21 +56,19 @@ export default async function RootLayout(
         </Script>
       </head>
       <body className={cn(poppins.className, "scroll-smooth")}>
-        <ThemeProvider>
-          <QueryProvider>
-            <NextTopLoader showSpinner={false} color="#475D37" />
-            <FilterRegistryProvider>
-              <Suspense>
-                <ServiceWorkerWarp>
-                  <Filter>
-                    <ImageProvider>{children}</ImageProvider>
-                  </Filter>
-                </ServiceWorkerWarp>
-                <NetInfo />
-              </Suspense>
-            </FilterRegistryProvider>
-          </QueryProvider>
-        </ThemeProvider>
+        {/* <ThemeProvider> */}
+        <QueryProvider>
+          <NextTopLoader showSpinner={false} color="#475D37" />
+          <FilterRegistryProvider>
+            <Suspense>
+              <ServiceWorkerWarp>
+                <ImageProvider>{children}</ImageProvider>
+              </ServiceWorkerWarp>
+              <NetInfo />
+            </Suspense>
+          </FilterRegistryProvider>
+        </QueryProvider>
+        {/* </ThemeProvider> */}
         {/* GTM NoScript */}
         <noscript>
           <iframe

@@ -9,6 +9,7 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 
@@ -40,7 +41,7 @@ export const useFilterContext = (opts?: {
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // ✅ jalan sekali waktu mount
+  }, []);
 
   return ctx;
 };
@@ -64,10 +65,12 @@ export const Filter = ({
     ...initialValues,
     ...query,
   });
-
   const [tempValues, setTempValues] = useState<Record<string, any>>({});
-
   const debouncedValues = useDebounce({ value: values, delay: 400 });
+
+  // ✅ Tambahkan flag biar ga langsung push pas page baru load
+  const isInitialMount = useRef(true);
+  const lastPath = useRef(pathname);
 
   const pushToUrl = useCallback(
     (val: Record<string, any>) => {
@@ -85,17 +88,25 @@ export const Filter = ({
     [pathname, router]
   );
 
-  // Auto mode jalan sendiri
+  // ✅ Mode auto tapi jangan jalan di first render atau ketika pindah halaman
   useEffect(() => {
-    if (mode === "auto") pushToUrl(debouncedValues);
-  }, [debouncedValues, mode, pushToUrl]);
+    if (mode !== "auto") return;
+
+    if (isInitialMount.current || lastPath.current !== pathname) {
+      isInitialMount.current = false;
+      lastPath.current = pathname;
+      return; // ⛔ skip push pertama / ganti halaman
+    }
+
+    pushToUrl(debouncedValues);
+  }, [debouncedValues, mode, pushToUrl, pathname]);
 
   const applyFilters = useCallback(() => {
     const merged = { ...values, ...tempValues };
-    // cek apakah semua kosong → reset
     const allEmpty = Object.values(merged).every(
       (v) => v === undefined || v === "" || v === null
     );
+
     if (allEmpty) {
       setValues(initialValues);
       setTempValues({});
@@ -115,7 +126,7 @@ export const Filter = ({
         setValues((prev) => {
           if (isEmpty) {
             const next = { ...prev };
-            delete next[key]; // ✅ cuma hapus field itu
+            delete next[key];
             return next;
           }
           return { ...prev, [key]: value };
@@ -124,7 +135,7 @@ export const Filter = ({
         setTempValues((prev) => {
           if (isEmpty) {
             const next = { ...prev };
-            delete next[key]; // ✅ cuma hapus field itu
+            delete next[key];
             return next;
           }
           return { ...prev, [key]: value };
@@ -143,20 +154,14 @@ export const Filter = ({
   const activeFilterCount = useMemo(() => {
     return Object.entries(values).filter(([key, v]) => {
       const initVal = initialValues[key];
-
-      // kosong → skip
       const isEmpty =
         v === undefined ||
         v === null ||
         v === "" ||
         (Array.isArray(v) && v.length === 0);
-
       if (isEmpty) return false;
-
-      // sama dengan initial value → skip
       if (JSON.stringify(v) === JSON.stringify(initVal)) return false;
-
-      return true; // ✅ hanya yang aktif & sudah apply
+      return true;
     }).length;
   }, [values, initialValues]);
 
@@ -184,7 +189,6 @@ export const Filter = ({
   useEffect(() => {
     setValues((prev) => {
       const next = { ...initialValues, ...prev };
-      // jangan update kalau sama → biar gak infinite loop
       if (JSON.stringify(prev) === JSON.stringify(next)) return prev;
       return next;
     });

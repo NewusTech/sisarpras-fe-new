@@ -69,3 +69,12 @@ type AreaProperties = {
   kd_kecamatan: number;
   nm_kecamatan: string;
 };
+
+type notificationType =
+  | "messageFormDeveloper"
+  | "requestFacility"
+  | "requestInfrastructure"
+  | "submissionFacility"
+  | "submissionInfrastructure"
+  | "distributionFacility"
+  | "distributionInfrastructure";

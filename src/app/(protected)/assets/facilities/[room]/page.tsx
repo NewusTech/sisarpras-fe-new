@@ -11,6 +11,11 @@ import { Card } from "@/components/ui/card";
 import { useParams, useSearchParams } from "next/navigation";
 import React from "react";
 
+export const access: AccessRule = {
+  permissions: [""],
+  roles: ["Teknisi Sistem"],
+};
+
 const Page = () => {
   const { room } = useParams();
   const searchParams = useSearchParams();

@@ -6,6 +6,11 @@ import { PieChartFacility } from "@/components/sections/dashboard/pieChartFacili
 import { BreadcrumbSetItem } from "@/components/shared/layouts/myBreadcrumb";
 import React from "react";
 
+export const access: AccessRule = {
+  permissions: [""],
+  roles: ["Teknisi Sistem", "Admin Sekolah", "Kepala Sekolah"],
+};
+
 export default function Page() {
   return (
     <div className="space-y-6">

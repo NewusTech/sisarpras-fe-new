@@ -12,6 +12,7 @@ import { useProfile } from "@/store/userStore";
 import Link from "next/link";
 import NotificationMenu from "./notificationMenu";
 import { ModeToggle } from "@/components/sections/landing/modeToggle";
+import Accounts from "./accounts";
 
 export default function NavMenu() {
   const { user } = useProfile();
@@ -36,21 +37,7 @@ export default function NavMenu() {
           </Avatar>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="min-w-[20svh] mt-3">
-          <DropdownMenuItem className="flex gap-x-4 justify-end">
-            <div className="font-semibold text-end">
-              <p className="line-clamp-1">{user?.name ?? "User"}</p>
-              <p className="font-normal text-sm">
-                {user?.role?.name ?? "Villager"}
-              </p>
-            </div>
-            <Avatar>
-              <AvatarImage
-                src={user?.profilePicture ?? "https://github.com/shadcn.png"}
-                className="object-cover"
-              />
-              <AvatarFallback>{user?.name}</AvatarFallback>
-            </Avatar>
-          </DropdownMenuItem>
+          <Accounts />
           <DropdownMenuSeparator />
           <Link href={`/profile`}>
             <DropdownMenuItem>Profil</DropdownMenuItem>

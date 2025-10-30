@@ -45,6 +45,7 @@ export async function ensureWebPushSubscription({
     },
     expirationTime: sub.expirationTime,
     userAgent: navigator.userAgent,
+    appType: "Sarpras",
   };
 
   const parsed = SubscriptionSchema.safeParse(body);

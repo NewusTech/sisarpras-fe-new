@@ -13,7 +13,7 @@ import { useParams } from "next/navigation";
 
 export const access: AccessRule = {
   permissions: [""],
-  roles: ["STAFF"],
+  roles: ["Teknisi Sistem"],
 };
 
 const Page = () => {

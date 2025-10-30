@@ -12,6 +12,11 @@ import { Separator } from "@/components/ui/separator";
 import { FormProfileStore } from "@/store/formProfileStore";
 import { useProfile } from "@/store/userStore";
 
+export const access: AccessRule = {
+  permissions: [""],
+  roles: ["Teknisi Sistem"],
+};
+
 export default function Page() {
   const { edit, closeEdit, openEdit } = FormProfileStore();
   const { user } = useProfile();

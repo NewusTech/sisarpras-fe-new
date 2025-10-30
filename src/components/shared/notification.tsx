@@ -8,6 +8,20 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useToast } from "./toast/useToast";
 
+export const generateLinkNotification = (
+  refId?: number,
+  type?: notificationType
+) => {
+  switch (type) {
+    case "requestFacility":
+      return `/facilities-infrastructure/submissions/facility/${refId}`;
+    case "requestInfrastructure":
+      return `/facilities-infrastructure/submissions/infrastructure/${refId}`;
+    default:
+      return undefined;
+  }
+};
+
 export default function SocketNotificationCustom() {
   const qc = useQueryClient();
   const router = useRouter();
@@ -17,16 +31,8 @@ export default function SocketNotificationCustom() {
 
   const socket = useSocket();
 
-  const handleTo = (refId?: number, type?: "incommingLetter") => {
-    const generateLink = () => {
-      switch (type) {
-        case "incommingLetter":
-          return `/incoming-mail/physical/surat-keluar/detail/${refId}`;
-        default:
-          return undefined;
-      }
-    };
-    const link = generateLink();
+  const handleTo = (refId?: number, type?: notificationType) => {
+    const link = generateLinkNotification(refId, type);
     if (link && refId) router.push(link);
   };
 

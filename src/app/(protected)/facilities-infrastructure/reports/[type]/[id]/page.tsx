@@ -20,7 +20,7 @@ import React from "react";
 
 export const access: AccessRule = {
   permissions: [""],
-  roles: ["STAFF"],
+  roles: ["Teknisi Sistem"],
 };
 
 const Page = () => {

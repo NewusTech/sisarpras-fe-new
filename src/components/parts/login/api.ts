@@ -1,12 +1,15 @@
 import { useFormMutation } from "@/hooks/useFormMutation";
 import { sendData } from "@/services/api/fetcher";
-import { LoginData } from "@/types/interface";
 import { unsubscribeWebPush } from "../webpush/api";
-import { LoginPayload } from "./validation";
+import {
+  ForgoutPasswordPayload,
+  LoginPayload,
+  ResetPasswordPayload,
+} from "./validation";
 
 export const useLoginMutation = () => {
   return useFormMutation<
-    ApiResponse<DataObject<LoginData>>,
+    ApiResponse<DataObject<LoginResponse>>,
     Error,
     LoginPayload
   >({
@@ -24,5 +27,48 @@ export const useLogoutMutation = () => {
       return await sendData("auth/logout", {}, "DELETE");
     },
     successMessage: "Berhasil Keluar",
+    messageMode: "toast",
+  });
+};
+
+export const useForgoutMutation = () => {
+  return useFormMutation<
+    ApiResponse<DataObject<null>>,
+    Error,
+    ForgoutPasswordPayload
+  >({
+    mutationFn: async (payload) => {
+      return await sendData("reset-password/verify-email", payload, "POST");
+    },
+    successMessage: "Berhasil Mengirimkan OTP",
+  });
+};
+
+export const useVerificationOtpMutation = () => {
+  return useFormMutation<
+    ApiResponse<DataObject<{ token: string }>>,
+    Error,
+    { otp: string }
+  >({
+    mutationFn: async (payload) => {
+      return await sendData("reset-password/verify-otp", payload, "POST");
+    },
+    successMessage: "Berhasil Memverifikasi OTP",
+  });
+};
+export const useResetPasswordMutation = (token?: string) => {
+  return useFormMutation<
+    ApiResponse<DataObject<null>>,
+    Error,
+    ResetPasswordPayload
+  >({
+    mutationFn: async (payload) => {
+      return await sendData(
+        `reset-password/change-password?token=${token}`,
+        payload,
+        "PUT"
+      );
+    },
+    successMessage: "Berhasil Reset Password",
   });
 };

@@ -27,7 +27,7 @@ import { useForm } from "react-hook-form";
 
 export const access: AccessRule = {
   permissions: [""],
-  roles: ["STAFF"],
+  roles: ["Teknisi Sistem"],
 };
 
 const Page = () => {

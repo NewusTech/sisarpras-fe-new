@@ -3,6 +3,7 @@
 import GoogleIcon from "@/assets/Logo/GoogleIcon";
 import { BASE_URL } from "@/constants";
 import { useRouter } from "next/navigation";
+import { Button } from "../ui/button";
 
 const GoogleSignInButton = ({ className = "" }) => {
   const router = useRouter();
@@ -11,15 +12,13 @@ const GoogleSignInButton = ({ className = "" }) => {
   };
 
   return (
-    <button
-      className={`flex items-center justify-center gap-3 w-full py-3 px-4 bg-white rounded-full shadow-md hover:shadow-lg transition-shadow ${className}`}
+    <Button
+      type="button"
+      className={`bg-white hover:bg-slate-50 text-black`}
       onClick={handleGoogle}
     >
-      <GoogleIcon />
-      <span className="text-sub font-medium text-sm sm:text-base">
-        Lanjut dengan Google
-      </span>
-    </button>
+      <GoogleIcon /> Login Google
+    </Button>
   );
 };
 

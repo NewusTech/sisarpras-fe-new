@@ -3,7 +3,12 @@ import { twMerge } from "tailwind-merge";
 import type { Feature, Polygon as GeoJsonPolygon } from "geojson";
 import xss from "xss";
 import { id as ID } from "date-fns/locale";
-import { format } from "date-fns";
+import {
+  differenceInHours,
+  differenceInMinutes,
+  format,
+  formatDistanceToNow,
+} from "date-fns";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -42,6 +47,30 @@ export function formatErrorMessages(
       return text;
     })
     .join("\n");
+}
+
+export function formatDateHuman(date?: Date | string | number | null): string {
+  try {
+    if (!date) return "-";
+    const d = new Date(date);
+    const now = new Date();
+
+    const minutes = differenceInMinutes(now, d);
+    const hours = differenceInHours(now, d);
+
+    if (minutes < 1) {
+      return "Baru saja";
+    } else if (minutes < 60) {
+      return formatDistanceToNow(d, { addSuffix: true, locale: ID }); // ex: "3 menit yang lalu"
+    } else if (hours < 24) {
+      return formatDistanceToNow(d, { addSuffix: true, locale: ID }); // ex: "5 jam yang lalu"
+    } else {
+      return format(d, "d MMMM yyyy, HH:mm", { locale: ID }); // ex: "26 September 2025, 14:30"
+    }
+  } catch (error) {
+    console.error("Invalid date format:", error);
+    return "-";
+  }
 }
 
 /**

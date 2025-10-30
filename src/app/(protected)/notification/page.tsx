@@ -7,8 +7,9 @@ import {
 } from "@/components/parts/notification/api";
 import CardHeader from "@/components/sections/cardHeader";
 import { BreadcrumbSetItem } from "@/components/shared/layouts/myBreadcrumb";
+import { generateLinkNotification } from "@/components/shared/notification";
 import Pagination from "@/components/table/pagination";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useIsMobile } from "@/hooks/useMobile";
@@ -16,6 +17,11 @@ import { cn } from "@/lib/utils";
 import { useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { useRouter, useSearchParams } from "next/navigation";
+
+export const access: AccessRule = {
+  permissions: [""],
+  roles: ["Teknisi Sistem"],
+};
 
 const filterTab = [
   { title: "Semua", value: "" },
@@ -50,44 +56,8 @@ export default function Page() {
     );
   };
 
-  const handleTo = (
-    refId: number,
-    type:
-      | "incommingLetter"
-      | "disposition"
-      | "outgoingLetter"
-      | "verificatorLetter"
-      | "verificationStatus"
-      | "signerLetter"
-      | "signatureStatus"
-      | "visitorLetter"
-      | "audienceLetter"
-  ) => {
-    const generateLink = () => {
-      switch (type) {
-        case "incommingLetter":
-          return `/incoming-mail/physical/surat-keluar/detail/${refId}`;
-        case "disposition":
-          return `/disposition/detail/${refId}`;
-        case "outgoingLetter":
-          return `/incoming-mail/internal/all/detail/${refId}`;
-        case "verificatorLetter":
-          return `/verification/detail/${refId}`;
-        case "verificationStatus":
-          return `/verification/detail/${refId}`;
-        case "signerLetter":
-          return `/signature/detail/${refId}`;
-        case "signatureStatus":
-          return `/signature/detail/${refId}`;
-        case "visitorLetter":
-          return `/incoming-mail/visit/detail/${refId}`;
-        case "audienceLetter":
-          return `/incoming-mail/audience/detail/${refId}`;
-        default:
-          return undefined;
-      }
-    };
-    const link = generateLink();
+  const handleTo = (refId: number, type: notificationType) => {
+    const link = generateLinkNotification(refId, type);
     if (link) router.push(link);
   };
 

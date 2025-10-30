@@ -7,24 +7,28 @@ import { myAlert } from "@/lib/myAlert";
 import { LogOut } from "lucide-react";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
+import { useAccounts } from "@/hooks/useAccounts";
 
 export default function NavItemsLogout() {
+  const { activeAccount, addAccount } = useAccounts();
   const logoutMutation = useLogoutMutation();
   const router = useRouter();
 
   const logout = () => {
-    myAlert
-      .confirm("Log Out", "Yakin ingin keluar", "Log Out")
-      .then(async (res) => {
-        if (res) {
-          logoutMutation.mutate(undefined, {
-            onSuccess: () => {
-              Cookies.remove("accessToken"); // "token" adalah nama cookies Anda
-              router.push("/login");
-            },
-          });
-        }
-      });
+    if (activeAccount)
+      myAlert
+        .confirm("Logout", "Yakin ingin keluar", "Logoout")
+        .then(async (res) => {
+          if (res) {
+            logoutMutation.mutate(undefined, {
+              onSettled: () => {
+                Cookies.remove("accessToken"); // "token" adalah nama cookies Anda
+                addAccount({ ...activeAccount, token: undefined });
+                router.push("/login");
+              },
+            });
+          }
+        });
   };
   return (
     <SidebarFooter className="mb-20">

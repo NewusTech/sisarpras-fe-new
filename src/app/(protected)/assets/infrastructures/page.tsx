@@ -12,9 +12,8 @@ import { useSearchParams } from "next/navigation";
 
 export const access: AccessRule = {
   permissions: [""],
-  roles: ["STAFF"],
+  roles: ["Teknisi Sistem"],
 };
-
 const Page = () => {
   const searchParams = useSearchParams();
   const { data } = useGetInfrastructuresCountByCategory(

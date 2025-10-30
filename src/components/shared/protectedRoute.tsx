@@ -21,11 +21,11 @@ export default function ProtectedRoute({
       return true;
     }
     return (
-      decode?.name &&
+      decode?.role &&
       permissions &&
-      canAccess(path, [decode?.name], permissions)
+      canAccess(path, [decode?.role], permissions)
     );
-  }, [decode?.name, path, permissions]);
+  }, [decode?.role, path, permissions]);
 
   if (isLoading)
     return (

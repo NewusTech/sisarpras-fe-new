@@ -1,5 +1,8 @@
 import { LucideIcon } from "lucide-react";
 
+/**
+ * @deprecated
+ */
 export interface LoginData {
   email: string | null;
   name: string;

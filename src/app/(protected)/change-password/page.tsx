@@ -1,5 +1,4 @@
 "use client";
-import WarningIcon from "@/assets/icons/warningIcon";
 import WarningOutlineIcon from "@/assets/icons/warningOutlineIcon";
 import CardHeader from "@/components/sections/cardHeader";
 import { CustomFormInput } from "@/components/shared/forms/customFormInput";
@@ -8,8 +7,12 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
 import { Separator } from "@/components/ui/separator";
-import React from "react";
 import { useForm } from "react-hook-form";
+
+export const access: AccessRule = {
+  permissions: [""],
+  roles: ["Teknisi Sistem"],
+};
 
 const Page = () => {
   const form = useForm({});

@@ -96,8 +96,8 @@ self.addEventListener('push', (event) => {
   const title = payload.title || 'Notifikasi'
   const options = {
     body: payload.body,
-    icon: '/assets/icons/dprd-pali-logo.png',
-    badge: '/assets/icons/dprd-pali-logo.png',
+    icon: '/assets/images/logo.webp',
+    badge: '/assets/images/logo.webp',
     data: payload.data || {},
     requireInteraction: true,
   }

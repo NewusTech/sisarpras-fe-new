@@ -1,5 +1,6 @@
 "use client";
 
+import { Filter } from "@/components/filters";
 import NavMenu from "@/components/shared/layouts/admin/navMenu";
 import { AppSidebar } from "@/components/shared/layouts/appSidebar";
 import { MyBreadcrumb } from "@/components/shared/layouts/myBreadcrumb";
@@ -30,7 +31,9 @@ export default function ProtectedLayout({
             <NavMenu />
           </header>
           <div className="flex flex-1 flex-col gap-4 sm:p-6 p-3">
-            <ProtectedRoute>{children}</ProtectedRoute>
+            <ProtectedRoute>
+              <Filter>{children}</Filter>
+            </ProtectedRoute>
           </div>
         </SidebarInset>
       </SidebarProvider>

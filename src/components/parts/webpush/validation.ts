@@ -8,6 +8,7 @@ export const SubscriptionSchema = z.object({
   }),
   expirationTime: z.number().nullable().optional(),
   userAgent: z.string().optional(),
+  appType: z.enum(["Sarpras", "Sipakguru", "SmartSchool", "SuperAdmin", "all"]),
 });
 
 export type SubscriptionPayload = z.infer<typeof SubscriptionSchema>;

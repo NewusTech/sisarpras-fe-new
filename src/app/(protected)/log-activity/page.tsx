@@ -8,6 +8,11 @@ import DataTable from "@/components/table/dataTable";
 import { Card } from "@/components/ui/card";
 import { useSearchParams } from "next/navigation";
 
+export const access: AccessRule = {
+  permissions: [""],
+  roles: ["Teknisi Sistem"],
+};
+
 export default function Page() {
   const params = useSearchParams();
   const { data } = useGetLogMe(params.toString());
