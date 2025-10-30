@@ -39,11 +39,16 @@ const Page = () => {
 
   const { watch, handleSubmit } = form;
 
-  const isRoom = String(watch("categoryId")) === "1";
-
   const infrastructureOptions = useInfrastructuresCategoryOptions();
   const gradeOptions = useGetGradeOptions();
   const groupOptions = useGetGroupOptions();
+
+  const categoryId = watch("categoryId");
+
+  const isRoom =
+    categoryId &&
+    infrastructureOptions.find((f) => f.value == String(categoryId))
+      ?.isClassRoom;
 
   const { mutate } = useInfastructureMutation();
 

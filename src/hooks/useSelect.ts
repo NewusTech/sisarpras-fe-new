@@ -38,6 +38,7 @@ export const useInfrastructuresCategoryOptions = () => {
     data?.data?.items?.map((item) => ({
       label: item.name.trim(),
       value: item.id.toString(),
+      isClassRoom: item.isClassRoom,
     })) || [];
 
   return options;

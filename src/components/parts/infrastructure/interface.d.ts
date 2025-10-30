@@ -23,6 +23,7 @@ export interface InfrastructuresCategoryResponse {
   createdAt: string;
   updatedAt: string;
   deletedAt: any;
+  isClassRoom: boolean;
 }
 
 export interface InfrastructuresRequestResponse {
