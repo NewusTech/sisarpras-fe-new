@@ -1,6 +1,7 @@
 "use client";
 
 import EditIcon from "@/assets/icons/editIcon";
+import { useGetProfile } from "@/components/parts/users/api";
 import CardHeader from "@/components/sections/cardHeader";
 import FormFotoProfile from "@/components/sections/profile/formFotoProfile";
 import FormProfile from "@/components/sections/profile/formProfile";
@@ -8,9 +9,7 @@ import { BreadcrumbSetItem } from "@/components/shared/layouts/myBreadcrumb";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import { FormProfileStore } from "@/store/formProfileStore";
-import { useProfile } from "@/store/userStore";
 
 export const access: AccessRule = {
   permissions: [""],
@@ -19,8 +18,8 @@ export const access: AccessRule = {
 
 export default function Page() {
   const { edit, closeEdit, openEdit } = FormProfileStore();
-  const { user } = useProfile();
-
+  const { data } = useGetProfile();
+  const user = data?.data;
   const handleChangeEdit = () => {
     if (edit) {
       closeEdit();
@@ -53,10 +52,10 @@ export default function Page() {
             <FormFotoProfile />
             <div>
               <p className="font-semibold text-2xl ">{user?.name ?? "User"}</p>
-              <p className="">{user?.role.name ?? "Pegawai"}</p>
+              <p className="">{user?.employee.position ?? "Pegawai"}</p>
             </div>
             <div>
-              <Badge variant="secondary">Petugas</Badge>
+              <Badge variant="secondary">{user?.role.name}</Badge>
             </div>
           </div>
           <h1 className="font-normal text-lg">Detail Informasi</h1>

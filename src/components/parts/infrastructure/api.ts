@@ -1,11 +1,11 @@
-import { fetcher, sendData } from "@/services/api/fetcher";
-import { useQuery } from "@tanstack/react-query";
+import { useCustomQuery } from "@/hooks/useCustomQuery";
+import { useFormMutation } from "@/hooks/useFormMutation";
+import { sendData } from "@/services/api/fetcher";
 import {
   DetailInfrastructureResponse,
   InfrastructuresCategoryResponse,
   InfrastructuresRequestResponse,
 } from "./interface";
-import { useFormMutation } from "@/hooks/useFormMutation";
 import { InfrastructurePayload } from "./validation";
 
 export const useGetInfrastructuresRequest = (
@@ -15,42 +15,34 @@ export const useGetInfrastructuresRequest = (
   const endpoint = query
     ? `sarpras/infrastructure-request?${query}`
     : `sarpras/infrastructure-request`;
-  return useQuery<
+  return useCustomQuery<
     ApiResponse<DataPaginate<InfrastructuresRequestResponse>>,
     Error
   >({
     queryKey: ["useGetInfrastructuresRequest", query],
-    queryFn: async () => {
-      const response = await fetcher(endpoint);
-      return response;
-    },
+    queryUrl: endpoint,
     enabled: enable !== false,
   });
 };
 
 export const useGetInfrastructureById = (id: string) => {
-  return useQuery<ApiResponse<DataObject<DetailInfrastructureResponse>>, Error>(
-    {
-      queryKey: ["useGetInfrastructureById", id],
-      queryFn: async () => {
-        const response = await fetcher(`sarpras/infrastructure-request/${id}`);
-        return response;
-      },
-      enabled: !!id,
-    }
-  );
+  return useCustomQuery<
+    ApiResponse<DataObject<DetailInfrastructureResponse>>,
+    Error
+  >({
+    queryKey: ["useGetInfrastructureById", id],
+    queryUrl: `sarpras/infrastructure-request/${id}`,
+    enabled: !!id,
+  });
 };
 
 export const useGetInfrastructuresByCategory = () => {
-  return useQuery<
+  return useCustomQuery<
     ApiResponse<DataPaginate<InfrastructuresCategoryResponse>>,
     Error
   >({
     queryKey: ["useGetInfrastructuresByCategory"],
-    queryFn: async () => {
-      const response = await fetcher(`master/infrastructure-categories`);
-      return response;
-    },
+    queryUrl: `master/infrastructure-categories`,
   });
 };
 

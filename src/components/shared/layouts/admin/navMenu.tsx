@@ -8,14 +8,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useProfile } from "@/store/userStore";
 import Link from "next/link";
-import NotificationMenu from "./notificationMenu";
-import { ModeToggle } from "@/components/sections/landing/modeToggle";
 import Accounts from "./accounts";
+import NotificationMenu from "./notificationMenu";
+import { useGetProfile } from "@/components/parts/users/api";
 
 export default function NavMenu() {
-  const { user } = useProfile();
+  const { data } = useGetProfile();
+  const user = data?.data;
   return (
     <div className="ml-auto flex items-center gap-x-3 md:gap-x-6">
       <NotificationMenu />
@@ -30,10 +30,10 @@ export default function NavMenu() {
           </div>
           <Avatar>
             <AvatarImage
-              src={user?.profilePicture ?? "https://github.com/shadcn.png"}
+              src={user?.photos ?? "https://github.com/shadcn.png"}
               className="object-cover"
             />
-            <AvatarFallback>CN</AvatarFallback>
+            <AvatarFallback>{user?.name.slice(2)}</AvatarFallback>
           </Avatar>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="min-w-[20svh] mt-3">

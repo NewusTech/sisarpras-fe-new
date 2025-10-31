@@ -67,3 +67,14 @@ export const conditionMapping: Record<string, string> = {
   MODERATE_DEMAGE: "Rusak Sedang",
   MAJOR_DEMAGE: "Rusak Berat",
 };
+
+export const employeeStatusMapping: Record<string, string> = {
+  PERMANENT: "Tetap",
+  CONTRACT: "Kontrak",
+  HONORARY: "Honorer",
+};
+
+export const genderMapping: Record<string, string> = {
+  MALE: "Laki-laki",
+  FEMALE: "Perempuan",
+};

@@ -7,6 +7,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { conditionMapping } from "@/constants";
 import { useModalQuery } from "@/hooks/useModalQuery";
 
 const ReviewDetailModal = ({
@@ -31,10 +32,15 @@ const ReviewDetailModal = ({
             />
             <ValueLabel label="Kode" value={data?.code} />
             <ValueLabel label="Kategori" value={data?.category.name} />
-            <ValueLabel label="Kondisi" value={data?.condition} />
+            <ValueLabel
+              label="Kondisi"
+              value={conditionMapping[data?.condition ?? ""]}
+            />
           </div>
           <div>
-            <ModalImage src="https://images.unsplash.com/photo-1519865885898-a54a6f2c7eea?q=80&w=1358&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" />
+            <ModalImage
+              src={data?.photo ?? "/assets/images/default-image.webp"}
+            />
           </div>
         </section>
       </DialogContent>

@@ -1,12 +1,12 @@
+import { useCustomQuery } from "@/hooks/useCustomQuery";
 import { useFormMutation } from "@/hooks/useFormMutation";
-import { fetcher, sendData } from "@/services/api/fetcher";
-import { FacilitySubmissionPayload } from "./validation";
-import { useQuery } from "@tanstack/react-query";
+import { sendData } from "@/services/api/fetcher";
 import {
   DetailFacilityResponse,
   FacilitiesCategoryResponse,
   FacilitiesResponse,
 } from "./interface";
+import { FacilitySubmissionPayload } from "./validation";
 
 export const useFacilityMutation = () => {
   return useFormMutation<
@@ -26,35 +26,29 @@ export const useGetFacilities = (query?: string, enable?: boolean) => {
   const endpoint = query
     ? `sarpras/facility-request?${query}`
     : `sarpras/facility-request`;
-  return useQuery<ApiResponse<DataPaginate<FacilitiesResponse>>, Error>({
+  return useCustomQuery<ApiResponse<DataPaginate<FacilitiesResponse>>, Error>({
     queryKey: ["useGetFacilities", query],
-    queryFn: async () => {
-      const response = await fetcher(endpoint);
-      return response;
-    },
+    queryUrl: endpoint,
     enabled: enable !== false,
   });
 };
 
 export const useGetFacilityById = (id: string) => {
-  return useQuery<ApiResponse<DataObject<DetailFacilityResponse>>, Error>({
-    queryKey: ["useGetFacilityById", id],
-    queryFn: async () => {
-      const response = await fetcher(`sarpras/facility-request/${id}`);
-      return response;
-    },
-    enabled: !!id,
-  });
+  return useCustomQuery<ApiResponse<DataObject<DetailFacilityResponse>>, Error>(
+    {
+      queryKey: ["useGetFacilityById", id],
+      queryUrl: `sarpras/facility-request/${id}`,
+      enabled: !!id,
+    }
+  );
 };
 
 export const useGetFacilitiesCategory = () => {
-  return useQuery<ApiResponse<DataPaginate<FacilitiesCategoryResponse>>, Error>(
-    {
-      queryKey: ["useGetFacilitiesCategory"],
-      queryFn: async () => {
-        const response = await fetcher(`master/facilities-categories`);
-        return response;
-      },
-    }
-  );
+  return useCustomQuery<
+    ApiResponse<DataPaginate<FacilitiesCategoryResponse>>,
+    Error
+  >({
+    queryKey: ["useGetFacilitiesCategory"],
+    queryUrl: `master/facilities-categories`,
+  });
 };

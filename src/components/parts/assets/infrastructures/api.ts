@@ -1,5 +1,4 @@
-import { fetcher } from "@/services/api/fetcher";
-import { useQuery } from "@tanstack/react-query";
+import { useCustomQuery } from "@/hooks/useCustomQuery";
 import {
   CountByCondition,
   InfrastructureAssetsByCategoryResponse,
@@ -10,15 +9,12 @@ export const useGetInfrastructuresAssets = (query?: string) => {
   const endpoint = query
     ? `sarpras/infrastructure?${query}`
     : `sarpras/infrastructure`;
-  return useQuery<
+  return useCustomQuery<
     ApiResponse<DataPaginate<ListInfrastructureAssetsResponse>>,
     Error
   >({
     queryKey: ["useGetInfrastructuresAssets", query],
-    queryFn: async () => {
-      const response = await fetcher(endpoint);
-      return response;
-    },
+    queryUrl: endpoint,
   });
 };
 
@@ -26,15 +22,12 @@ export const useGetInfrastructuresCountByCategory = (query?: string) => {
   const endpoint = query
     ? `sarpras/infrastructure/count-category?${query}`
     : `sarpras/infrastructure/count-category`;
-  return useQuery<
+  return useCustomQuery<
     ApiResponse<DataPaginate<InfrastructureAssetsByCategoryResponse>>,
     Error
   >({
     queryKey: ["useGetInfrastructuresCountByCategory", query],
-    queryFn: async () => {
-      const response = await fetcher(endpoint);
-      return response;
-    },
+    queryUrl: endpoint,
   });
 };
 
@@ -42,11 +35,8 @@ export const useGetCountInfrastructuresByCondition = (query?: string) => {
   const endpoint = query
     ? `sarpras/infrastructure/count?${query}`
     : `sarpras/infrastructure/count`;
-  return useQuery<ApiResponse<DataObject<CountByCondition>>, Error>({
+  return useCustomQuery<ApiResponse<DataObject<CountByCondition>>, Error>({
     queryKey: ["useGetCountInfrastructuresByCondition", query],
-    queryFn: async () => {
-      const response = await fetcher(endpoint);
-      return response;
-    },
+    queryUrl: endpoint,
   });
 };

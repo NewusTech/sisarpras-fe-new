@@ -1,20 +1,19 @@
-import { useQuery } from "@tanstack/react-query";
+import { useCustomQuery } from "@/hooks/useCustomQuery";
 import {
   FacilitiesReportResponse,
   InfrastructureReportResponse,
 } from "./interface";
-import { fetcher } from "@/services/api/fetcher";
 
 export const useGetReportFacilities = (query?: string, enable?: boolean) => {
   const endpoint = query
     ? `sarpras/facility-report?${query}`
     : `sarpras/facility-report`;
-  return useQuery<ApiResponse<DataPaginate<FacilitiesReportResponse>>, Error>({
+  return useCustomQuery<
+    ApiResponse<DataPaginate<FacilitiesReportResponse>>,
+    Error
+  >({
     queryKey: ["useGetReportFacilities", query],
-    queryFn: async () => {
-      const response = await fetcher(endpoint);
-      return response;
-    },
+    queryUrl: endpoint,
     enabled: enable !== false,
   });
 };
@@ -26,15 +25,12 @@ export const useGetReportInfrastructures = (
   const endpoint = query
     ? `sarpras/infrastructure-report?${query}`
     : `sarpras/infrastructure-report`;
-  return useQuery<
+  return useCustomQuery<
     ApiResponse<DataPaginate<InfrastructureReportResponse>>,
     Error
   >({
     queryKey: ["useGetReportInfrastructures", query],
-    queryFn: async () => {
-      const response = await fetcher(endpoint);
-      return response;
-    },
+    queryUrl: endpoint,
     enabled: enable !== false,
   });
 };

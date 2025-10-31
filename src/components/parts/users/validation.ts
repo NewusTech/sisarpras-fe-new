@@ -1,3 +1,4 @@
+import { pl } from "date-fns/locale";
 import { z } from "zod";
 
 const UserValidationBase = z.object({
@@ -6,17 +7,12 @@ const UserValidationBase = z.object({
     required_error: "Gender wajib diisi",
     invalid_type_error: "Gender hanya boleh MALE atau FEMALE",
   }),
-
-  nik: z
-    .string()
-    .min(16, "NIK minimal 16 digit")
-    .max(20, "NIK maksimal 20 digit"),
-  position: z.string().min(1, "Jabatan wajib diisi"),
-  workUnit: z.string().min(1, "Unit kerja wajib diisi"),
-  phone: z.string().min(9, "Nomor HP minimal 9 digit"),
+  nip: z.string().min(1, "NIP wajib diisi"),
+  phone: z.string().min(1, "Nomor telepon wajib diisi"),
   address: z.string().min(1, "Alamat wajib diisi"),
-
-  profilePicture: z.any().nullable().optional(),
+  email: z.string().optional(),
+  place: z.string().min(1, "Tempat lahir wajib diisi"),
+  dateBirth: z.string().min(1, "Tanggal lahir wajib diisi"),
 });
 
 export const UserProfileValidation = UserValidationBase.extend({});
@@ -31,6 +27,10 @@ export const UserValidation = UserValidationBase.extend({
       invalid_type_error: "Role harus berupa angka",
     })
     .or(z.string()),
+});
+
+export const ProfilePhotoValidation = z.object({
+  photos: z.any().optional(),
 });
 
 export const UserValidationUpdate = UserValidationBase.extend({
@@ -97,6 +97,7 @@ export const ChangePinuserValidation = ChangePinBase.extend({
 // infer
 
 export type UserPayload = z.infer<typeof UserValidation>;
+export type UserPhotoPayload = z.infer<typeof ProfilePhotoValidation>;
 export type UserProfilePayload = z.infer<typeof UserProfileValidation>;
 export type ChangePasswordPayload = z.infer<typeof ChangePasswordValidation>;
 export type ChangePasswordUserPayload = z.infer<

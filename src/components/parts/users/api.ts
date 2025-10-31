@@ -2,16 +2,18 @@
 
 import { useFormMutation } from "@/hooks/useFormMutation";
 import { fetcher, sendData } from "@/services/api/fetcher";
-import { useProfile } from "@/store/userStore";
 import { APIError } from "@/types/interface";
 import { useQuery } from "@tanstack/react-query";
 import { useStore } from "zustand";
 import {
   ChangePasswordPayload,
   ChangePasswordUserPayload,
+  UserPhotoPayload,
   UserProfilePayload,
 } from "./validation";
 import { offlineFetcher } from "@/services/api/offlineFetcher";
+import { useCustomQuery } from "@/hooks/useCustomQuery";
+import { UserDetailResponse, UserProfileResponse } from "./interface";
 
 const fetchUserDetail = async (): Promise<
   ApiResponse<DataObject<UserDetailResponse>>
@@ -20,15 +22,37 @@ const fetchUserDetail = async (): Promise<
 };
 
 export const useGetUserDetail = () => {
-  const { setUser } = useStore(useProfile);
   return useQuery<ApiResponse<DataObject<UserDetailResponse>>, APIError<any>>({
     queryKey: ["useGetUserDetail"],
     queryFn: async () => {
       const response = await fetchUserDetail();
-      setUser(response.data);
       return response;
     },
     networkMode: "offlineFirst",
+  });
+};
+
+export const useGetProfile = () => {
+  return useCustomQuery<
+    ApiResponse<DataObject<UserProfileResponse>>,
+    APIError<any>
+  >({
+    queryKey: ["useGetProfile"],
+    queryUrl: `profile`,
+    refetchIntervalInBackground: true,
+  });
+};
+
+export const useUserPhotoMutation = () => {
+  return useFormMutation<
+    ApiResponse<DataObject<UserPhotoPayload>>,
+    Error,
+    UserPhotoPayload
+  >({
+    mutationFn: async (payload) => {
+      return await sendData(`profile/update-photos`, payload, "PUT", true);
+    },
+    successMessage: `Berhasil Memperbaharui Foto Profil User`,
   });
 };
 

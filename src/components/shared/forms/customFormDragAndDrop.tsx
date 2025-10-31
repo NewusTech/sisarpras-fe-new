@@ -83,7 +83,13 @@ export function CustomFormDragAndDrop<T extends FieldValues = FieldValues>({
           )}
           <FormControl>
             <FileUploadControl
-              value={field.value as unknown as File[]}
+              value={
+                Array.isArray(field.value)
+                  ? (field.value as unknown as File[]).filter(
+                      (item) => item instanceof File
+                    )
+                  : []
+              }
               onChange={(files) =>
                 setValue(
                   field.name,

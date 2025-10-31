@@ -95,7 +95,7 @@ export function CustomFormCalender<T extends FieldValues = FieldValues>({
                   variant="outline"
                   disabled={disabled}
                   className={cn(
-                    "w-full justify-between rounded-full pl-4 pr-4 py-[9px] h-10 bg-card border-input shadow-sm",
+                    "w-full justify-between rounded-full !text-black pl-4 pr-4 py-[9px] h-10 bg-card border-input shadow-sm",
                     buttonClassName
                   )}
                   aria-required={required}

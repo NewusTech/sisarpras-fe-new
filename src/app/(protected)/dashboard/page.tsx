@@ -4,11 +4,10 @@ import CountCard from "@/components/sections/dashboard/countCard";
 import { LineChartSubmission } from "@/components/sections/dashboard/lineChartSubmission";
 import { PieChartFacility } from "@/components/sections/dashboard/pieChartFacility";
 import { BreadcrumbSetItem } from "@/components/shared/layouts/myBreadcrumb";
-import React from "react";
 
 export const access: AccessRule = {
   permissions: [""],
-  roles: ["Teknisi Sistem", "Admin Sekolah", "Kepala Sekolah"],
+  roles: ["Teknisi Sistem"],
 };
 
 export default function Page() {

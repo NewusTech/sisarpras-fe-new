@@ -1,11 +1,14 @@
 "use client";
 
-import { useUserProfileMutation } from "@/components/parts/users/api";
 import {
-  UserPayload,
+  useGetProfile,
+  useUserProfileMutation,
+} from "@/components/parts/users/api";
+import {
   UserProfilePayload,
   UserProfileValidation,
 } from "@/components/parts/users/validation";
+import { CustomFormCalender } from "@/components/shared/forms/customFormCalender";
 import {
   CustomFormInput,
   inputFilters,
@@ -14,8 +17,9 @@ import { CustomFormSelect } from "@/components/shared/forms/customFormSelect";
 import ValueLabel from "@/components/shared/valueLabel";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
+import { employeeStatusMapping, genderMapping } from "@/constants";
+import { formatDate } from "@/lib/utils";
 import { FormProfileStore } from "@/store/formProfileStore";
-import { useProfile } from "@/store/userStore";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
@@ -24,7 +28,8 @@ import { useForm } from "react-hook-form";
 export default function FormProfile() {
   const qc = useQueryClient();
   const { edit, closeEdit } = FormProfileStore();
-  const { user } = useProfile();
+  const { data } = useGetProfile();
+  const user = data?.data;
 
   const userProfileMutation = useUserProfileMutation();
 
@@ -44,7 +49,7 @@ export default function FormProfile() {
   const onSubmit = handleSubmit((data) => {
     userProfileMutation.mutate(data, {
       onSuccess: () => {
-        qc.invalidateQueries({ queryKey: ["useGetUserDetail"] });
+        qc.invalidateQueries({ queryKey: ["useGetProfile"] });
         closeEdit();
       },
     });
@@ -52,7 +57,11 @@ export default function FormProfile() {
 
   useEffect(() => {
     if (user) {
-      reset({ ...user, gender: user.gender === "MALE" ? "MALE" : "FEMALE" });
+      reset({
+        ...user,
+        phone: user.noTelp,
+        gender: user.gender === "MALE" ? "MALE" : "FEMALE",
+      });
     }
   }, [reset, user]);
 
@@ -62,19 +71,53 @@ export default function FormProfile() {
         <form onSubmit={onSubmit}>
           <Form {...form}>
             <div className="grid grid-cols-2 gap-5 gap-y-8">
-              <CustomFormInput<UserPayload>
+              <CustomFormInput<UserProfilePayload>
+                name="email"
+                label="Email"
+                placeholder="Email"
+                filterInput={inputFilters.email}
+                disabled
+              />
+
+              <CustomFormInput<UserProfilePayload>
+                name="nip"
+                label="NIP"
+                placeholder="Masukkan NIP"
+                maxLength={18}
+                filterInput={inputFilters.numbersOnly}
+              />
+
+              <CustomFormInput<UserProfilePayload>
                 name="name"
                 label="Nama"
                 placeholder="Nama"
               />
-              <CustomFormInput<UserPayload>
-                name="nik"
-                label="NIK"
-                placeholder="NIK"
-                maxLength={18}
-                filterInput={inputFilters.numbersOnly}
+
+              {/* <CustomFormInput<UserProfilePayload>
+                name="position"
+                label="Jabatan"
+                placeholder="Jabatan"
+              /> */}
+
+              {/* <CustomFormInput<UserProfilePayload>
+                name="rank"
+                label="Pangkat"
+                placeholder="Masukkan Pangkat"
+              /> */}
+
+              <CustomFormInput<UserProfilePayload>
+                name="place"
+                label="Tempat Lahir"
+                placeholder="Masukkan Tempat Lahir"
               />
-              <CustomFormSelect<UserPayload>
+
+              <CustomFormCalender<UserProfilePayload>
+                name="dateBirth"
+                placeholder="YYYY-MM-DD"
+                label="Tanggal Lahir"
+              />
+
+              <CustomFormSelect<UserProfilePayload>
                 name="gender"
                 key={watch("gender")}
                 label="Jenis Kelamin"
@@ -84,30 +127,15 @@ export default function FormProfile() {
                   { label: "Perempuan", value: "FEMALE" },
                 ]}
               />
-              <CustomFormInput<UserPayload>
-                name="position"
-                label="Jabatan"
-                placeholder="Jabatan"
-              />
-              <CustomFormInput<UserPayload>
-                name="workUnit"
-                label="Unit Kerja"
-                placeholder="Unit Kerja"
-              />
-              <CustomFormInput<UserPayload>
-                name="email"
-                label="Email"
-                placeholder="Email"
-                filterInput={inputFilters.email}
-                disabled
-              />
-              <CustomFormInput<UserPayload>
+
+              <CustomFormInput<UserProfilePayload>
                 name="phone"
                 label="Nomor Telepon"
                 placeholder="Nomor Telepon"
                 mask="+62 ___-____-_____"
               />
-              <CustomFormInput<UserPayload>
+
+              <CustomFormInput<UserProfilePayload>
                 name="address"
                 label="Alamat"
                 placeholder="Alamat"
@@ -121,16 +149,25 @@ export default function FormProfile() {
         </form>
       ) : (
         <div className="grid grid-cols-2 gap-8">
-          <ValueLabel label="Email" value={"-"} />
-          <ValueLabel label="NIP" value="-" />
-          <ValueLabel label="Status Kepegawaian" value="-" />
-          <ValueLabel label="Golongan" value="-" />
-          <ValueLabel label="Jabatan" value={"-"} />
-          <ValueLabel label="Pangkat" value="" />
-          <ValueLabel label="Tempat & Tanggal Lahir" value="-" />
-          <ValueLabel label="Jenis Kelamin" value={"-"} />
-          <ValueLabel label="Nomor Telepon" value={"-"} />
-          <ValueLabel label="Alamat" value={"-"} />
+          <ValueLabel label="Email" value={user?.email} />
+          <ValueLabel label="NIP" value={user?.nip} />
+          <ValueLabel
+            label="Status Kepegawaian"
+            value={employeeStatusMapping[user?.employee.employmentStatus ?? ""]}
+          />
+          <ValueLabel label="Golongan" value={"-"} />
+          <ValueLabel label="Jabatan" value={user?.employee.position} />
+          <ValueLabel label="Pangkat" value={user?.employee.rank} />
+          <ValueLabel
+            label="Tempat & Tanggal Lahir"
+            value={`${user?.place}, ${formatDate(user?.dateBirth)}`}
+          />
+          <ValueLabel
+            label="Jenis Kelamin"
+            value={genderMapping[user?.gender ?? ""]}
+          />
+          <ValueLabel label="Nomor Telepon" value={user?.noTelp} />
+          <ValueLabel label="Alamat" value={user?.address} />
         </div>
       )}
     </div>
