@@ -8,7 +8,9 @@ import { Button } from "../ui/button";
 const GoogleSignInButton = ({ className = "" }) => {
   const router = useRouter();
   const handleGoogle = () => {
-    router.push(`${BASE_URL}/auth/google`);
+    router.push(
+      `${BASE_URL}/auth/google?redirectUrl=${encodeURIComponent(window.location.origin + "/login/callback")}`
+    );
   };
 
   return (
