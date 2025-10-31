@@ -15,6 +15,7 @@ import { KeyRoundIcon, Loader, LogOut, Plus, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";
 import Cookies from "js-cookie";
+import GoogleIcon from "@/assets/Logo/GoogleIcon";
 
 export default function Page() {
   const router = useRouter();
@@ -149,6 +150,7 @@ export default function Page() {
                             tersimpan
                           </Badge>
                         )}
+                        {account.type === "GOOGLE" && <GoogleIcon />}
                       </div>
                     </div>
                     <div className="text-muted-foreground">→</div>
