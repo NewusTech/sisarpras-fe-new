@@ -12,6 +12,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { FilterKey, filterMapping } from "./keys";
 
 type FilterContextType = {
   values: Record<string, any>;
@@ -95,7 +96,7 @@ export const Filter = ({
     if (isInitialMount.current || lastPath.current !== pathname) {
       isInitialMount.current = false;
       lastPath.current = pathname;
-      return; // ⛔ skip push pertama / ganti halaman
+      return;
     }
 
     pushToUrl(debouncedValues);
@@ -146,9 +147,22 @@ export const Filter = ({
   );
 
   const resetValues = useCallback(() => {
-    setValues(initialValues);
+    const filterKeys = Object.values(filterMapping);
+
+    const currentParams = new URLSearchParams(window.location.search);
+    const preservedParams: Record<string, any> = {};
+
+    currentParams.forEach((value, key) => {
+      if (!filterKeys.includes(key as any)) {
+        preservedParams[key] = value;
+      }
+    });
+
+    const nextValues = { ...preservedParams, ...initialValues };
+
+    setValues(nextValues);
     setTempValues({});
-    pushToUrl(initialValues);
+    pushToUrl(nextValues);
   }, [initialValues, pushToUrl]);
 
   const activeFilterCount = useMemo(() => {

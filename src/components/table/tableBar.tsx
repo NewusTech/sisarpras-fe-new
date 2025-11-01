@@ -18,7 +18,6 @@ import FilterTabs from "../filters/filterTabs";
 import LinkButton from "../shared/button/linkButton";
 import TitleHeader from "../shared/title";
 import { useTableProvider } from "./tableProvider"; // ⬅️ pakai provider terpisah
-import clsx from "clsx";
 
 type FilterItems = "date" | "kolom";
 

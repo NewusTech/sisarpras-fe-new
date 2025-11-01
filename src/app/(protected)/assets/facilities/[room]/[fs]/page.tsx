@@ -30,9 +30,12 @@ const Page = () => {
   const id = searchParams.get("modal")?.split(":")[1];
   const { room, fs } = useParams();
   const defaultsearchParams = `facilityNameId=${fs}&categoryId=${room}`;
-  const { data } = useGetFacilitiesAssets(defaultsearchParams);
-  const { data: facilityConditionCount } =
-    useGetCountFacilitiesByCondition(defaultsearchParams);
+  const { data } = useGetFacilitiesAssets(
+    `${defaultsearchParams}${searchParams.toString() ? `&${searchParams.toString()}` : ""}`
+  );
+  const { data: facilityConditionCount } = useGetCountFacilitiesByCondition(
+    `${defaultsearchParams}${searchParams.toString() ? `&${searchParams.toString()}` : ""}`
+  );
   const facilitiesData = data?.data.items || [];
   const facilitiesPagination = data?.data;
   const facilitiesCount = facilityConditionCount?.data;
@@ -83,7 +86,7 @@ const Page = () => {
                   />
                   <FilterSelect
                     label="Kondisi"
-                    name="conditionId"
+                    name="condition"
                     placeholder="Kondisi"
                     options={useConditionOptions}
                   />

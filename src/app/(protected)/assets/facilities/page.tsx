@@ -39,7 +39,10 @@ const Page = () => {
       <Card className="space-y-6">
         <TitleHeader title="Data Aset Sarana" />
         <TableProvider>
-          <TableBar searchPlaceholder="Cari Sarana" filterKeys={["search"]}>
+          <TableBar
+            searchPlaceholder="Cari Sarana"
+            filterKeys={["kategoriPrasarana"]}
+          >
             <DataTable
               columns={facilityAssetsColumns}
               data={infrastructureData}

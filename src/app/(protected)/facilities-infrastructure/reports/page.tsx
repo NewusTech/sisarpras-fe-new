@@ -16,11 +16,9 @@ import TitleHeader from "@/components/shared/title";
 import { TableProvider } from "@/components/table";
 import DataTable from "@/components/table/dataTable";
 import TableBar from "@/components/table/tableBar";
-import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Download } from "lucide-react";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { useSearchParams } from "next/navigation";
 
 export const access: AccessRule = {
@@ -97,7 +95,10 @@ const Page = () => {
             <Separator className="mt-0.5 mb-6" />
             <TabsContent value="facilities">
               <TableProvider>
-                <TableBar searchPlaceholder="Cari ..." filterKeys={["search"]}>
+                <TableBar
+                  searchPlaceholder="Cari ..."
+                  filterKeys={["kategoriSarana", "tahunAjaran", "prioritas"]}
+                >
                   <DataTable
                     columns={facilitiesReportColumns}
                     data={facilityData}
@@ -111,7 +112,10 @@ const Page = () => {
             </TabsContent>
             <TabsContent value="infrastructures">
               <TableProvider>
-                <TableBar searchPlaceholder="Cari ..." filterKeys={["search"]}>
+                <TableBar
+                  searchPlaceholder="Cari ..."
+                  filterKeys={["kategoriPrasarana", "tahunAjaran", "prioritas"]}
+                >
                   <DataTable
                     columns={infrastructuresReportColumns}
                     data={infrastructureData}

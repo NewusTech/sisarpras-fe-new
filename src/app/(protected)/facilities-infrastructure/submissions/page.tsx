@@ -77,14 +77,18 @@ const Page = () => {
                 ]}
               />
 
-              <DownloadButton />
+              {/* <DownloadButton /> */}
             </div>
 
             <Separator className="mt-0.5 mb-6" />
             <TabsContent value="facilities">
               <TableBar
                 searchPlaceholder="Cari permohonan sarana"
-                filterKeys={["search"]}
+                filterKeys={[
+                  "kategoriSarana",
+                  "tahunAjaran",
+                  "statusPermohonan",
+                ]}
                 mobileOrientation="vertical"
                 buttonAdd={{
                   label: "Permohonan Sarana",
@@ -104,7 +108,11 @@ const Page = () => {
             <TabsContent value="infrastructures">
               <TableBar
                 searchPlaceholder="Cari permohonan prasarana"
-                filterKeys={["search"]}
+                filterKeys={[
+                  "kategoriSarana",
+                  "tahunAjaran",
+                  "statusPermohonan",
+                ]}
                 mobileOrientation="vertical"
                 buttonAdd={{
                   label: "Permohonan Prasarana",

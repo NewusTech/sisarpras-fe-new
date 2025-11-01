@@ -18,7 +18,7 @@ import { Check, ChevronDown, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useFilterContext } from "./filterWarper";
 import { Label } from "@/components/ui/label";
-import React from "react";
+import React, { useState } from "react";
 
 type Option = { value: string; label: string };
 
@@ -48,6 +48,7 @@ export const FilterSelect = <T extends Record<string, any>>({
   mode = "auto", // ✅ default auto
 }: FilterSelectProps<T>) => {
   const { values, setValue, tempValues } = useFilterContext();
+  const [open, setOpen] = useState(false);
 
   // kalau manual, ambil dari tempValues dulu
   const rawValue =
@@ -76,7 +77,7 @@ export const FilterSelect = <T extends Record<string, any>>({
     >
       {label && <span className="w-[70%] font-normal">{label}</span>}
 
-      <Popover>
+      <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger
           asChild
           className="data-[state=open]:!ring-1 data-[state=open]:!ring-primary"
@@ -135,7 +136,10 @@ export const FilterSelect = <T extends Record<string, any>>({
                     <CommandItem
                       key={opt.value}
                       value={opt.label}
-                      onSelect={() => setValue(name as string, opt.value, mode)} // ✅ fix
+                      onSelect={() => {
+                        setValue(name as string, opt.value, mode);
+                        setOpen(false);
+                      }} // ✅ fix
                     >
                       {opt.label}
                       <Check

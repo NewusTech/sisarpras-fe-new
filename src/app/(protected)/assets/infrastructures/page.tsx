@@ -40,7 +40,7 @@ const Page = () => {
         <TableProvider>
           <TableBar
             searchPlaceholder="Cari Prasarana"
-            filterKeys={["search"]}
+            filterKeys={["kategoriPrasarana"]}
           />
           <DataTable
             columns={infrastructureAssetsColumns}

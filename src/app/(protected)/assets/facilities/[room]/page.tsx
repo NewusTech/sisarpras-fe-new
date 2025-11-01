@@ -53,7 +53,10 @@ const Page = () => {
       <Card className="space-y-6">
         <TitleHeader title={`Data ${titleSegment}`} />
         <TableProvider>
-          <TableBar searchPlaceholder="Cari Fasilitas" filterKeys={["search"]}>
+          <TableBar
+            searchPlaceholder="Cari Fasilitas"
+            filterKeys={["kategoriSarana"]}
+          >
             <DataTable
               columns={facilitiesByRoomColumns(segmentId)}
               data={facilitiesData}
